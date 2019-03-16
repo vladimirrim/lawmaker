@@ -93,8 +93,8 @@ class NativeRealm(Realm):
         for ent in self.desciples.values():
             ent.step(self.world)
 
-    #      if ent.__getattribute__('timeAlive') > self.sword.getExploredTiles(ent.entID) * 2:
-    #         ent.applyDamage(1)
+            if ent.__getattribute__('timeAlive') > self.sword.getExploredTiles(ent.entID) * 2:
+                ent.applyDamage(2)
 
             if self.postmortem(ent, dead):
                 continue
