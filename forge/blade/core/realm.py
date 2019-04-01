@@ -86,15 +86,68 @@ class NativeRealm(Realm):
         self.god = trinity.god(config, args)
         self.sword = trinity.sword(config, args)
         self.sword.anns[0].world = self.world
+        self.lawmaker = entity.Lawmaker()
         self.logs = []
+        self.stepCount = 0
+        self.currentAction = [0] * 8
+
+    def collectState(self):
+        states = [[0., 0., 0.]] * 8
+        lengths = [0] * 8
+
+        for ent in self.desciples.values():
+            states[ent.annID][0] += self.sword.getUniqueGrass(ent.entID)
+            states[ent.annID][1] += self.sword.getUniqueGrass(ent.entID)
+            states[ent.annID][2] += ent.__getattribute__('timeAlive')
+            lengths[ent.annID] += 1
+
+        state = [0]
+        for i in range(8):
+            for param in states[i]:
+                if lengths[i] != 0:
+                    state.append(param / lengths[i])
+                else:
+                    state.append(param)
+
+        ans = np.array(state)
+        ans.shape = (1, 25)
+        return ans
+
+    def collectReward(self):
+        reward = 0
+        for ent in self.desciples.values():
+            reward += ent.__getattribute__('timeAlive')
+        return reward / len(self.desciples.values())
+
+    def stepLawmaker(self, state, reward):
+        if self.stepCount != 0:
+            for i in range(8):
+                state[0] = i + 1
+                self.lawmaker.updateLaw(state, reward)
+
+        for i in range(8):
+            state[0] = i + 1
+            self.currentAction[i] = self.lawmaker.step(state)
+        self.lawmaker.save()
+        self.save()
+
+    def save(self):
+        ROOT = 'resource/exps/laws/'
+        with open(ROOT + 'actions.txt', 'a') as f:
+            for action in self.currentAction:
+                f.write("%s " % action)
+            f.write('\n')
 
     def stepEnts(self):
         dead = []
+
+        if self.stepCount % 1000 == 0:
+            self.stepLawmaker(self.collectState(), self.collectReward())
+
         for ent in self.desciples.values():
             ent.step(self.world)
 
-            if ent.__getattribute__('timeAlive') > self.sword.getExploredTiles(ent.entID) * 2:
-                ent.applyDamage(2)
+            ent.applyDamage(self.currentAction[ent.annID])
 
             if self.postmortem(ent, dead):
                 continue
@@ -128,6 +181,7 @@ class NativeRealm(Realm):
         updates = None
         while updates is None:
             self.step()
+            self.stepCount += 1
             updates, self.logs = self.sword.sendUpdate()
         return updates, self.logs
 

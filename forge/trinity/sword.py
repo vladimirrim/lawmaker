@@ -49,6 +49,14 @@ class Sword:
         blob = self.updates[entID].feather.blob
         return blob.unique[Material.GRASS.value] + blob.unique[Material.SCRUB.value]
 
+    def getUniqueGrass(self, entID):
+        blob = self.updates[entID].feather.blob
+        return blob.unique[Material.GRASS.value]
+
+    def getUniqueScrub(self, entID):
+        blob = self.updates[entID].feather.blob
+        return blob.unique[Material.SCRUB.value]
+
     def sendUpdate(self):
         if self.grads is None:
             return None, None

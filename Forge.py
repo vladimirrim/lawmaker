@@ -63,7 +63,7 @@ class NativeExample:
 if __name__ == '__main__':
     args = parseArgs()
     assert args.api in ('native', 'vecenv')
-    config = experiments.exps['exploreIntensifies']
+    config = experiments.exps['exploreIntensifiesAuto']
 
     if args.api == 'native':
         example = NativeExample(config, args)

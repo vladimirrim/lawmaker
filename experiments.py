@@ -11,9 +11,9 @@ if USER == 'vladimir':
     remote = False
     local = not remote
 
-    test = False  # local
-    best = True  # local
-    load = True  # local
+    test = True  # local
+    best = False  # local
+    load = False  # local
 
     sample = not test
     singles = True
@@ -60,4 +60,4 @@ if USER == 'vladimir':
 
     # Sample config
     makeExps()
-    makeExp('exploreIntensifies', Law, 128, test=False)
+    makeExp('exploreIntensifiesAuto', Law, 128, test=False)
