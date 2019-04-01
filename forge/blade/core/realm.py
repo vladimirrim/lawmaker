@@ -90,6 +90,8 @@ class NativeRealm(Realm):
         self.logs = []
         self.stepCount = 0
         self.currentAction = [0] * 8
+        self.prevReward = 0
+        self.curReward = 0
 
     def collectState(self):
         states = [[0., 0., 0.]] * 8
@@ -117,7 +119,13 @@ class NativeRealm(Realm):
         reward = 0
         for ent in self.desciples.values():
             reward += ent.__getattribute__('timeAlive')
-        return reward / len(self.desciples.values())
+        self.curReward += reward / len(self.desciples.values())
+
+    def updateReward(self):
+        r = (self.curReward - self.prevReward) / 1000
+        self.prevReward = self.curReward
+        self.curReward = 0
+        return r
 
     def stepLawmaker(self, state, reward):
         if self.stepCount != 0:
@@ -140,9 +148,10 @@ class NativeRealm(Realm):
 
     def stepEnts(self):
         dead = []
+        self.collectReward()
 
         if self.stepCount % 1000 == 0:
-            self.stepLawmaker(self.collectState(), self.collectReward())
+            self.stepLawmaker(self.collectState(), self.updateReward())
 
         for ent in self.desciples.values():
             ent.step(self.world)
