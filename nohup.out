@@ -3279,4 +3279,670 @@ Tick:  1671 , Time:  32.22 , Lifetime:  55.83 , Best:  80.56
 Tick:  1672 , Time:  31.51 , Lifetime:  54.11 , Best:  80.56
 Tick:  1673 , Time:  32.82 , Lifetime:  51.64 , Best:  80.56
 Tick:  1674 , Time:  33.11 , Lifetime:  59.56 , Best:  80.56
-Tick:  1675 , Time:  32.71 , Lifetime: 
+Tick:  1675 , Time:  32.71 , Lifetime: Traceback (most recent call last):
+  File "Forge.py", line 5, in <module>
+    import experiments
+  File "/home/vladimirrim98/lawmaker/experiments.py", line 2, in <module>
+    from configs import Law, Chaos, Kite
+  File "/home/vladimirrim98/lawmaker/configs.py", line 2, in <module>
+    from forge.blade.core.config import Config
+  File "/home/vladimirrim98/lawmaker/forge/blade/core/__init__.py", line 3, in <module>
+    from .realm import VecEnvRealm, NativeRealm
+  File "/home/vladimirrim98/lawmaker/forge/blade/core/realm.py", line 8, in <module>
+    from forge import trinity as Trinity
+  File "/home/vladimirrim98/lawmaker/forge/trinity/__init__.py", line 5, in <module>
+    from .ann import ANN
+  File "/home/vladimirrim98/lawmaker/forge/trinity/ann.py", line 14, in <module>
+    from forge.blade import entity
+  File "/home/vladimirrim98/lawmaker/forge/blade/entity/__init__.py", line 3, in <module>
+    from .lawmaker import Lawmaker
+  File "/home/vladimirrim98/lawmaker/forge/blade/entity/lawmaker.py", line 1, in <module>
+    import tensorflow as tf
+ModuleNotFoundError: No module named 'tensorflow'
+2019-04-01 11:48:38,398	INFO node.py:439 -- Process STDOUT and STDERR is being redirected to /tmp/ray/session_2019-04-01_11-48-38_3233/logs.
+2019-04-01 11:48:38,507	INFO services.py:364 -- Waiting for redis server at 127.0.0.1:49687 to respond...
+2019-04-01 11:48:38,622	INFO services.py:364 -- Waiting for redis server at 127.0.0.1:30711 to respond...
+2019-04-01 11:48:38,623	INFO services.py:761 -- Starting Redis shard with 6.32 GB max memory.
+2019-04-01 11:48:38,642	INFO services.py:1449 -- Starting the Plasma object store with 9.48 GB memory using /dev/shm.
+testlaw128 , NENT:  128 , NPOP:  8
+testchaos128 , NENT:  128 , NPOP:  8
+exploreIntensifiesAuto , NENT:  128 , NPOP:  8
+Initializing new model...
+#Params:  1484.264 K
+[2m[36m(pid=3266)[0m pygame 1.9.4
+[2m[36m(pid=3266)[0m Hello from the pygame community. https://www.pygame.org/contribute.html
+[2m[36m(pid=3265)[0m pygame 1.9.4
+[2m[36m(pid=3265)[0m Hello from the pygame community. https://www.pygame.org/contribute.html
+[2m[36m(pid=3268)[0m pygame 1.9.4
+[2m[36m(pid=3268)[0m Hello from the pygame community. https://www.pygame.org/contribute.html
+[2m[36m(pid=3266)[0m WARNING:tensorflow:From /home/vladimirrim98/lawmaker/env/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+[2m[36m(pid=3266)[0m Instructions for updating:
+[2m[36m(pid=3266)[0m Colocations handled automatically by placer.
+[2m[36m(pid=3261)[0m pygame 1.9.4
+[2m[36m(pid=3261)[0m Hello from the pygame community. https://www.pygame.org/contribute.html
+[2m[36m(pid=3266)[0m 2019-04-01 11:48:41.310678: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+[2m[36m(pid=3266)[0m 2019-04-01 11:48:41.317175: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2000170000 Hz
+[2m[36m(pid=3266)[0m 2019-04-01 11:48:41.317668: I tensorflow/compiler/xla/service/service.cc:150] XLA service 0x7f7e2ce62610 executing computations on platform Host. Devices:
+[2m[36m(pid=3266)[0m 2019-04-01 11:48:41.317703: I tensorflow/compiler/xla/service/service.cc:158]   StreamExecutor device (0): <undefined>, <undefined>
+[2m[36m(pid=3265)[0m WARNING:tensorflow:From /home/vladimirrim98/lawmaker/env/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+[2m[36m(pid=3265)[0m Instructions for updating:
+[2m[36m(pid=3265)[0m Colocations handled automatically by placer.
+[2m[36m(pid=3265)[0m 2019-04-01 11:48:41.334683: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+[2m[36m(pid=3265)[0m 2019-04-01 11:48:41.354797: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2000170000 Hz
+[2m[36m(pid=3263)[0m pygame 1.9.4
+[2m[36m(pid=3263)[0m Hello from the pygame community. https://www.pygame.org/contribute.html
+[2m[36m(pid=3265)[0m 2019-04-01 11:48:41.356123: I tensorflow/compiler/xla/service/service.cc:150] XLA service 0x7ff7ece62ec0 executing computations on platform Host. Devices:
+[2m[36m(pid=3265)[0m 2019-04-01 11:48:41.356161: I tensorflow/compiler/xla/service/service.cc:158]   StreamExecutor device (0): <undefined>, <undefined>
+[2m[36m(pid=3264)[0m pygame 1.9.4
+[2m[36m(pid=3264)[0m Hello from the pygame community. https://www.pygame.org/contribute.html
+[2m[36m(pid=3268)[0m WARNING:tensorflow:From /home/vladimirrim98/lawmaker/env/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+[2m[36m(pid=3268)[0m Instructions for updating:
+[2m[36m(pid=3268)[0m Colocations handled automatically by placer.
+[2m[36m(pid=3261)[0m WARNING:tensorflow:From /home/vladimirrim98/lawmaker/env/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+[2m[36m(pid=3261)[0m Instructions for updating:
+[2m[36m(pid=3261)[0m Colocations handled automatically by placer.
+[2m[36m(pid=3261)[0m 2019-04-01 11:48:41.448740: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+[2m[36m(pid=3268)[0m 2019-04-01 11:48:41.417729: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+[2m[36m(pid=3268)[0m 2019-04-01 11:48:41.424541: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2000170000 Hz
+[2m[36m(pid=3268)[0m 2019-04-01 11:48:41.430291: I tensorflow/compiler/xla/service/service.cc:150] XLA service 0x7fcdace63020 executing computations on platform Host. Devices:
+[2m[36m(pid=3268)[0m 2019-04-01 11:48:41.430358: I tensorflow/compiler/xla/service/service.cc:158]   StreamExecutor device (0): <undefined>, <undefined>
+[2m[36m(pid=3267)[0m pygame 1.9.4
+[2m[36m(pid=3267)[0m Hello from the pygame community. https://www.pygame.org/contribute.html
+[2m[36m(pid=3261)[0m 2019-04-01 11:48:41.462632: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2000170000 Hz
+[2m[36m(pid=3261)[0m 2019-04-01 11:48:41.463190: I tensorflow/compiler/xla/service/service.cc:150] XLA service 0x7f5230e64a40 executing computations on platform Host. Devices:
+[2m[36m(pid=3261)[0m 2019-04-01 11:48:41.463228: I tensorflow/compiler/xla/service/service.cc:158]   StreamExecutor device (0): <undefined>, <undefined>
+[2m[36m(pid=3264)[0m WARNING:tensorflow:From /home/vladimirrim98/lawmaker/env/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+[2m[36m(pid=3264)[0m Instructions for updating:
+[2m[36m(pid=3264)[0m Colocations handled automatically by placer.
+[2m[36m(pid=3263)[0m WARNING:tensorflow:From /home/vladimirrim98/lawmaker/env/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+[2m[36m(pid=3263)[0m Instructions for updating:
+[2m[36m(pid=3263)[0m Colocations handled automatically by placer.
+[2m[36m(pid=3263)[0m 2019-04-01 11:48:41.488747: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+[2m[36m(pid=3263)[0m 2019-04-01 11:48:41.502831: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2000170000 Hz
+[2m[36m(pid=3263)[0m 2019-04-01 11:48:41.503351: I tensorflow/compiler/xla/service/service.cc:150] XLA service 0x7fb4bce63bb0 executing computations on platform Host. Devices:
+[2m[36m(pid=3263)[0m 2019-04-01 11:48:41.503386: I tensorflow/compiler/xla/service/service.cc:158]   StreamExecutor device (0): <undefined>, <undefined>
+[2m[36m(pid=3262)[0m pygame 1.9.4
+[2m[36m(pid=3262)[0m Hello from the pygame community. https://www.pygame.org/contribute.html
+[2m[36m(pid=3264)[0m 2019-04-01 11:48:41.515266: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+[2m[36m(pid=3264)[0m 2019-04-01 11:48:41.523671: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2000170000 Hz
+[2m[36m(pid=3264)[0m 2019-04-01 11:48:41.527207: I tensorflow/compiler/xla/service/service.cc:150] XLA service 0x7f5524e62eb0 executing computations on platform Host. Devices:
+[2m[36m(pid=3264)[0m 2019-04-01 11:48:41.527242: I tensorflow/compiler/xla/service/service.cc:158]   StreamExecutor device (0): <undefined>, <undefined>
+[2m[36m(pid=3267)[0m WARNING:tensorflow:From /home/vladimirrim98/lawmaker/env/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+[2m[36m(pid=3267)[0m Instructions for updating:
+[2m[36m(pid=3267)[0m Colocations handled automatically by placer.
+[2m[36m(pid=3267)[0m 2019-04-01 11:48:41.644643: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+[2m[36m(pid=3267)[0m 2019-04-01 11:48:41.651795: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2000170000 Hz
+[2m[36m(pid=3267)[0m 2019-04-01 11:48:41.652306: I tensorflow/compiler/xla/service/service.cc:150] XLA service 0x7f27bce63f40 executing computations on platform Host. Devices:
+[2m[36m(pid=3267)[0m 2019-04-01 11:48:41.652339: I tensorflow/compiler/xla/service/service.cc:158]   StreamExecutor device (0): <undefined>, <undefined>
+[2m[36m(pid=3262)[0m WARNING:tensorflow:From /home/vladimirrim98/lawmaker/env/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+[2m[36m(pid=3262)[0m Instructions for updating:
+[2m[36m(pid=3262)[0m Colocations handled automatically by placer.
+[2m[36m(pid=3262)[0m 2019-04-01 11:48:41.633056: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+[2m[36m(pid=3262)[0m 2019-04-01 11:48:41.651883: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2000170000 Hz
+[2m[36m(pid=3262)[0m 2019-04-01 11:48:41.652925: I tensorflow/compiler/xla/service/service.cc:150] XLA service 0x7f039ce64010 executing computations on platform Host. Devices:
+[2m[36m(pid=3262)[0m 2019-04-01 11:48:41.652964: I tensorflow/compiler/xla/service/service.cc:158]   StreamExecutor device (0): <undefined>, <undefined>
+Tick:  1 , Time:  33.22 , Lifetime:  7.019 , Best:  7.019
+Tick:  2 , Time:  29.69 , Lifetime:  9.506 , Best:  9.506
+Tick:  3 , Time:  29.29 , Lifetime:  11.28 , Best:  11.28
+Tick:  4 , Time:  29.89 , Lifetime:  12.99 , Best:  12.99
+Tick:  5 , Time:  29.73 , Lifetime:  13.70 , Best:  13.70
+Tick:  6 , Time:  29.83 , Lifetime:  14.86 , Best:  14.86
+Tick:  7 , Time:  28.37 , Lifetime:  15.25 , Best:  15.25
+Tick:  8 , Time:  28.81 , Lifetime:  14.37 , Best:  15.25
+Tick:  9 , Time:  28.55 , Lifetime:  14.52 , Best:  15.25
+Tick:  10 , Time:  28.55 , Lifetime:  14.84 , Best:  15.25
+Tick:  11 , Time:  31.60 , Lifetime:  18.18 , Best:  18.18
+Tick:  12 , Time:  30.64 , Lifetime:  29.91 , Best:  29.91
+Tick:  13 , Time:  32.09 , Lifetime:  34.75 , Best:  34.75
+Tick:  14 , Time:  29.10 , Lifetime:  34.36 , Best:  34.75
+Tick:  15 , Time:  29.59 , Lifetime:  32.47 , Best:  34.75
+Tick:  16 , Time:  30.60 , Lifetime:  33.52 , Best:  34.75
+Tick:  17 , Time:  29.57 , Lifetime:  33.11 , Best:  34.75
+Tick:  18 , Time:  31.67 , Lifetime:  33.64 , Best:  34.75
+Tick:  19 , Time:  29.65 , Lifetime:  40.07 , Best:  40.07
+Tick:  20 , Time:  29.48 , Lifetime:  41.39 , Best:  41.39
+Tick:  21 , Time:  29.57 , Lifetime:  42.77 , Best:  42.77
+Tick:  22 , Time:  28.86 , Lifetime:  44.23 , Best:  44.23
+Tick:  23 , Time:  30.15 , Lifetime:  43.49 , Best:  44.23
+Tick:  24 , Time:  29.64 , Lifetime:  44.15 , Best:  44.23
+Tick:  25 , Time:  29.28 , Lifetime:  45.11 , Best:  45.11
+Tick:  26 , Time:  30.13 , Lifetime:  43.66 , Best:  45.11
+Tick:  27 , Time:  30.29 , Lifetime:  43.92 , Best:  45.11
+Tick:  28 , Time:  29.57 , Lifetime:  45.44 , Best:  45.44
+Tick:  29 , Time:  30.19 , Lifetime:  44.83 , Best:  45.44
+Tick:  30 , Time:  29.65 , Lifetime:  46.56 , Best:  46.56
+Tick:  31 , Time:  29.97 , Lifetime:  45.88 , Best:  46.56
+Tick:  32 , Time:  29.81 , Lifetime:  45.19 , Best:  46.56
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  0.027817249298095703
+Tick:  33 , Time:  28.66 , Lifetime:  45.75 , Best:  46.56
+Tick:  34 , Time:  29.67 , Lifetime:  44.26 , Best:  46.56
+Tick:  35 , Time:  29.63 , Lifetime:  45.15 , Best:  46.56
+Tick:  36 , Time:  29.85 , Lifetime:  44.01 , Best:  46.56
+Tick:  37 , Time:  29.46 , Lifetime:  46.05 , Best:  46.56
+Tick:  38 , Time:  30.75 , Lifetime:  43.71 , Best:  46.56
+Tick:  39 , Time:  29.71 , Lifetime:  44.32 , Best:  46.56
+Tick:  40 , Time:  29.71 , Lifetime:  45.10 , Best:  46.56
+Tick:  41 , Time:  29.52 , Lifetime:  45.69 , Best:  46.56
+Tick:  42 , Time:  29.57 , Lifetime:  44.05 , Best:  46.56
+Tick:  43 , Time:  29.56 , Lifetime:  44.34 , Best:  46.56
+Tick:  44 , Time:  30.25 , Lifetime:  44.94 , Best:  46.56
+Tick:  45 , Time:  29.27 , Lifetime:  46.52 , Best:  46.56
+Tick:  46 , Time:  29.81 , Lifetime:  45.88 , Best:  46.56
+Tick:  47 , Time:  29.65 , Lifetime:  44.15 , Best:  46.56
+Tick:  48 , Time:  30.92 , Lifetime:  44.66 , Best:  46.56
+Tick:  49 , Time:  29.49 , Lifetime:  45.15 , Best:  46.56
+Tick:  50 , Time:  30.31 , Lifetime:  44.19 , Best:  46.56
+Tick:  51 , Time:  28.45 , Lifetime:  44.54 , Best:  46.56
+Tick:  52 , Time:  29.40 , Lifetime:  44.35 , Best:  46.56
+Tick:  53 , Time:  30.44 , Lifetime:  45.27 , Best:  46.56
+Tick:  54 , Time:  29.51 , Lifetime:  45.11 , Best:  46.56
+Tick:  55 , Time:  30.23 , Lifetime:  46.40 , Best:  46.56
+Tick:  56 , Time:  29.41 , Lifetime:  45.90 , Best:  46.56
+Tick:  57 , Time:  29.53 , Lifetime:  45.63 , Best:  46.56
+Tick:  58 , Time:  29.80 , Lifetime:  45.66 , Best:  46.56
+Tick:  59 , Time:  29.54 , Lifetime:  46.16 , Best:  46.56
+Tick:  60 , Time:  29.51 , Lifetime:  45.20 , Best:  46.56
+Tick:  61 , Time:  29.54 , Lifetime:  44.61 , Best:  46.56
+Tick:  62 , Time:  30.19 , Lifetime:  44.31 , Best:  46.56
+Tick:  63 , Time:  29.56 , Lifetime:  46.62 , Best:  46.62
+Tick:  64 , Time:  30.23 , Lifetime:  44.45 , Best:  46.62
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  0.05846714973449707
+Tick:  65 , Time:  28.97 , Lifetime:  44.12 , Best:  46.62
+Tick:  66 , Time:  29.91 , Lifetime:  43.90 , Best:  46.62
+Tick:  67 , Time:  29.62 , Lifetime:  43.39 , Best:  46.62
+Tick:  68 , Time:  29.30 , Lifetime:  43.40 , Best:  46.62
+Tick:  69 , Time:  30.67 , Lifetime:  44.47 , Best:  46.62
+Tick:  70 , Time:  29.43 , Lifetime:  44.20 , Best:  46.62
+Tick:  71 , Time:  29.50 , Lifetime:  44.76 , Best:  46.62
+Tick:  72 , Time:  29.48 , Lifetime:  43.22 , Best:  46.62
+Tick:  73 , Time:  30.40 , Lifetime:  45.74 , Best:  46.62
+Tick:  74 , Time:  29.55 , Lifetime:  45.39 , Best:  46.62
+Tick:  75 , Time:  29.54 , Lifetime:  45.67 , Best:  46.62
+Tick:  76 , Time:  29.66 , Lifetime:  45.35 , Best:  46.62
+Tick:  77 , Time:  29.61 , Lifetime:  46.22 , Best:  46.62
+Tick:  78 , Time:  30.73 , Lifetime:  46.26 , Best:  46.62
+Tick:  79 , Time:  30.32 , Lifetime:  45.61 , Best:  46.62
+Tick:  80 , Time:  29.86 , Lifetime:  45.28 , Best:  46.62
+Tick:  81 , Time:  28.97 , Lifetime:  46.98 , Best:  46.98
+Tick:  82 , Time:  29.69 , Lifetime:  46.55 , Best:  46.98
+Tick:  83 , Time:  29.74 , Lifetime:  46.70 , Best:  46.98
+Tick:  84 , Time:  30.47 , Lifetime:  46.86 , Best:  46.98
+Tick:  85 , Time:  29.17 , Lifetime:  46.27 , Best:  46.98
+Tick:  86 , Time:  29.75 , Lifetime:  46.84 , Best:  46.98
+Tick:  87 , Time:  29.56 , Lifetime:  46.21 , Best:  46.98
+Tick:  88 , Time:  29.13 , Lifetime:  46.98 , Best:  46.98
+Tick:  89 , Time:  30.81 , Lifetime:  45.01 , Best:  46.98
+Tick:  90 , Time:  29.61 , Lifetime:  45.59 , Best:  46.98
+Tick:  91 , Time:  30.36 , Lifetime:  46.23 , Best:  46.98
+Tick:  92 , Time:  29.53 , Lifetime:  46.76 , Best:  46.98
+Tick:  93 , Time:  29.61 , Lifetime:  46.15 , Best:  46.98
+Tick:  94 , Time:  29.74 , Lifetime:  45.43 , Best:  46.98
+Tick:  95 , Time:  29.56 , Lifetime:  45.58 , Best:  46.98
+Tick:  96 , Time:  29.64 , Lifetime:  45.53 , Best:  46.98
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  0.0854194164276123
+Tick:  97 , Time:  29.70 , Lifetime:  46.87 , Best:  46.98
+Tick:  98 , Time:  29.97 , Lifetime:  46.71 , Best:  46.98
+Tick:  99 , Time:  29.64 , Lifetime:  46.86 , Best:  46.98
+Tick:  100 , Time:  29.53 , Lifetime:  47.61 , Best:  47.61
+Tick:  101 , Time:  31.01 , Lifetime:  46.68 , Best:  47.61
+Tick:  102 , Time:  29.57 , Lifetime:  47.78 , Best:  47.78
+Tick:  103 , Time:  29.55 , Lifetime:  46.97 , Best:  47.78
+Tick:  104 , Time:  29.44 , Lifetime:  47.42 , Best:  47.78
+Tick:  105 , Time:  29.59 , Lifetime:  45.47 , Best:  47.78
+Tick:  106 , Time:  30.29 , Lifetime:  45.39 , Best:  47.78
+Tick:  107 , Time:  29.55 , Lifetime:  46.36 , Best:  47.78
+Tick:  108 , Time:  28.61 , Lifetime:  45.88 , Best:  47.78
+Tick:  109 , Time:  30.52 , Lifetime:  45.94 , Best:  47.78
+Tick:  110 , Time:  29.59 , Lifetime:  47.62 , Best:  47.78
+Tick:  111 , Time:  29.91 , Lifetime:  47.27 , Best:  47.78
+Tick:  112 , Time:  29.65 , Lifetime:  44.77 , Best:  47.78
+Tick:  113 , Time:  30.20 , Lifetime:  45.87 , Best:  47.78
+Tick:  114 , Time:  29.79 , Lifetime:  46.00 , Best:  47.78
+Tick:  115 , Time:  28.77 , Lifetime:  46.75 , Best:  47.78
+Tick:  116 , Time:  30.46 , Lifetime:  44.74 , Best:  47.78
+Tick:  117 , Time:  29.29 , Lifetime:  45.86 , Best:  47.78
+Tick:  118 , Time:  29.12 , Lifetime:  44.40 , Best:  47.78
+Tick:  119 , Time:  29.79 , Lifetime:  44.93 , Best:  47.78
+Tick:  120 , Time:  29.82 , Lifetime:  45.68 , Best:  47.78
+Tick:  121 , Time:  29.70 , Lifetime:  44.50 , Best:  47.78
+Tick:  122 , Time:  29.10 , Lifetime:  43.33 , Best:  47.78
+Tick:  123 , Time:  29.46 , Lifetime:  43.66 , Best:  47.78
+Tick:  124 , Time:  29.52 , Lifetime:  44.63 , Best:  47.78
+Tick:  125 , Time:  29.77 , Lifetime:  44.13 , Best:  47.78
+Tick:  126 , Time:  29.72 , Lifetime:  44.26 , Best:  47.78
+Tick:  127 , Time:  29.62 , Lifetime:  46.24 , Best:  47.78
+Tick:  128 , Time:  30.04 , Lifetime:  45.09 , Best:  47.78
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  0.12120699882507324
+Tick:  129 , Time:  30.26 , Lifetime:  47.10 , Best:  47.78
+Tick:  130 , Time:  30.21 , Lifetime:  46.40 , Best:  47.78
+Tick:  131 , Time:  30.29 , Lifetime:  48.83 , Best:  48.83
+Tick:  132 , Time:  29.54 , Lifetime:  47.69 , Best:  48.83
+Tick:  133 , Time:  30.23 , Lifetime:  47.68 , Best:  48.83
+Tick:  134 , Time:  29.58 , Lifetime:  48.65 , Best:  48.83
+Tick:  135 , Time:  29.23 , Lifetime:  48.73 , Best:  48.83
+Tick:  136 , Time:  30.09 , Lifetime:  47.56 , Best:  48.83
+Tick:  137 , Time:  30.38 , Lifetime:  49.53 , Best:  49.53
+Tick:  138 , Time:  29.62 , Lifetime:  48.43 , Best:  49.53
+Tick:  139 , Time:  29.52 , Lifetime:  47.42 , Best:  49.53
+Tick:  140 , Time:  29.56 , Lifetime:  48.85 , Best:  49.53
+Tick:  141 , Time:  30.49 , Lifetime:  48.02 , Best:  49.53
+Tick:  142 , Time:  30.77 , Lifetime:  49.06 , Best:  49.53
+Tick:  143 , Time:  29.45 , Lifetime:  49.22 , Best:  49.53
+Tick:  144 , Time:  29.47 , Lifetime:  48.28 , Best:  49.53
+Tick:  145 , Time:  29.49 , Lifetime:  47.14 , Best:  49.53
+Tick:  146 , Time:  29.33 , Lifetime:  47.51 , Best:  49.53
+Tick:  147 , Time:  30.57 , Lifetime:  46.69 , Best:  49.53
+Tick:  148 , Time:  29.34 , Lifetime:  47.95 , Best:  49.53
+Tick:  149 , Time:  30.49 , Lifetime:  47.21 , Best:  49.53
+Tick:  150 , Time:  29.49 , Lifetime:  47.99 , Best:  49.53
+Tick:  151 , Time:  29.92 , Lifetime:  45.72 , Best:  49.53
+Tick:  152 , Time:  30.97 , Lifetime:  46.17 , Best:  49.53
+Tick:  153 , Time:  29.54 , Lifetime:  45.89 , Best:  49.53
+Tick:  154 , Time:  30.20 , Lifetime:  45.47 , Best:  49.53
+Tick:  155 , Time:  30.02 , Lifetime:  45.45 , Best:  49.53
+Tick:  156 , Time:  29.94 , Lifetime:  47.75 , Best:  49.53
+Tick:  157 , Time:  30.17 , Lifetime:  46.36 , Best:  49.53
+Tick:  158 , Time:  30.32 , Lifetime:  47.07 , Best:  49.53
+Tick:  159 , Time:  30.45 , Lifetime:  45.62 , Best:  49.53
+Tick:  160 , Time:  30.61 , Lifetime:  47.09 , Best:  49.53
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  0.14847779273986816
+Tick:  161 , Time:  30.72 , Lifetime:  46.21 , Best:  49.53
+Tick:  162 , Time:  30.06 , Lifetime:  47.58 , Best:  49.53
+Tick:  163 , Time:  30.81 , Lifetime:  46.94 , Best:  49.53
+Tick:  164 , Time:  30.09 , Lifetime:  48.45 , Best:  49.53
+Tick:  165 , Time:  29.87 , Lifetime:  47.21 , Best:  49.53
+Tick:  166 , Time:  30.32 , Lifetime:  46.65 , Best:  49.53
+Tick:  167 , Time:  30.30 , Lifetime:  47.96 , Best:  49.53
+Tick:  168 , Time:  31.27 , Lifetime:  47.23 , Best:  49.53
+Tick:  169 , Time:  30.17 , Lifetime:  48.86 , Best:  49.53
+Tick:  170 , Time:  29.55 , Lifetime:  48.43 , Best:  49.53
+Tick:  171 , Time:  30.20 , Lifetime:  46.75 , Best:  49.53
+Tick:  172 , Time:  30.63 , Lifetime:  46.91 , Best:  49.53
+Tick:  173 , Time:  29.56 , Lifetime:  48.25 , Best:  49.53
+Tick:  174 , Time:  29.55 , Lifetime:  46.38 , Best:  49.53
+Tick:  175 , Time:  29.95 , Lifetime:  46.35 , Best:  49.53
+Tick:  176 , Time:  30.52 , Lifetime:  46.44 , Best:  49.53
+Tick:  177 , Time:  29.66 , Lifetime:  44.98 , Best:  49.53
+Tick:  178 , Time:  29.53 , Lifetime:  45.17 , Best:  49.53
+Tick:  179 , Time:  29.50 , Lifetime:  45.08 , Best:  49.53
+Tick:  180 , Time:  30.28 , Lifetime:  46.70 , Best:  49.53
+Tick:  181 , Time:  30.24 , Lifetime:  46.05 , Best:  49.53
+Tick:  182 , Time:  30.57 , Lifetime:  44.90 , Best:  49.53
+Tick:  183 , Time:  30.76 , Lifetime:  45.48 , Best:  49.53
+Tick:  184 , Time:  29.68 , Lifetime:  46.65 , Best:  49.53
+Tick:  185 , Time:  29.47 , Lifetime:  45.32 , Best:  49.53
+Tick:  186 , Time:  30.64 , Lifetime:  45.17 , Best:  49.53
+Tick:  187 , Time:  30.01 , Lifetime:  45.88 , Best:  49.53
+Tick:  188 , Time:  30.25 , Lifetime:  48.11 , Best:  49.53
+Tick:  189 , Time:  30.16 , Lifetime:  47.28 , Best:  49.53
+Tick:  190 , Time:  30.43 , Lifetime:  47.56 , Best:  49.53
+Tick:  191 , Time:  30.94 , Lifetime:  47.38 , Best:  49.53
+Tick:  192 , Time:  29.49 , Lifetime:  47.82 , Best:  49.53
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  0.18041014671325684
+Tick:  193 , Time:  30.29 , Lifetime:  47.81 , Best:  49.53
+Tick:  194 , Time:  30.53 , Lifetime:  47.05 , Best:  49.53
+Tick:  195 , Time:  30.58 , Lifetime:  48.50 , Best:  49.53
+Tick:  196 , Time:  29.89 , Lifetime:  48.09 , Best:  49.53
+Tick:  197 , Time:  29.93 , Lifetime:  47.45 , Best:  49.53
+Tick:  198 , Time:  30.91 , Lifetime:  48.12 , Best:  49.53
+Tick:  199 , Time:  30.13 , Lifetime:  50.22 , Best:  50.22
+Tick:  200 , Time:  30.17 , Lifetime:  48.73 , Best:  50.22
+Tick:  201 , Time:  29.96 , Lifetime:  48.85 , Best:  50.22
+Tick:  202 , Time:  29.62 , Lifetime:  48.49 , Best:  50.22
+Tick:  203 , Time:  29.76 , Lifetime:  45.57 , Best:  50.22
+Tick:  204 , Time:  30.38 , Lifetime:  48.2 , Best:  50.22
+Tick:  205 , Time:  29.53 , Lifetime:  47.28 , Best:  50.22
+Tick:  206 , Time:  30.03 , Lifetime:  47.22 , Best:  50.22
+Tick:  207 , Time:  30.18 , Lifetime:  46.25 , Best:  50.22
+Tick:  208 , Time:  29.95 , Lifetime:  47.19 , Best:  50.22
+Tick:  209 , Time:  29.67 , Lifetime:  45.53 , Best:  50.22
+Tick:  210 , Time:  30.18 , Lifetime:  47.12 , Best:  50.22
+Tick:  211 , Time:  29.35 , Lifetime:  48.33 , Best:  50.22
+Tick:  212 , Time:  29.11 , Lifetime:  44.47 , Best:  50.22
+Tick:  213 , Time:  30.93 , Lifetime:  46.62 , Best:  50.22
+Tick:  214 , Time:  31.81 , Lifetime:  46.19 , Best:  50.22
+Tick:  215 , Time:  29.59 , Lifetime:  47.10 , Best:  50.22
+Tick:  216 , Time:  29.72 , Lifetime:  47.00 , Best:  50.22
+Tick:  217 , Time:  30.07 , Lifetime:  47.72 , Best:  50.22
+Tick:  218 , Time:  29.57 , Lifetime:  49.16 , Best:  50.22
+Tick:  219 , Time:  29.74 , Lifetime:  48.92 , Best:  50.22
+Tick:  220 , Time:  29.41 , Lifetime:  49.76 , Best:  50.22
+Tick:  221 , Time:  29.51 , Lifetime:  48.69 , Best:  50.22
+Tick:  222 , Time:  29.48 , Lifetime:  48.55 , Best:  50.22
+Tick:  223 , Time:  29.46 , Lifetime:  47.13 , Best:  50.22
+Tick:  224 , Time:  29.68 , Lifetime:  47.94 , Best:  50.22
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  0.2027432918548584
+Tick:  225 , Time:  30.62 , Lifetime:  48.05 , Best:  50.22
+Tick:  226 , Time:  29.46 , Lifetime:  48.32 , Best:  50.22
+Tick:  227 , Time:  29.45 , Lifetime:  48.06 , Best:  50.22
+Tick:  228 , Time:  29.33 , Lifetime:  47.0 , Best:  50.22
+Tick:  229 , Time:  29.46 , Lifetime:  47.62 , Best:  50.22
+Tick:  230 , Time:  30.50 , Lifetime:  47.26 , Best:  50.22
+Tick:  231 , Time:  28.92 , Lifetime:  47.12 , Best:  50.22
+Tick:  232 , Time:  31.00 , Lifetime:  46.16 , Best:  50.22
+Tick:  233 , Time:  30.18 , Lifetime:  47.59 , Best:  50.22
+Tick:  234 , Time:  29.80 , Lifetime:  47.47 , Best:  50.22
+Tick:  235 , Time:  30.33 , Lifetime:  48.50 , Best:  50.22
+Tick:  236 , Time:  29.41 , Lifetime:  49.79 , Best:  50.22
+Tick:  237 , Time:  30.15 , Lifetime:  47.33 , Best:  50.22
+Tick:  238 , Time:  30.46 , Lifetime:  49.42 , Best:  50.22
+Tick:  239 , Time:  30.26 , Lifetime:  46.84 , Best:  50.22
+Tick:  240 , Time:  29.98 , Lifetime:  49.05 , Best:  50.22
+Tick:  241 , Time:  29.52 , Lifetime:  50.24 , Best:  50.24
+Tick:  242 , Time:  30.15 , Lifetime:  50.04 , Best:  50.24
+Tick:  243 , Time:  30.31 , Lifetime:  47.45 , Best:  50.24
+Tick:  244 , Time:  31.05 , Lifetime:  47.14 , Best:  50.24
+Tick:  245 , Time:  29.63 , Lifetime:  49.56 , Best:  50.24
+Tick:  246 , Time:  31.19 , Lifetime:  49.33 , Best:  50.24
+Tick:  247 , Time:  28.75 , Lifetime:  48.60 , Best:  50.24
+Tick:  248 , Time:  30.04 , Lifetime:  47.21 , Best:  50.24
+Tick:  249 , Time:  29.66 , Lifetime:  48.44 , Best:  50.24
+Tick:  250 , Time:  30.03 , Lifetime:  46.73 , Best:  50.24
+Tick:  251 , Time:  31.22 , Lifetime:  48.31 , Best:  50.24
+Tick:  252 , Time:  30.46 , Lifetime:  47.00 , Best:  50.24
+Tick:  253 , Time:  29.52 , Lifetime:  49.55 , Best:  50.24
+Tick:  254 , Time:  29.56 , Lifetime:  48.36 , Best:  50.24
+Tick:  255 , Time:  29.63 , Lifetime:  48.47 , Best:  50.24
+Tick:  256 , Time:  30.85 , Lifetime:  48.02 , Best:  50.24
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  0.2293078899383545
+Tick:  257 , Time:  29.27 , Lifetime:  48.10 , Best:  50.24
+Tick:  258 , Time:  30.44 , Lifetime:  47.37 , Best:  50.24
+Tick:  259 , Time:  29.57 , Lifetime:  50.13 , Best:  50.24
+Tick:  260 , Time:  29.74 , Lifetime:  48.34 , Best:  50.24
+Tick:  261 , Time:  30.78 , Lifetime:  48.43 , Best:  50.24
+Tick:  262 , Time:  29.57 , Lifetime:  49.14 , Best:  50.24
+Tick:  263 , Time:  29.54 , Lifetime:  48.61 , Best:  50.24
+Tick:  264 , Time:  30.14 , Lifetime:  49.25 , Best:  50.24
+Tick:  265 , Time:  29.48 , Lifetime:  47.91 , Best:  50.24
+Tick:  266 , Time:  29.68 , Lifetime:  48.97 , Best:  50.24
+Tick:  267 , Time:  30.58 , Lifetime:  47.03 , Best:  50.24
+Tick:  268 , Time:  29.12 , Lifetime:  48.72 , Best:  50.24
+Tick:  269 , Time:  30.15 , Lifetime:  48.01 , Best:  50.24
+Tick:  270 , Time:  29.54 , Lifetime:  49.18 , Best:  50.24
+Tick:  271 , Time:  30.22 , Lifetime:  48.13 , Best:  50.24
+Tick:  272 , Time:  29.47 , Lifetime:  48.96 , Best:  50.24
+Tick:  273 , Time:  30.60 , Lifetime:  48.62 , Best:  50.24
+Tick:  274 , Time:  29.65 , Lifetime:  49.32 , Best:  50.24
+Tick:  275 , Time:  29.98 , Lifetime:  48.03 , Best:  50.24
+Tick:  276 , Time:  29.56 , Lifetime:  46.91 , Best:  50.24
+Tick:  277 , Time:  30.59 , Lifetime:  47.87 , Best:  50.24
+Tick:  278 , Time:  30.12 , Lifetime:  48.12 , Best:  50.24
+Tick:  279 , Time:  30.32 , Lifetime:  49.40 , Best:  50.24
+Tick:  280 , Time:  29.51 , Lifetime:  48.41 , Best:  50.24
+Tick:  281 , Time:  29.64 , Lifetime:  47.62 , Best:  50.24
+Tick:  282 , Time:  29.23 , Lifetime:  47.51 , Best:  50.24
+Tick:  283 , Time:  29.71 , Lifetime:  48.16 , Best:  50.24
+Tick:  284 , Time:  29.47 , Lifetime:  48.43 , Best:  50.24
+Tick:  285 , Time:  30.63 , Lifetime:  46.14 , Best:  50.24
+Tick:  286 , Time:  30.47 , Lifetime:  47.02 , Best:  50.24
+Tick:  287 , Time:  29.79 , Lifetime:  48.66 , Best:  50.24
+Tick:  288 , Time:  31.24 , Lifetime:  46.81 , Best:  50.24
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  0.26154184341430664
+Tick:  289 , Time:  29.83 , Lifetime:  49.69 , Best:  50.24
+Tick:  290 , Time:  29.90 , Lifetime:  48.15 , Best:  50.24
+Tick:  291 , Time:  29.81 , Lifetime:  49.92 , Best:  50.24
+Tick:  292 , Time:  30.10 , Lifetime:  49.35 , Best:  50.24
+Tick:  293 , Time:  30.50 , Lifetime:  49.58 , Best:  50.24
+Tick:  294 , Time:  30.97 , Lifetime:  49.12 , Best:  50.24
+Tick:  295 , Time:  30.02 , Lifetime:  48.99 , Best:  50.24
+Tick:  296 , Time:  30.26 , Lifetime:  47.97 , Best:  50.24
+Tick:  297 , Time:  30.61 , Lifetime:  49.37 , Best:  50.24
+Tick:  298 , Time:  29.87 , Lifetime:  50.01 , Best:  50.24
+Tick:  299 , Time:  30.14 , Lifetime:  47.86 , Best:  50.24
+Tick:  300 , Time:  30.65 , Lifetime:  48.89 , Best:  50.24
+Tick:  301 , Time:  29.53 , Lifetime:  49.64 , Best:  50.24
+Tick:  302 , Time:  30.89 , Lifetime:  49.23 , Best:  50.24
+Tick:  303 , Time:  29.43 , Lifetime:  47.47 , Best:  50.24
+Tick:  304 , Time:  30.36 , Lifetime:  49.41 , Best:  50.24
+Tick:  305 , Time:  29.82 , Lifetime:  48.22 , Best:  50.24
+Tick:  306 , Time:  29.46 , Lifetime:  50.13 , Best:  50.24
+Tick:  307 , Time:  29.81 , Lifetime:  49.80 , Best:  50.24
+Tick:  308 , Time:  31.86 , Lifetime:  50.66 , Best:  50.66
+Tick:  309 , Time:  28.52 , Lifetime:  51.18 , Best:  51.18
+Tick:  310 , Time:  30.53 , Lifetime:  48.33 , Best:  51.18
+Tick:  311 , Time:  30.30 , Lifetime:  50.22 , Best:  51.18
+Tick:  312 , Time:  29.54 , Lifetime:  49.83 , Best:  51.18
+Tick:  313 , Time:  30.17 , Lifetime:  48.61 , Best:  51.18
+Tick:  314 , Time:  30.36 , Lifetime:  50.16 , Best:  51.18
+Tick:  315 , Time:  30.53 , Lifetime:  50.35 , Best:  51.18
+Tick:  316 , Time:  29.59 , Lifetime:  50.31 , Best:  51.18
+Tick:  317 , Time:  29.48 , Lifetime:  50.66 , Best:  51.18
+Tick:  318 , Time:  30.63 , Lifetime:  50.29 , Best:  51.18
+Tick:  319 , Time:  30.50 , Lifetime:  49.78 , Best:  51.18
+Tick:  320 , Time:  30.21 , Lifetime:  50.20 , Best:  51.18
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  0.2876167297363281
+Tick:  321 , Time:  30.19 , Lifetime:  49.17 , Best:  51.18
+Tick:  322 , Time:  29.86 , Lifetime:  49.09 , Best:  51.18
+Tick:  323 , Time:  29.53 , Lifetime:  48.31 , Best:  51.18
+Tick:  324 , Time:  29.97 , Lifetime:  49.42 , Best:  51.18
+Tick:  325 , Time:  30.37 , Lifetime:  49.21 , Best:  51.18
+Tick:  326 , Time:  30.56 , Lifetime:  48.26 , Best:  51.18
+Tick:  327 , Time:  29.21 , Lifetime:  50.50 , Best:  51.18
+Tick:  328 , Time:  30.92 , Lifetime:  50.43 , Best:  51.18
+Tick:  329 , Time:  30.47 , Lifetime:  48.59 , Best:  51.18
+Tick:  330 , Time:  30.91 , Lifetime:  51.22 , Best:  51.22
+Tick:  331 , Time:  28.79 , Lifetime:  50.18 , Best:  51.22
+Tick:  332 , Time:  29.55 , Lifetime:  48.32 , Best:  51.22
+Tick:  333 , Time:  29.49 , Lifetime:  49.48 , Best:  51.22
+Tick:  334 , Time:  30.16 , Lifetime:  48.96 , Best:  51.22
+Tick:  335 , Time:  29.63 , Lifetime:  47.7 , Best:  51.22
+Tick:  336 , Time:  30.69 , Lifetime:  48.36 , Best:  51.22
+Tick:  337 , Time:  29.70 , Lifetime:  50.41 , Best:  51.22
+Tick:  338 , Time:  29.95 , Lifetime:  49.61 , Best:  51.22
+Tick:  339 , Time:  31.04 , Lifetime:  48.97 , Best:  51.22
+Tick:  340 , Time:  30.05 , Lifetime:  50.08 , Best:  51.22
+Tick:  341 , Time:  30.40 , Lifetime:  50.16 , Best:  51.22
+Tick:  342 , Time:  29.54 , Lifetime:  49.46 , Best:  51.22
+Tick:  343 , Time:  30.10 , Lifetime:  50.05 , Best:  51.22
+Tick:  344 , Time:  30.76 , Lifetime:  49.61 , Best:  51.22
+Tick:  345 , Time:  29.55 , Lifetime:  50.08 , Best:  51.22
+Tick:  346 , Time:  29.46 , Lifetime:  50.08 , Best:  51.22
+Tick:  347 , Time:  29.87 , Lifetime:  47.82 , Best:  51.22
+Tick:  348 , Time:  30.07 , Lifetime:  46.85 , Best:  51.22
+Tick:  349 , Time:  30.46 , Lifetime:  47.80 , Best:  51.22
+Tick:  350 , Time:  29.61 , Lifetime:  46.55 , Best:  51.22
+Tick:  351 , Time:  29.68 , Lifetime:  46.04 , Best:  51.22
+Tick:  352 , Time:  29.77 , Lifetime:  47.14 , Best:  51.22
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  0.3100473880767822
+Tick:  353 , Time:  30.51 , Lifetime:  48.64 , Best:  51.22
+Tick:  354 , Time:  29.71 , Lifetime:  47.83 , Best:  51.22
+Tick:  355 , Time:  30.53 , Lifetime:  48.95 , Best:  51.22
+Tick:  356 , Time:  29.09 , Lifetime:  48.85 , Best:  51.22
+Tick:  357 , Time:  30.64 , Lifetime:  48.00 , Best:  51.22
+Tick:  358 , Time:  30.10 , Lifetime:  48.16 , Best:  51.22
+Tick:  359 , Time:  30.52 , Lifetime:  49.18 , Best:  51.22
+Tick:  360 , Time:  29.96 , Lifetime:  50.26 , Best:  51.22
+Tick:  361 , Time:  30.14 , Lifetime:  50.73 , Best:  51.22
+Tick:  362 , Time:  30.46 , Lifetime:  50.64 , Best:  51.22
+Tick:  363 , Time:  29.98 , Lifetime:  50.41 , Best:  51.22
+Tick:  364 , Time:  30.13 , Lifetime:  50.07 , Best:  51.22
+Tick:  365 , Time:  30.31 , Lifetime:  52.33 , Best:  52.33
+Tick:  366 , Time:  30.80 , Lifetime:  52.63 , Best:  52.63
+Tick:  367 , Time:  29.57 , Lifetime:  53.16 , Best:  53.16
+Tick:  368 , Time:  28.82 , Lifetime:  52.53 , Best:  53.16
+Tick:  369 , Time:  30.90 , Lifetime:  49.87 , Best:  53.16
+Tick:  370 , Time:  30.41 , Lifetime:  51.57 , Best:  53.16
+Tick:  371 , Time:  29.56 , Lifetime:  52.68 , Best:  53.16
+Tick:  372 , Time:  30.17 , Lifetime:  52.57 , Best:  53.16
+Tick:  373 , Time:  30.20 , Lifetime:  51.12 , Best:  53.16
+Tick:  374 , Time:  29.97 , Lifetime:  51.31 , Best:  53.16
+Tick:  375 , Time:  30.48 , Lifetime:  51.39 , Best:  53.16
+Tick:  376 , Time:  30.47 , Lifetime:  51.00 , Best:  53.16
+Tick:  377 , Time:  29.91 , Lifetime:  51.43 , Best:  53.16
+Tick:  378 , Time:  30.26 , Lifetime:  50.06 , Best:  53.16
+Tick:  379 , Time:  29.91 , Lifetime:  50.95 , Best:  53.16
+Tick:  380 , Time:  29.96 , Lifetime:  49.83 , Best:  53.16
+Tick:  381 , Time:  30.68 , Lifetime:  50.40 , Best:  53.16
+Tick:  382 , Time:  29.61 , Lifetime:  50.25 , Best:  53.16
+Tick:  383 , Time:  30.53 , Lifetime:  49.86 , Best:  53.16
+Tick:  384 , Time:  29.28 , Lifetime:  49.09 , Best:  53.16
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  0.364290714263916
+Tick:  385 , Time:  29.86 , Lifetime:  48.2 , Best:  53.16
+Tick:  386 , Time:  31.21 , Lifetime:  48.08 , Best:  53.16
+Tick:  387 , Time:  29.56 , Lifetime:  48.72 , Best:  53.16
+Tick:  388 , Time:  31.14 , Lifetime:  48.67 , Best:  53.16
+Tick:  389 , Time:  29.03 , Lifetime:  50.61 , Best:  53.16
+Tick:  390 , Time:  30.54 , Lifetime:  48.98 , Best:  53.16
+Tick:  391 , Time:  31.33 , Lifetime:  49.74 , Best:  53.16
+Tick:  392 , Time:  29.51 , Lifetime:  51.39 , Best:  53.16
+Tick:  393 , Time:  30.46 , Lifetime:  49.59 , Best:  53.16
+Tick:  394 , Time:  29.92 , Lifetime:  50.36 , Best:  53.16
+Tick:  395 , Time:  30.39 , Lifetime:  50.43 , Best:  53.16
+Tick:  396 , Time:  29.74 , Lifetime:  49.62 , Best:  53.16
+Tick:  397 , Time:  31.27 , Lifetime:  51.90 , Best:  53.16
+Tick:  398 , Time:  30.80 , Lifetime:  51.93 , Best:  53.16
+Tick:  399 , Time:  30.61 , Lifetime:  52.41 , Best:  53.16
+Tick:  400 , Time:  29.44 , Lifetime:  52.29 , Best:  53.16
+Tick:  401 , Time:  30.68 , Lifetime:  51.39 , Best:  53.16
+Tick:  402 , Time:  29.59 , Lifetime:  52.08 , Best:  53.16
+Tick:  403 , Time:  31.05 , Lifetime:  52.54 , Best:  53.16
+Tick:  404 , Time:  29.71 , Lifetime:  53.23 , Best:  53.23
+Tick:  405 , Time:  30.47 , Lifetime:  51.61 , Best:  53.23
+Tick:  406 , Time:  31.41 , Lifetime:  53.26 , Best:  53.26
+Tick:  407 , Time:  30.11 , Lifetime:  52.97 , Best:  53.26
+Tick:  408 , Time:  29.30 , Lifetime:  52.38 , Best:  53.26
+Tick:  409 , Time:  30.29 , Lifetime:  52.37 , Best:  53.26
+Tick:  410 , Time:  30.50 , Lifetime:  50.62 , Best:  53.26
+Tick:  411 , Time:  31.88 , Lifetime:  53.16 , Best:  53.26
+Tick:  412 , Time:  29.55 , Lifetime:  52.00 , Best:  53.26
+Tick:  413 , Time:  29.80 , Lifetime:  49.59 , Best:  53.26
+Tick:  414 , Time:  31.04 , Lifetime:  50.46 , Best:  53.26
+Tick:  415 , Time:  29.65 , Lifetime:  50.73 , Best:  53.26
+Tick:  416 , Time:  30.63 , Lifetime:  50.34 , Best:  53.26
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  0.37711191177368164
+Tick:  417 , Time:  30.29 , Lifetime:  49.21 , Best:  53.26
+Tick:  418 , Time:  31.45 , Lifetime:  50.11 , Best:  53.26
+Tick:  419 , Time:  29.51 , Lifetime:  48.86 , Best:  53.26
+Tick:  420 , Time:  30.43 , Lifetime:  49.39 , Best:  53.26
+Tick:  421 , Time:  29.32 , Lifetime:  50.08 , Best:  53.26
+Tick:  422 , Time:  30.57 , Lifetime:  48.17 , Best:  53.26
+Tick:  423 , Time:  30.40 , Lifetime:  49.89 , Best:  53.26
+Tick:  424 , Time:  29.46 , Lifetime:  47.74 , Best:  53.26
+Tick:  425 , Time:  30.01 , Lifetime:  48.10 , Best:  53.26
+Tick:  426 , Time:  30.69 , Lifetime:  48.77 , Best:  53.26
+Tick:  427 , Time:  30.49 , Lifetime:  49.04 , Best:  53.26
+Tick:  428 , Time:  29.75 , Lifetime:  50.66 , Best:  53.26
+Tick:  429 , Time:  30.82 , Lifetime:  49.49 , Best:  53.26
+Tick:  430 , Time:  30.24 , Lifetime:  53.05 , Best:  53.26
+Tick:  431 , Time:  29.24 , Lifetime:  51.80 , Best:  53.26
+Tick:  432 , Time:  31.04 , Lifetime:  50.69 , Best:  53.26
+Tick:  433 , Time:  29.45 , Lifetime:  50.56 , Best:  53.26
+Tick:  434 , Time:  30.90 , Lifetime:  52.40 , Best:  53.26
+Tick:  435 , Time:  29.51 , Lifetime:  52.53 , Best:  53.26
+Tick:  436 , Time:  29.50 , Lifetime:  53.09 , Best:  53.26
+Tick:  437 , Time:  30.67 , Lifetime:  52.54 , Best:  53.26
+Tick:  438 , Time:  29.49 , Lifetime:  52.61 , Best:  53.26
+Tick:  439 , Time:  30.60 , Lifetime:  52.50 , Best:  53.26
+Tick:  440 , Time:  30.34 , Lifetime:  53.46 , Best:  53.46
+Tick:  441 , Time:  30.31 , Lifetime:  53.29 , Best:  53.46
+Tick:  442 , Time:  31.57 , Lifetime:  53.71 , Best:  53.71
+Tick:  443 , Time:  29.97 , Lifetime:  54.10 , Best:  54.10
+Tick:  444 , Time:  30.51 , Lifetime:  53.86 , Best:  54.10
+Tick:  445 , Time:  29.19 , Lifetime:  53.59 , Best:  54.10
+Tick:  446 , Time:  30.27 , Lifetime:  54.53 , Best:  54.53
+Tick:  447 , Time:  29.69 , Lifetime:  53.95 , Best:  54.53
+Tick:  448 , Time:  30.75 , Lifetime:  52.82 , Best:  54.53
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  0.4022712707519531
+Tick:  449 , Time:  30.60 , Lifetime:  52.53 , Best:  54.53
+Tick:  450 , Time:  30.28 , Lifetime:  53.05 , Best:  54.53
+Tick:  451 , Time:  30.39 , Lifetime:  50.92 , Best:  54.53
+Tick:  452 , Time:  32.06 , Lifetime:  53.40 , Best:  54.53
+Tick:  453 , Time:  29.20 , Lifetime:  53.39 , Best:  54.53
+Tick:  454 , Time:  30.58 , Lifetime:  51.46 , Best:  54.53
+Tick:  455 , Time:  29.85 , Lifetime:  51.68 , Best:  54.53
+Tick:  456 , Time:  30.52 , Lifetime:  52.96 , Best:  54.53
+Tick:  457 , Time:  29.50 , Lifetime:  52.70 , Best:  54.53
+Tick:  458 , Time:  31.22 , Lifetime:  51.90 , Best:  54.53
+Tick:  459 , Time:  29.59 , Lifetime:  53.30 , Best:  54.53
+Tick:  460 , Time:  29.74 , Lifetime:  51.58 , Best:  54.53
+Tick:  461 , Time:  30.78 , Lifetime:  52.00 , Best:  54.53
+Tick:  462 , Time:  28.91 , Lifetime:  53.12 , Best:  54.53
+Tick:  463 , Time:  29.55 , Lifetime:  52.93 , Best:  54.53
+Tick:  464 , Time:  30.60 , Lifetime:  49.71 , Best:  54.53
+Tick:  465 , Time:  29.73 , Lifetime:  51.37 , Best:  54.53
+Tick:  466 , Time:  30.72 , Lifetime:  52.31 , Best:  54.53
+Tick:  467 , Time:  29.73 , Lifetime:  51.18
