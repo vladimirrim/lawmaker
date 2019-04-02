@@ -44,6 +44,10 @@ class Lawmaker:
         ROOT = 'resource/exps/laws/'
         self.saver.save(self.session, ROOT + 'model.ckpt')
 
+    def load(self):
+        ROOT = 'resource/exps/laws/'
+        self.saver.restore(self.session, ROOT + 'model.ckpt')
+
     def updateLaw(self, s, r):
         # Obtain the Q' values by feeding the new state through our network
         Q1 = self.session.run(self.Qout, feed_dict={self.stateVector: s})

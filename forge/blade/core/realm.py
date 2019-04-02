@@ -92,6 +92,7 @@ class NativeRealm(Realm):
         self.currentAction = [0] * 8
         self.prevReward = 0
         self.curReward = 0
+        self.lawmaker.load()
 
     def collectState(self):
         states = [[0., 0., 0.]] * 8
