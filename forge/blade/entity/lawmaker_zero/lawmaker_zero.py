@@ -10,7 +10,7 @@ import tensorflow as tf
 
 from .base import BaseModel
 from .history import History
-from .ops import linear, conv2d, clipped_error
+from .ops import linear, clipped_error
 from .replay_memory import ReplayMemory
 from .utils import save_pkl, load_pkl
 
@@ -44,7 +44,7 @@ class LawmakerZero(BaseModel):
         for _ in range(self.history_length):
             self.history.add(self.screen)
 
-    def step(self):
+    def stepEnv(self):
         self.action = self.predict(self.history.get())
         return self.action
 
@@ -169,30 +169,23 @@ class LawmakerZero(BaseModel):
         self.w = {}
         self.t_w = {}
 
-        # initializer = tf.contrib.layers.xavier_initializer()
-        initializer = tf.truncated_normal_initializer(0, 0.02)
         activation_fn = tf.nn.relu
 
         # training network
         with tf.variable_scope('prediction'):
-            if self.cnn_format == 'NHWC':
-                self.s_t = tf.placeholder('float32',
-                                          [None, self.screen_height, self.screen_width, self.history_length],
-                                          name='s_t')
-            else:
-                self.s_t = tf.placeholder('float32',
-                                          [None, self.history_length, self.screen_height, self.screen_width],
-                                          name='s_t')
+            self.s_t = tf.placeholder('float32',
+                                      [self.screen_height, self.screen_width],
+                                      name='s_t')
 
-            self.l1, self.w['l1_w'], self.w['l1_b'] = conv2d(self.s_t,
-                                                             32, [8, 8], [4, 4], initializer, activation_fn,
-                                                             self.cnn_format, name='l1')
-            self.l2, self.w['l2_w'], self.w['l2_b'] = conv2d(self.l1,
-                                                             64, [4, 4], [2, 2], initializer, activation_fn,
-                                                             self.cnn_format, name='l2')
-            self.l3, self.w['l3_w'], self.w['l3_b'] = conv2d(self.l2,
-                                                             64, [3, 3], [1, 1], initializer, activation_fn,
-                                                             self.cnn_format, name='l3')
+            self.l1, self.w['l1_w'], self.w['l1_b'] = linear(self.s_t, 512,
+                                                             activation_fn=activation_fn,
+                                                             name='l1')
+            self.l2, self.w['l2_w'], self.w['l2_b'] = linear(self.l1, 512,
+                                                             activation_fn=activation_fn,
+                                                             name='l2')
+            self.l3, self.w['l3_w'], self.w['l3_b'] = linear(self.l2, 512,
+                                                             activation_fn=activation_fn,
+                                                             name='l3')
 
             shape = self.l3.get_shape().as_list()
             self.l3_flat = tf.reshape(self.l3, [-1, reduce(lambda x, y: x * y, shape[1:])])
@@ -228,24 +221,19 @@ class LawmakerZero(BaseModel):
 
         # target network
         with tf.variable_scope('target'):
-            if self.cnn_format == 'NHWC':
-                self.target_s_t = tf.placeholder('float32',
-                                                 [None, self.screen_height, self.screen_width, self.history_length],
-                                                 name='target_s_t')
-            else:
-                self.target_s_t = tf.placeholder('float32',
-                                                 [None, self.history_length, self.screen_height, self.screen_width],
-                                                 name='target_s_t')
+            self.target_s_t = tf.placeholder('float32',
+                                             [self.screen_width, self.screen_height],
+                                             name='target_s_t')
 
-            self.target_l1, self.t_w['l1_w'], self.t_w['l1_b'] = conv2d(self.target_s_t,
-                                                                        32, [8, 8], [4, 4], initializer, activation_fn,
-                                                                        self.cnn_format, name='target_l1')
-            self.target_l2, self.t_w['l2_w'], self.t_w['l2_b'] = conv2d(self.target_l1,
-                                                                        64, [4, 4], [2, 2], initializer, activation_fn,
-                                                                        self.cnn_format, name='target_l2')
-            self.target_l3, self.t_w['l3_w'], self.t_w['l3_b'] = conv2d(self.target_l2,
-                                                                        64, [3, 3], [1, 1], initializer, activation_fn,
-                                                                        self.cnn_format, name='target_l3')
+            self.target_l1, self.t_w['l1_w'], self.t_w['l1_b'] = linear(self.target_s_t, 512,
+                                                                        activation_fn=activation_fn, name='target_l1'
+                                                                        )
+            self.target_l2, self.t_w['l2_w'], self.t_w['l2_b'] = linear(self.target_l1, 512,
+                                                                        activation_fn=activation_fn,
+                                                                        name='target_l2')
+            self.target_l3, self.t_w['l3_w'], self.t_w['l3_b'] = linear(self.target_l2, 512,
+                                                                        activation_fn=activation_fn,
+                                                                        name='target_l3')
 
             shape = self.target_l3.get_shape().as_list()
             self.target_l3_flat = tf.reshape(self.target_l3, [-1, reduce(lambda x, y: x * y, shape[1:])])
@@ -308,7 +296,7 @@ class LawmakerZero(BaseModel):
                 self.learning_rate_op, momentum=0.95, epsilon=0.01).minimize(self.loss)
 
         with tf.variable_scope('summary'):
-            scalar_summary_tags = ['average.reward', 'average.loss', 'average.q', \
+            scalar_summary_tags = ['average.reward', 'average.loss', 'average.q',
                                    'episode.max reward', 'episode.min reward', 'episode.avg reward',
                                    'episode.num of game', 'training.learning_rate']
 

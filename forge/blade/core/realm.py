@@ -95,6 +95,7 @@ class NativeRealm(Realm):
         self.currentAction = [0] * 8
         self.prevReward = 0
         self.curReward = 0
+        self.setupLawmakerZero()
 
     def collectState(self):
         states = [[0., 0., 0.]] * 8
@@ -106,7 +107,7 @@ class NativeRealm(Realm):
             states[ent.annID][2] += ent.__getattribute__('timeAlive')
             lengths[ent.annID] += 1
 
-        state = [0]
+        state = []
         for i in range(8):
             for param in states[i]:
                 if lengths[i] != 0:
@@ -115,7 +116,7 @@ class NativeRealm(Realm):
                     state.append(param)
 
         ans = np.array(state)
-        ans.shape = (1, 25)
+        ans.shape = (1, 24)
         return ans
 
     def collectReward(self):
@@ -144,10 +145,12 @@ class NativeRealm(Realm):
 
     def stepLawmakerZero(self, state, reward):
         if self.stepCount == 0:
-            self.lawmakerZero.initStep(state, reward, np.random.randint(0, 10), True)
+            self.lawmakerZero.initStep(np.repeat(state, 24, axis=0), reward, np.random.randint(0, 10), True)
         else:
-            self.lawmakerZero.updateModel(state, reward)
-            self.currentAction = self.lawmakerZero.step()
+            self.lawmakerZero.updateModel(np.repeat(state, 24, axis=0), reward, True)
+            for i in range(8):
+                self.currentAction[i] = self.lawmakerZero.stepEnv()
+        self.save()
 
     def save(self):
         ROOT = 'resource/exps/laws/'
@@ -196,7 +199,6 @@ class NativeRealm(Realm):
 
     def run(self, swordUpdate=None):
         self.recvSwordUpdate(swordUpdate)
-        self.setupLawmakerZero()
 
         updates = None
         while updates is None:
