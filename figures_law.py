@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
 if __name__ == '__main__':
     ROOT = 'resource/exps/laws/'
@@ -14,6 +15,13 @@ if __name__ == '__main__':
                 punishments[i].append(action[i])
             punishments[8].append(avg / 8)
 
+        plt.plot(range(8), [np.mean(punishments[i]) for i in range(8)])
+        plt.xlabel('Nation')
+        plt.ylabel('Divine punishment')
+        plt.title('Average punishment')
+        plt.savefig(ROOT + 'plots/avg_punishment.png', dpi=500)
+        plt.clf()
+
         for i in range(8):
             plt.plot(steps, punishments[i])
             plt.xlabel('steps')
@@ -26,4 +34,4 @@ if __name__ == '__main__':
         plt.xlabel('steps')
         plt.ylabel('Divine punishment')
         plt.title('Nations')
-        plt.savefig(ROOT + 'plots/nations.png')
+        plt.savefig(ROOT + 'plots/nations.png', dpi=500)

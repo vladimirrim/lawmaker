@@ -1,12 +1,15 @@
 import pickle
+import random
 from copy import deepcopy
 from itertools import chain
 
 import numpy as np
 import ray
+import tensorflow as tf
 
-from forge import trinity as Trinity
 from forge.blade import entity, core
+from forge.blade.entity.lawmaker_zero import LawmakerZero
+from forge.blade.entity.lawmaker_zero.config import get_config
 
 
 class ActionArgs:
@@ -92,7 +95,6 @@ class NativeRealm(Realm):
         self.currentAction = [0] * 8
         self.prevReward = 0
         self.curReward = 0
-        self.lawmaker.load()
 
     def collectState(self):
         states = [[0., 0., 0.]] * 8
@@ -140,6 +142,13 @@ class NativeRealm(Realm):
         self.lawmaker.save()
         self.save()
 
+    def stepLawmakerZero(self, state, reward):
+        if self.stepCount == 0:
+            self.lawmakerZero.initStep(state, reward, np.random.randint(0, 10), True)
+        else:
+            self.lawmakerZero.updateModel(state, reward)
+            self.currentAction = self.lawmakerZero.step()
+
     def save(self):
         ROOT = 'resource/exps/laws/'
         with open(ROOT + 'actions.txt', 'a') as f:
@@ -152,7 +161,7 @@ class NativeRealm(Realm):
         self.collectReward()
 
         if self.stepCount % 1000 == 0:
-            self.stepLawmaker(self.collectState(), self.updateReward())
+            self.stepLawmakerZero(self.collectState(), self.updateReward())
 
         for ent in self.desciples.values():
             ent.step(self.world)
@@ -187,6 +196,7 @@ class NativeRealm(Realm):
 
     def run(self, swordUpdate=None):
         self.recvSwordUpdate(swordUpdate)
+        self.setupLawmakerZero()
 
         updates = None
         while updates is None:
@@ -203,50 +213,41 @@ class NativeRealm(Realm):
     def recvGodUpdate(self, update):
         self.god.recv(update)
 
+    def setupLawmakerZero(self):
+        flags = dict()
 
-@ray.remote
-class VecEnvRealm(Realm):
-    # Use the default God behind the scenes for spawning
-    def __init__(self, config, args, idx):
-        super().__init__(config, args, idx)
-        self.god = Trinity.God(config, args)
+        # Model
+        flags['model'] = 'm1'
+        flags['dueling'] = False
+        flags['double_q'] = False
 
-    def stepEnts(self, decisions):
-        dead = []
-        for tup in decisions:
-            entID, action, arguments, val = tup
-            ent = self.desciples[entID]
-            ent.step(self.world)
+        # Etc
+        flags['use_gpu'] = False
+        flags['gpu_fraction'] = '1/1'
+        flags['display'] = False
+        flags['is_train'] = True
+        flags['random_seed'] = 123
+        random_seed = 1337
 
-            if self.postmortem(ent, dead):
-                continue
+        # Set random seed
+        tf.set_random_seed(random_seed)
+        random.seed(random_seed)
 
-            ent.act(self.world, action, arguments, val)
-            self.stepEnt(ent, action, arguments)
-        self.cullDead(dead)
+        def calc_gpu_fraction(fraction_string):
+            idx, num = fraction_string.split('/')
+            idx, num = float(idx), float(num)
 
-    def postmortem(self, ent, dead):
-        entID = ent.entID
-        if not ent.alive or ent.kill:
-            dead.append(entID)
-            return True
-        return False
+            fraction = 1 / (num - idx + 1)
+            print(" [*] GPU : %.4f" % fraction)
+            return fraction
 
-    def step(self, decisions):
-        decisions = pickle.loads(decisions)
-        self.stepEnts(decisions)
-        self.stepWorld()
-        self.spawn()
-        self.stepEnv()
+        gpu_options = tf.GPUOptions(
+            per_process_gpu_memory_fraction=calc_gpu_fraction(flags['gpu_fraction']))
 
-        stims, rews, dones = [], [], []
-        for entID, ent in self.desciples.items():
-            stim = self.getStim(ent)
-            stims.append((ent, self.getStim(ent)))
-            rews.append(1)
-        return pickle.dumps((stims, rews, None, None))
+        with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options)) as sess:
+            config = get_config(flags) or flags
 
-    def reset(self):
-        self.spawn()
-        self.stepEnv()
-        return [(e, self.getStim(e)) for e in self.desciples.values()]
+            if not flags['use_gpu']:
+                config.cnn_format = 'NHWC'
+
+            self.lawmakerZero = LawmakerZero(config, sess)

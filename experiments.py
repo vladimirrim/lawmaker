@@ -1,6 +1,6 @@
-from pdb import set_trace as T
-from configs import Law, Chaos, Kite
 import os
+
+from configs import Law, Chaos, Kite
 
 # Oversimplified user specification
 # for 1-3 collaborators
@@ -11,9 +11,9 @@ if USER == 'vladimir':
     remote = False
     local = not remote
 
-    test = True  # local
-    best = True  # local
-    load = True  # local
+    test = False  # local
+    best = False  # local
+    load = False  # local
 
     sample = not test
     singles = True
