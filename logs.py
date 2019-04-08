@@ -94,7 +94,7 @@ def godsword():
     labels('Steps', 'Value', 'Projekt: Godsword')
     axes(Neon.MINT.norm, Neon.CYAN.norm)
     ticks(18, Neon.CYAN.norm)
-    legend(18, Neon.CYAN.norm)
+   # legend(18, Neon.CYAN.norm)
     fig()
 
 

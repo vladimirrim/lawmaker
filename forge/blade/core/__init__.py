@@ -1,4 +1,4 @@
 from .env import Env
 from .map import Map
-from .realm import VecEnvRealm, NativeRealm
+from .realm import NativeRealm
 from .tile import Tile
