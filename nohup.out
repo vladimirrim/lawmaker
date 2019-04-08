@@ -19943,4 +19943,436 @@ Tick:  14247 , Time:  36.98 , Lifetime:  107.7 , Best:  123.5
 Tick:  14248 , Time:  37.67 , Lifetime:  104.1 , Best:  123.5
 Tick:  14249 , Time:  36.28 , Lifetime:  106.3 , Best:  123.5
 Tick:  14250 , Time:  35.61 , Lifetime:  96.85 , Best:  123.5
-Tick:  14251 , Time:  36.15 , Lifetime:  100.9 , Best: 
+Tick:  14251 , Time:  36.15 , Lifetime:  100.9 , Best:  123.5
+Tick:  14252 , Time:  38.29 , Lifetime:  98.39 , Best:  123.5
+Tick:  14253 , Time:  39.94 , Lifetime:  100.6 , Best:  123.5
+Tick:  14254 , Time:  33.46 , Lifetime:  105.7 , Best:  123.5
+Tick:  14255 , Time:  36.15 , Lifetime:  104.5 , Best:  123.5
+Tick:  14256 , Time:  43.19 , Lifetime:  92.52 , Best:  123.5
+Tick:  14257 , Time:  34.42 , Lifetime:  99.85 , Best:  123.5
+Tick:  14258 , Time:  36.63 , Lifetime:  101.9 , Best:  123.5
+Tick:  14259 , Time:  34.53 , Lifetime:  103.4 , Best:  123.5
+Tick:  14260 , Time:  37.75 , Lifetime:  103.3 , Best:  123.5
+Tick:  14261 , Time:  37.32 , Lifetime:  107.4 , Best:  123.5
+Tick:  14262 , Time:  34.49 , Lifetime:  100.9 , Best:  123.5
+Tick:  14263 , Time:  34.41 , Lifetime:  102.1 , Best:  123.5
+Tick:  14264 , Time:  37.12 , Lifetime:  101.3 , Best:  123.5
+Tick:  14265 , Time:  39.35 , Lifetime:  106.6 , Best:  123.5
+Tick:  14266 , Time:  34.48 , Lifetime:  101.8 , Best:  123.5
+Tick:  14267 , Time:  36.81 , Lifetime:  96.91 , Best:  123.5
+Tick:  14268 , Time:  36.40 , Lifetime:  105.0 , Best:  123.5
+Tick:  14269 , Time:  38.22 , Lifetime:  108.9 , Best:  123.5
+Tick:  14270 , Time:  40.09 , Lifetime:  97.65 , Best:  123.5
+Tick:  14271 , Time:  34.13 , Lifetime:  109.1 , Best:  123.5
+Tick:  14272 , Time:  37.57 , Lifetime:  99.25 , Best:  123.5
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  19.141106367111206
+Tick:  14273 , Time:  56.20 , Lifetime:  105.4 , Best:  123.5
+Tick:  14274 , Time:  36.23 , Lifetime:  106.0 , Best:  123.5
+Tick:  14275 , Time:  38.81 , Lifetime:  96.06 , Best:  123.5
+Tick:  14276 , Time:  37.39 , Lifetime:  104.2 , Best:  123.5
+Tick:  14277 , Time:  38.60 , Lifetime:  95.15 , Best:  123.5
+Tick:  14278 , Time:  37.83 , Lifetime:  101.4 , Best:  123.5
+Tick:  14279 , Time:  36.21 , Lifetime:  97.98 , Best:  123.5
+Tick:  14280 , Time:  37.56 , Lifetime:  97.25 , Best:  123.5
+Tick:  14281 , Time:  35.39 , Lifetime:  98.78 , Best:  123.5
+Tick:  14282 , Time:  35.47 , Lifetime:  103.6 , Best:  123.5
+Tick:  14283 , Time:  37.26 , Lifetime:  96.51 , Best:  123.5
+Tick:  14284 , Time:  36.80 , Lifetime:  104.2 , Best:  123.5
+Tick:  14285 , Time:  32.86 , Lifetime:  109.1 , Best:  123.5
+Tick:  14286 , Time:  37.12 , Lifetime:  97.58 , Best:  123.5
+Tick:  14287 , Time:  36.80 , Lifetime:  94.09 , Best:  123.5
+Tick:  14288 , Time:  38.57 , Lifetime:  108.6 , Best:  123.5
+Tick:  14289 , Time:  35.09 , Lifetime:  109.3 , Best:  123.5
+Tick:  14290 , Time:  34.53 , Lifetime:  105.4 , Best:  123.5
+Tick:  14291 , Time:  39.88 , Lifetime:  95.15 , Best:  123.5
+Tick:  14292 , Time:  35.71 , Lifetime:  94.83 , Best:  123.5
+Tick:  14293 , Time:  37.39 , Lifetime:  102.9 , Best:  123.5
+Tick:  14294 , Time:  37.43 , Lifetime:  105.6 , Best:  123.5
+Tick:  14295 , Time:  37.63 , Lifetime:  101.5 , Best:  123.5
+Tick:  14296 , Time:  31.81 , Lifetime:  100.7 , Best:  123.5
+Tick:  14297 , Time:  38.22 , Lifetime:  96.66 , Best:  123.5
+Tick:  14298 , Time:  37.78 , Lifetime:  95.28 , Best:  123.5
+Tick:  14299 , Time:  36.31 , Lifetime:  106.2 , Best:  123.5
+Tick:  14300 , Time:  38.60 , Lifetime:  103.1 , Best:  123.5
+Tick:  14301 , Time:  33.27 , Lifetime:  109.5 , Best:  123.5
+Tick:  14302 , Time:  37.13 , Lifetime:  97.74 , Best:  123.5
+Tick:  14303 , Time:  37.04 , Lifetime:  99.36 , Best:  123.5
+Tick:  14304 , Time:  37.60 , Lifetime:  97.55 , Best:  123.5
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  18.162664890289307
+Tick:  14305 , Time:  56.49 , Lifetime:  91.68 , Best:  123.5
+Tick:  14306 , Time:  38.30 , Lifetime:  98.91 , Best:  123.5
+Tick:  14307 , Time:  37.51 , Lifetime:  96.74 , Best:  123.5
+Tick:  14308 , Time:  34.45 , Lifetime:  101.2 , Best:  123.5
+Tick:  14309 , Time:  35.49 , Lifetime:  98.56 , Best:  123.5
+Tick:  14310 , Time:  38.16 , Lifetime:  102.8 , Best:  123.5
+Tick:  14311 , Time:  36.81 , Lifetime:  100.1 , Best:  123.5
+Tick:  14312 , Time:  33.23 , Lifetime:  103.2 , Best:  123.5
+Tick:  14313 , Time:  35.67 , Lifetime:  99.75 , Best:  123.5
+Tick:  14314 , Time:  37.18 , Lifetime:  110.0 , Best:  123.5
+Tick:  14315 , Time:  34.42 , Lifetime:  112.3 , Best:  123.5
+Tick:  14316 , Time:  34.75 , Lifetime:  105.4 , Best:  123.5
+Tick:  14317 , Time:  37.64 , Lifetime:  96.96 , Best:  123.5
+Tick:  14318 , Time:  34.75 , Lifetime:  103.8 , Best:  123.5
+Tick:  14319 , Time:  38.91 , Lifetime:  101.6 , Best:  123.5
+Tick:  14320 , Time:  40.77 , Lifetime:  97.86 , Best:  123.5
+Tick:  14321 , Time:  34.09 , Lifetime:  101.9 , Best:  123.5
+Tick:  14322 , Time:  42.04 , Lifetime:  92.59 , Best:  123.5
+Tick:  14323 , Time:  34.34 , Lifetime:  106.0 , Best:  123.5
+Tick:  14324 , Time:  35.60 , Lifetime:  93.25 , Best:  123.5
+Tick:  14325 , Time:  34.85 , Lifetime:  109.5 , Best:  123.5
+Tick:  14326 , Time:  36.85 , Lifetime:  102.2 , Best:  123.5
+Tick:  14327 , Time:  41.38 , Lifetime:  94.95 , Best:  123.5
+Tick:  14328 , Time:  35.52 , Lifetime:  97.36 , Best:  123.5
+Tick:  14329 , Time:  37.25 , Lifetime:  105.4 , Best:  123.5
+Tick:  14330 , Time:  36.04 , Lifetime:  102.8 , Best:  123.5
+Tick:  14331 , Time:  36.28 , Lifetime:  109.9 , Best:  123.5
+Tick:  14332 , Time:  36.95 , Lifetime:  93.15 , Best:  123.5
+Tick:  14333 , Time:  36.95 , Lifetime:  101.9 , Best:  123.5
+Tick:  14334 , Time:  33.09 , Lifetime:  111.1 , Best:  123.5
+Tick:  14335 , Time:  36.19 , Lifetime:  97.05 , Best:  123.5
+Tick:  14336 , Time:  36.37 , Lifetime:  101.2 , Best:  123.5
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  17.9562349319458
+Tick:  14337 , Time:  52.45 , Lifetime:  95.19 , Best:  123.5
+Tick:  14338 , Time:  36.27 , Lifetime:  98.16 , Best:  123.5
+Tick:  14339 , Time:  39.74 , Lifetime:  102.9 , Best:  123.5
+Tick:  14340 , Time:  36.81 , Lifetime:  102.9 , Best:  123.5
+Tick:  14341 , Time:  34.88 , Lifetime:  96.85 , Best:  123.5
+Tick:  14342 , Time:  36.81 , Lifetime:  102.0 , Best:  123.5
+Tick:  14343 , Time:  34.10 , Lifetime:  100.5 , Best:  123.5
+Tick:  14344 , Time:  36.62 , Lifetime:  100.9 , Best:  123.5
+Tick:  14345 , Time:  37.65 , Lifetime:  97.31 , Best:  123.5
+Tick:  14346 , Time:  34.94 , Lifetime:  100.8 , Best:  123.5
+Tick:  14347 , Time:  33.49 , Lifetime:  111.2 , Best:  123.5
+Tick:  14348 , Time:  34.38 , Lifetime:  102.3 , Best:  123.5
+Tick:  14349 , Time:  36.50 , Lifetime:  96.32 , Best:  123.5
+Tick:  14350 , Time:  38.33 , Lifetime:  95.63 , Best:  123.5
+Tick:  14351 , Time:  37.45 , Lifetime:  95.24 , Best:  123.5
+Tick:  14352 , Time:  37.25 , Lifetime:  93.96 , Best:  123.5
+Tick:  14353 , Time:  35.66 , Lifetime:  97.54 , Best:  123.5
+Tick:  14354 , Time:  38.62 , Lifetime:  92.69 , Best:  123.5
+Tick:  14355 , Time:  34.43 , Lifetime:  100.0 , Best:  123.5
+Tick:  14356 , Time:  36.51 , Lifetime:  102.4 , Best:  123.5
+Tick:  14357 , Time:  35.90 , Lifetime:  102.4 , Best:  123.5
+Tick:  14358 , Time:  40.40 , Lifetime:  99.86 , Best:  123.5
+Tick:  14359 , Time:  36.54 , Lifetime:  103.9 , Best:  123.5
+Tick:  14360 , Time:  36.27 , Lifetime:  105.7 , Best:  123.5
+Tick:  14361 , Time:  39.43 , Lifetime:  96.34 , Best:  123.5
+Tick:  14362 , Time:  37.71 , Lifetime:  102.4 , Best:  123.5
+Tick:  14363 , Time:  38.81 , Lifetime:  105.5 , Best:  123.5
+Tick:  14364 , Time:  35.78 , Lifetime:  100.3 , Best:  123.5
+Tick:  14365 , Time:  38.49 , Lifetime:  97.97 , Best:  123.5
+Tick:  14366 , Time:  36.61 , Lifetime:  102.2 , Best:  123.5
+Tick:  14367 , Time:  42.53 , Lifetime:  102.0 , Best:  123.5
+Tick:  14368 , Time:  39.76 , Lifetime:  102.3 , Best:  123.5
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  21.157236337661743
+Tick:  14369 , Time:  62.06 , Lifetime:  94.36 , Best:  123.5
+Tick:  14370 , Time:  35.88 , Lifetime:  100.8 , Best:  123.5
+Tick:  14371 , Time:  34.84 , Lifetime:  109.3 , Best:  123.5
+Tick:  14372 , Time:  38.54 , Lifetime:  101.6 , Best:  123.5
+Tick:  14373 , Time:  37.28 , Lifetime:  90.18 , Best:  123.5
+Tick:  14374 , Time:  32.78 , Lifetime:  119.7 , Best:  123.5
+Tick:  14375 , Time:  37.77 , Lifetime:  105.2 , Best:  123.5
+Tick:  14376 , Time:  37.73 , Lifetime:  97.92 , Best:  123.5
+Tick:  14377 , Time:  36.85 , Lifetime:  96.59 , Best:  123.5
+Tick:  14378 , Time:  37.50 , Lifetime:  90.04 , Best:  123.5
+Tick:  14379 , Time:  37.41 , Lifetime:  113.2 , Best:  123.5
+Tick:  14380 , Time:  37.52 , Lifetime:  96.24 , Best:  123.5
+Tick:  14381 , Time:  35.87 , Lifetime:  98.12 , Best:  123.5
+Tick:  14382 , Time:  36.56 , Lifetime:  99.84 , Best:  123.5
+Tick:  14383 , Time:  36.17 , Lifetime:  107.5 , Best:  123.5
+Tick:  14384 , Time:  36.76 , Lifetime:  106.4 , Best:  123.5
+Tick:  14385 , Time:  36.59 , Lifetime:  98.62 , Best:  123.5
+Tick:  14386 , Time:  36.85 , Lifetime:  96.26 , Best:  123.5
+Tick:  14387 , Time:  38.26 , Lifetime:  102.6 , Best:  123.5
+Tick:  14388 , Time:  34.66 , Lifetime:  114.0 , Best:  123.5
+Tick:  14389 , Time:  37.09 , Lifetime:  97.22 , Best:  123.5
+Tick:  14390 , Time:  33.37 , Lifetime:  112.4 , Best:  123.5
+Tick:  14391 , Time:  35.29 , Lifetime:  98.16 , Best:  123.5
+Tick:  14392 , Time:  34.42 , Lifetime:  108.0 , Best:  123.5
+Tick:  14393 , Time:  38.30 , Lifetime:  102.1 , Best:  123.5
+Tick:  14394 , Time:  35.84 , Lifetime:  96.59 , Best:  123.5
+Tick:  14395 , Time:  36.07 , Lifetime:  109.3 , Best:  123.5
+Tick:  14396 , Time:  34.87 , Lifetime:  105.8 , Best:  123.5
+Tick:  14397 , Time:  37.83 , Lifetime:  99.91 , Best:  123.5
+Tick:  14398 , Time:  41.02 , Lifetime:  108.5 , Best:  123.5
+Tick:  14399 , Time:  33.77 , Lifetime:  117.8 , Best:  123.5
+Tick:  14400 , Time:  36.33 , Lifetime:  107.0 , Best:  123.5
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  18.07957124710083
+Tick:  14401 , Time:  53.33 , Lifetime:  97.52 , Best:  123.5
+Tick:  14402 , Time:  34.96 , Lifetime:  95.05 , Best:  123.5
+Tick:  14403 , Time:  37.52 , Lifetime:  96.34 , Best:  123.5
+Tick:  14404 , Time:  34.61 , Lifetime:  103.3 , Best:  123.5
+Tick:  14405 , Time:  32.14 , Lifetime:  114.6 , Best:  123.5
+Tick:  14406 , Time:  37.17 , Lifetime:  88.76 , Best:  123.5
+Tick:  14407 , Time:  36.96 , Lifetime:  100.3 , Best:  123.5
+Tick:  14408 , Time:  34.82 , Lifetime:  102.4 , Best:  123.5
+Tick:  14409 , Time:  38.44 , Lifetime:  91.21 , Best:  123.5
+Tick:  14410 , Time:  35.49 , Lifetime:  103.8 , Best:  123.5
+Tick:  14411 , Time:  39.21 , Lifetime:  110.0 , Best:  123.5
+Tick:  14412 , Time:  34.10 , Lifetime:  96.36 , Best:  123.5
+Tick:  14413 , Time:  37.14 , Lifetime:  107.3 , Best:  123.5
+Tick:  14414 , Time:  35.94 , Lifetime:  97.55 , Best:  123.5
+Tick:  14415 , Time:  35.88 , Lifetime:  99.61 , Best:  123.5
+Tick:  14416 , Time:  38.87 , Lifetime:  91.77 , Best:  123.5
+Tick:  14417 , Time:  39.14 , Lifetime:  95.88 , Best:  123.5
+Tick:  14418 , Time:  36.54 , Lifetime:  101.6 , Best:  123.5
+Tick:  14419 , Time:  36.09 , Lifetime:  103.6 , Best:  123.5
+Tick:  14420 , Time:  36.39 , Lifetime:  108.2 , Best:  123.5
+Tick:  14421 , Time:  37.55 , Lifetime:  94.42 , Best:  123.5
+Tick:  14422 , Time:  35.25 , Lifetime:  108.4 , Best:  123.5
+Tick:  14423 , Time:  37.04 , Lifetime:  98.20 , Best:  123.5
+Tick:  14424 , Time:  35.67 , Lifetime:  100.3 , Best:  123.5
+Tick:  14425 , Time:  37.81 , Lifetime:  95.12 , Best:  123.5
+Tick:  14426 , Time:  39.53 , Lifetime:  96.50 , Best:  123.5
+Tick:  14427 , Time:  36.31 , Lifetime:  98.63 , Best:  123.5
+Tick:  14428 , Time:  34.48 , Lifetime:  107.0 , Best:  123.5
+Tick:  14429 , Time:  35.19 , Lifetime:  107.9 , Best:  123.5
+Tick:  14430 , Time:  37.32 , Lifetime:  97.41 , Best:  123.5
+Tick:  14431 , Time:  35.37 , Lifetime:  101.9 , Best:  123.5
+Tick:  14432 , Time:  32.57 , Lifetime:  104.8 , Best:  123.5
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  18.006120443344116
+Tick:  14433 , Time:  55.62 , Lifetime:  98.11 , Best:  123.5
+Tick:  14434 , Time:  36.58 , Lifetime:  98.78 , Best:  123.5
+Tick:  14435 , Time:  35.98 , Lifetime:  105.1 , Best:  123.5
+Tick:  14436 , Time:  38.09 , Lifetime:  101.2 , Best:  123.5
+Tick:  14437 , Time:  36.64 , Lifetime:  104.8 , Best:  123.5
+Tick:  14438 , Time:  36.03 , Lifetime:  107.2 , Best:  123.5
+Tick:  14439 , Time:  38.50 , Lifetime:  100.6 , Best:  123.5
+Tick:  14440 , Time:  35.35 , Lifetime:  99.68 , Best:  123.5
+Tick:  14441 , Time:  35.38 , Lifetime:  104.6 , Best:  123.5
+Tick:  14442 , Time:  38.03 , Lifetime:  93.79 , Best:  123.5
+Tick:  14443 , Time:  37.75 , Lifetime:  105.5 , Best:  123.5
+Tick:  14444 , Time:  35.62 , Lifetime:  104.6 , Best:  123.5
+Tick:  14445 , Time:  35.67 , Lifetime:  106.3 , Best:  123.5
+Tick:  14446 , Time:  33.67 , Lifetime:  103.2 , Best:  123.5
+Tick:  14447 , Time:  39.30 , Lifetime:  96.73 , Best:  123.5
+Tick:  14448 , Time:  36.22 , Lifetime:  107.6 , Best:  123.5
+Tick:  14449 , Time:  37.45 , Lifetime:  105.7 , Best:  123.5
+Tick:  14450 , Time:  33.57 , Lifetime:  102.7 , Best:  123.5
+Tick:  14451 , Time:  34.78 , Lifetime:  97.37 , Best:  123.5
+Tick:  14452 , Time:  37.51 , Lifetime:  98.0 , Best:  123.5
+Tick:  14453 , Time:  35.11 , Lifetime:  94.34 , Best:  123.5
+Tick:  14454 , Time:  38.46 , Lifetime:  103.3 , Best:  123.5
+Tick:  14455 , Time:  39.02 , Lifetime:  97.01 , Best:  123.5
+Tick:  14456 , Time:  36.75 , Lifetime:  100.1 , Best:  123.5
+Tick:  14457 , Time:  35.54 , Lifetime:  99.49 , Best:  123.5
+Tick:  14458 , Time:  35.58 , Lifetime:  104.6 , Best:  123.5
+Tick:  14459 , Time:  37.65 , Lifetime:  110.9 , Best:  123.5
+Tick:  14460 , Time:  36.50 , Lifetime:  104.3 , Best:  123.5
+Tick:  14461 , Time:  40.04 , Lifetime:  104.5 , Best:  123.5
+Tick:  14462 , Time:  37.68 , Lifetime:  97.49 , Best:  123.5
+Tick:  14463 , Time:  37.23 , Lifetime:  98.50 , Best:  123.5
+Tick:  14464 , Time:  36.49 , Lifetime:  103.0 , Best:  123.5
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  23.79351806640625
+Tick:  14465 , Time:  58.54 , Lifetime:  98.86 , Best:  123.5
+Tick:  14466 , Time:  36.58 , Lifetime:  96.10 , Best:  123.5
+Tick:  14467 , Time:  35.56 , Lifetime:  105.6 , Best:  123.5
+Tick:  14468 , Time:  37.16 , Lifetime:  100.8 , Best:  123.5
+Tick:  14469 , Time:  35.72 , Lifetime:  104.0 , Best:  123.5
+Tick:  14470 , Time:  37.39 , Lifetime:  101.3 , Best:  123.5
+Tick:  14471 , Time:  35.28 , Lifetime:  95.12 , Best:  123.5
+Tick:  14472 , Time:  38.45 , Lifetime:  97.62 , Best:  123.5
+Tick:  14473 , Time:  33.80 , Lifetime:  100.0 , Best:  123.5
+Tick:  14474 , Time:  35.92 , Lifetime:  97.66 , Best:  123.5
+Tick:  14475 , Time:  38.09 , Lifetime:  89.64 , Best:  123.5
+Tick:  14476 , Time:  36.77 , Lifetime:  107.8 , Best:  123.5
+Tick:  14477 , Time:  35.81 , Lifetime:  100.3 , Best:  123.5
+Tick:  14478 , Time:  35.80 , Lifetime:  93.43 , Best:  123.5
+Tick:  14479 , Time:  38.20 , Lifetime:  97.27 , Best:  123.5
+Tick:  14480 , Time:  36.58 , Lifetime:  108.4 , Best:  123.5
+Tick:  14481 , Time:  35.47 , Lifetime:  98.09 , Best:  123.5
+Tick:  14482 , Time:  35.05 , Lifetime:  107.9 , Best:  123.5
+Tick:  14483 , Time:  38.08 , Lifetime:  101.5 , Best:  123.5
+Tick:  14484 , Time:  38.71 , Lifetime:  97.98 , Best:  123.5
+Tick:  14485 , Time:  36.22 , Lifetime:  107.0 , Best:  123.5
+Tick:  14486 , Time:  33.36 , Lifetime:  102.2 , Best:  123.5
+Tick:  14487 , Time:  35.62 , Lifetime:  98.91 , Best:  123.5
+Tick:  14488 , Time:  37.09 , Lifetime:  98.75 , Best:  123.5
+Tick:  14489 , Time:  39.33 , Lifetime:  96.18 , Best:  123.5
+Tick:  14490 , Time:  39.14 , Lifetime:  92.67 , Best:  123.5
+Tick:  14491 , Time:  40.56 , Lifetime:  93.33 , Best:  123.5
+Tick:  14492 , Time:  35.74 , Lifetime:  102.9 , Best:  123.5
+Tick:  14493 , Time:  34.02 , Lifetime:  107.7 , Best:  123.5
+Tick:  14494 , Time:  33.89 , Lifetime:  115.1 , Best:  123.5
+Tick:  14495 , Time:  37.87 , Lifetime:  101.3 , Best:  123.5
+Tick:  14496 , Time:  41.64 , Lifetime:  94.88 , Best:  123.5
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  22.179816007614136
+Tick:  14497 , Time:  59.04 , Lifetime:  102.5 , Best:  123.5
+Tick:  14498 , Time:  36.51 , Lifetime:  107.2 , Best:  123.5
+Tick:  14499 , Time:  37.43 , Lifetime:  96.74 , Best:  123.5
+Tick:  14500 , Time:  37.31 , Lifetime:  102.1 , Best:  123.5
+Tick:  14501 , Time:  41.10 , Lifetime:  97.48 , Best:  123.5
+Tick:  14502 , Time:  36.62 , Lifetime:  96.38 , Best:  123.5
+Tick:  14503 , Time:  39.46 , Lifetime:  97.93 , Best:  123.5
+Tick:  14504 , Time:  35.41 , Lifetime:  114.6 , Best:  123.5
+Tick:  14505 , Time:  34.49 , Lifetime:  102.1 , Best:  123.5
+Tick:  14506 , Time:  37.67 , Lifetime:  95.63 , Best:  123.5
+Tick:  14507 , Time:  36.34 , Lifetime:  102.2 , Best:  123.5
+Tick:  14508 , Time:  41.76 , Lifetime:  101.2 , Best:  123.5
+Tick:  14509 , Time:  35.09 , Lifetime:  105.5 , Best:  123.5
+Tick:  14510 , Time:  36.48 , Lifetime:  103.3 , Best:  123.5
+Tick:  14511 , Time:  35.53 , Lifetime:  108.2 , Best:  123.5
+Tick:  14512 , Time:  32.36 , Lifetime:  99.93 , Best:  123.5
+Tick:  14513 , Time:  38.30 , Lifetime:  102.0 , Best:  123.5
+Tick:  14514 , Time:  41.20 , Lifetime:  109.6 , Best:  123.5
+Tick:  14515 , Time:  35.90 , Lifetime:  97.80 , Best:  123.5
+Tick:  14516 , Time:  38.57 , Lifetime:  96.75 , Best:  123.5
+Tick:  14517 , Time:  37.40 , Lifetime:  99.42 , Best:  123.5
+Tick:  14518 , Time:  35.51 , Lifetime:  96.10 , Best:  123.5
+Tick:  14519 , Time:  39.83 , Lifetime:  101.4 , Best:  123.5
+Tick:  14520 , Time:  37.62 , Lifetime:  97.71 , Best:  123.5
+Tick:  14521 , Time:  38.19 , Lifetime:  93.18 , Best:  123.5
+Tick:  14522 , Time:  36.12 , Lifetime:  99.48 , Best:  123.5
+Tick:  14523 , Time:  37.27 , Lifetime:  101.5 , Best:  123.5
+Tick:  14524 , Time:  36.55 , Lifetime:  102.7 , Best:  123.5
+Tick:  14525 , Time:  37.65 , Lifetime:  96.48 , Best:  123.5
+Tick:  14526 , Time:  33.89 , Lifetime:  106.0 , Best:  123.5
+Tick:  14527 , Time:  39.36 , Lifetime:  101.7 , Best:  123.5
+Tick:  14528 , Time:  35.10 , Lifetime:  95.36 , Best:  123.5
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  17.34204125404358
+Tick:  14529 , Time:  52.53 , Lifetime:  103.8 , Best:  123.5
+Tick:  14530 , Time:  40.76 , Lifetime:  101.6 , Best:  123.5
+Tick:  14531 , Time:  36.25 , Lifetime:  103.6 , Best:  123.5
+Tick:  14532 , Time:  36.45 , Lifetime:  93.81 , Best:  123.5
+Tick:  14533 , Time:  37.12 , Lifetime:  101.8 , Best:  123.5
+Tick:  14534 , Time:  37.96 , Lifetime:  102.5 , Best:  123.5
+Tick:  14535 , Time:  36.35 , Lifetime:  110.0 , Best:  123.5
+Tick:  14536 , Time:  33.93 , Lifetime:  104.1 , Best:  123.5
+Tick:  14537 , Time:  42.25 , Lifetime:  94.96 , Best:  123.5
+Tick:  14538 , Time:  37.80 , Lifetime:  102.6 , Best:  123.5
+Tick:  14539 , Time:  37.37 , Lifetime:  106.4 , Best:  123.5
+Tick:  14540 , Time:  36.26 , Lifetime:  100.1 , Best:  123.5
+Tick:  14541 , Time:  35.64 , Lifetime:  105.6 , Best:  123.5
+Tick:  14542 , Time:  36.89 , Lifetime:  94.42 , Best:  123.5
+Tick:  14543 , Time:  34.98 , Lifetime:  99.76 , Best:  123.5
+Tick:  14544 , Time:  34.23 , Lifetime:  99.72 , Best:  123.5
+Tick:  14545 , Time:  38.04 , Lifetime:  100.3 , Best:  123.5
+Tick:  14546 , Time:  37.32 , Lifetime:  92.22 , Best:  123.5
+Tick:  14547 , Time:  34.40 , Lifetime:  101.8 , Best:  123.5
+Tick:  14548 , Time:  37.32 , Lifetime:  99.36 , Best:  123.5
+Tick:  14549 , Time:  37.61 , Lifetime:  92.80 , Best:  123.5
+Tick:  14550 , Time:  36.87 , Lifetime:  95.54 , Best:  123.5
+Tick:  14551 , Time:  36.16 , Lifetime:  95.92 , Best:  123.5
+Tick:  14552 , Time:  37.63 , Lifetime:  97.29 , Best:  123.5
+Tick:  14553 , Time:  36.32 , Lifetime:  92.95 , Best:  123.5
+Tick:  14554 , Time:  35.63 , Lifetime:  95.61 , Best:  123.5
+Tick:  14555 , Time:  37.53 , Lifetime:  93.83 , Best:  123.5
+Tick:  14556 , Time:  35.46 , Lifetime:  105.9 , Best:  123.5
+Tick:  14557 , Time:  36.20 , Lifetime:  97.58 , Best:  123.5
+Tick:  14558 , Time:  43.04 , Lifetime:  98.51 , Best:  123.5
+Tick:  14559 , Time:  36.38 , Lifetime:  98.44 , Best:  123.5
+Tick:  14560 , Time:  34.90 , Lifetime:  98.47 , Best:  123.5
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  17.788815021514893
+Tick:  14561 , Time:  50.72 , Lifetime:  99.30 , Best:  123.5
+Tick:  14562 , Time:  37.53 , Lifetime:  98.31 , Best:  123.5
+Tick:  14563 , Time:  37.87 , Lifetime:  99.83 , Best:  123.5
+Tick:  14564 , Time:  38.79 , Lifetime:  97.18 , Best:  123.5
+Tick:  14565 , Time:  37.33 , Lifetime:  99.98 , Best:  123.5
+Tick:  14566 , Time:  39.36 , Lifetime:  97.06 , Best:  123.5
+Tick:  14567 , Time:  35.40 , Lifetime:  96.59 , Best:  123.5
+Tick:  14568 , Time:  37.02 , Lifetime:  97.09 , Best:  123.5
+Tick:  14569 , Time:  37.47 , Lifetime:  95.03 , Best:  123.5
+Tick:  14570 , Time:  35.75 , Lifetime:  104.4 , Best:  123.5
+Tick:  14571 , Time:  37.07 , Lifetime:  96.32 , Best:  123.5
+Tick:  14572 , Time:  33.56 , Lifetime:  100.3 , Best:  123.5
+Tick:  14573 , Time:  38.37 , Lifetime:  98.92 , Best:  123.5
+Tick:  14574 , Time:  38.17 , Lifetime:  106.0 , Best:  123.5
+Tick:  14575 , Time:  39.00 , Lifetime:  111.0 , Best:  123.5
+Tick:  14576 , Time:  36.14 , Lifetime:  101.8 , Best:  123.5
+Tick:  14577 , Time:  36.30 , Lifetime:  93.03 , Best:  123.5
+Tick:  14578 , Time:  34.52 , Lifetime:  98.15 , Best:  123.5
+Tick:  14579 , Time:  35.29 , Lifetime:  96.84 , Best:  123.5
+Tick:  14580 , Time:  37.81 , Lifetime:  96.12 , Best:  123.5
+Tick:  14581 , Time:  37.59 , Lifetime:  94.35 , Best:  123.5
+Tick:  14582 , Time:  35.34 , Lifetime:  102.9 , Best:  123.5
+Tick:  14583 , Time:  42.61 , Lifetime:  97.89 , Best:  123.5
+Tick:  14584 , Time:  36.27 , Lifetime:  99.44 , Best:  123.5
+Tick:  14585 , Time:  39.03 , Lifetime:  103.7 , Best:  123.5
+Tick:  14586 , Time:  35.11 , Lifetime:  101.8 , Best:  123.5
+Tick:  14587 , Time:  37.54 , Lifetime:  99.62 , Best:  123.5
+Tick:  14588 , Time:  37.20 , Lifetime:  111.0 , Best:  123.5
+Tick:  14589 , Time:  38.48 , Lifetime:  92.81 , Best:  123.5
+Tick:  14590 , Time:  37.71 , Lifetime:  98.50 , Best:  123.5
+Tick:  14591 , Time:  36.69 , Lifetime:  105.3 , Best:  123.5
+Tick:  14592 , Time:  36.15 , Lifetime:  109.3 , Best:  123.5
+Clearing ray buffers...
+Deleted 0 task keys from Redis.
+Deleted 0 object info keys from Redis.
+Deleted 0 object location keys from Redis.
+Deleted 0 log files from Redis.
+Deleted 0 event logs from Redis.
+Done. Free time:  19.77624201774597
+Tick:  14593 , Time:  55.81 , Lifetime:  112.6 , Best:  123.5
+Tick:  14594 , Time:  36.40 , Lifetime:  103.7 , Best:  123.5
+Tick:  14595 , Time:  34.83 , Lifetime:  101.6 , Best:  123.5
+Tick:  14596 , Time:  39.18 , Lifetime:  95.07 , Best:  123.5
+Tick:  14597 , Time:  39.90 , Lifetime:  92.82 , Best:  123.5
+Tick:  14598 , Time:  36.64 , Lifetime:  92.31 , Best:  123.5
+Tick:  14599 , Time:  40.11 , Lifetime:  99.77 , Best:  123.5
+Tick:  14600 , Time:  35.52 , Lifetime:  104.0 , Best:  123.5
+Tick:  14601 , Time:  34.20 , Lifetime:  114.4 , Best:  123.5
+Tick:  14602 , Time:  36.51 , Lifetime:  97.07 , Best:  123.5
+Tick:  14603 , Time:  36.75 , Lifetime:  98.94 , Best:  123.5
+Tick:  14604 , Time:  39.72 , Lifetime:  99.30 , Best:  123.5
+Tick:  14605 , Time:  34.63 , Lifetime:  99.09 , Best:  123.5
+Tick: 
