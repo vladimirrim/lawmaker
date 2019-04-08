@@ -34,7 +34,7 @@ class AgentConfig(object):
 
 
 class EnvironmentConfig(object):
-    env_name = 'Breakout-v0'
+    env_name = 'lawmaker'
 
     screen_width = 24
     screen_height = 24
