@@ -14,6 +14,7 @@ class AgentConfig(object):
     learning_rate_minimum = 0.00025
     learning_rate_decay = 0.96
     learning_rate_decay_step = 5 * scale
+    name = ''
 
     ep_end = 0.1
     ep_start = 1.
@@ -36,8 +37,8 @@ class AgentConfig(object):
 class EnvironmentConfig(object):
     env_name = 'lawmaker'
 
-    screen_width = 24
-    screen_height = 24
+    screen_width = 30
+    screen_height = 1
     max_reward = 1.
     min_reward = -1.
 

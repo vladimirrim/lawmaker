@@ -95,29 +95,43 @@ class NativeRealm(Realm):
         self.currentAction = [0] * 8
         self.prevReward = 0
         self.curReward = 0
+        self.states = np.zeros((8, 3))
+        self.overallState = [0., 0., 0.]
+        self.lengths = [0] * 8
+        #  self.lawmaker.load()
+        self.lawmakerZero = []
         self.setupLawmakerZero()
 
     def collectState(self):
-        states = [[0., 0., 0.]] * 8
-        lengths = [0] * 8
-
         for ent in self.desciples.values():
-            states[ent.annID][0] += self.sword.getUniqueGrass(ent.entID)
-            states[ent.annID][1] += self.sword.getUniqueGrass(ent.entID)
-            states[ent.annID][2] += ent.__getattribute__('timeAlive')
-            lengths[ent.annID] += 1
+            self.states[ent.annID][0] += self.sword.getUniqueGrass(ent.entID)
+            self.states[ent.annID][1] += self.sword.getUniqueScrub(ent.entID)
+            self.states[ent.annID][2] += ent.__getattribute__('timeAlive')
+
+            self.overallState[0] += self.sword.getUniqueGrass(ent.entID)
+            self.overallState[1] += self.sword.getUniqueScrub(ent.entID)
+            self.overallState[2] += ent.__getattribute__('timeAlive')
+            self.lengths[ent.annID] += 1
+
+    def updateState(self):
+        if sum(self.lengths) != 0:
+            overallState = [x / sum(self.lengths) for x in self.overallState]
+        else:
+            overallState = self.overallState
 
         state = []
         for i in range(8):
-            for param in states[i]:
-                if lengths[i] != 0:
-                    state.append(param / lengths[i])
+            for param in self.states[i]:
+                if self.lengths[i] != 0:
+                    state.append(param / self.lengths[i])
                 else:
                     state.append(param)
 
-        ans = np.array(state)
-        ans.shape = (1, 24)
-        return ans
+        self.states = np.zeros((8, 3))
+        self.overallState = [0., 0., 0.]
+        self.lengths = [0] * 8
+
+        return overallState + state
 
     def collectReward(self):
         reward = 0
@@ -145,11 +159,14 @@ class NativeRealm(Realm):
 
     def stepLawmakerZero(self, state, reward):
         if self.stepCount == 0:
-            self.lawmakerZero.initStep(np.repeat(state, 24, axis=0), reward, np.random.randint(0, 10), True)
-        else:
-            self.lawmakerZero.updateModel(np.repeat(state, 24, axis=0), reward, True)
             for i in range(8):
-                self.currentAction[i] = self.lawmakerZero.stepEnv()
+                self.lawmakerZero[i].initStep(state[3 * i + 3:3 * i + 6] + state, reward, np.random.randint(0, 10),
+                                              True)
+        else:
+            for i in range(8):
+                self.lawmakerZero[i].updateModel(np.array(state[3 * i + 3:3 * i + 6] + state).reshape((1, 30)),
+                                                 reward, True)
+                self.currentAction[i] = self.lawmakerZero[i].stepEnv()
         self.save()
 
     def save(self):
@@ -161,10 +178,9 @@ class NativeRealm(Realm):
 
     def stepEnts(self):
         dead = []
-        self.collectReward()
 
         if self.stepCount % 1000 == 0:
-            self.stepLawmakerZero(self.collectState(), self.updateReward())
+            self.stepLawmakerZero(self.updateState(), self.updateReward())
 
         for ent in self.desciples.values():
             ent.step(self.world)
@@ -181,6 +197,8 @@ class NativeRealm(Realm):
             self.stepEnt(ent, action, arguments)
 
         self.cullDead(dead)
+        self.collectReward()
+        self.collectState()
 
     def postmortem(self, ent, dead):
         entID = ent.entID
@@ -246,10 +264,11 @@ class NativeRealm(Realm):
         gpu_options = tf.GPUOptions(
             per_process_gpu_memory_fraction=calc_gpu_fraction(flags['gpu_fraction']))
 
-        with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options)) as sess:
-            config = get_config(flags) or flags
+        for i in range(8):
+            with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options)) as sess:
+                config = get_config(flags) or flags
 
-            if not flags['use_gpu']:
-                config.cnn_format = 'NHWC'
-
-            self.lawmakerZero = LawmakerZero(config, sess)
+                if not flags['use_gpu']:
+                    config.cnn_format = 'NHWC'
+                with tf.variable_scope('network' + str(i)):
+                    self.lawmakerZero.append(LawmakerZero(config, sess))
