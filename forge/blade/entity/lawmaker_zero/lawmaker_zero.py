@@ -222,7 +222,7 @@ class LawmakerZero(BaseModel):
         # target network
         with tf.variable_scope('target'):
             self.target_s_t = tf.placeholder('float32',
-                                             [self.screen_width, self.screen_height],
+                                             [self.screen_height, self.screen_width],
                                              name='target_s_t')
 
             self.target_l1, self.t_w['l1_w'], self.t_w['l1_b'] = linear(self.target_s_t, 512,
