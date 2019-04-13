@@ -1,5 +1,5 @@
 class AgentConfig(object):
-    scale = 10000
+    scale = 1
     display = False
 
     max_step = 5000 * scale
@@ -17,12 +17,12 @@ class AgentConfig(object):
     name = ''
 
     ep_end = 0.1
-    ep_start = 1.
+    ep_start = 0.2
     ep_end_t = memory_size
 
     history_length = 4
     train_frequency = 4
-    learn_start = 5. * scale
+    learn_start = scale
 
     min_delta = -1
     max_delta = 1

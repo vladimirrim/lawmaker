@@ -13,7 +13,7 @@ def linear(input_, output_size, stddev=0.02, bias_start=0.0, activation_fn=None,
     shape = input_.get_shape().as_list()
 
     with tf.variable_scope(name):
-        w = tf.get_variable('Matrix', [shape[1], output_size], tf.float32,
+        w = tf.get_variable('Matrix', [shape[-1], output_size], tf.float32,
                             tf.random_normal_initializer(stddev=stddev))
         b = tf.get_variable('bias', [output_size],
                             initializer=tf.constant_initializer(bias_start))

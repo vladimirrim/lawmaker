@@ -161,11 +161,11 @@ class NativeRealm(Realm):
         if self.stepCount == 0:
             for i in range(8):
                 self.lawmakerZero[i].initStep(state[3 * i + 3:3 * i + 6] + state, reward, np.random.randint(0, 10),
-                                              True)
+                                              False)
         else:
             for i in range(8):
                 self.lawmakerZero[i].updateModel(np.array(state[3 * i + 3:3 * i + 6] + state).reshape((1, 30)),
-                                                 reward, True)
+                                                 reward, False)
                 self.currentAction[i] = self.lawmakerZero[i].stepEnv()
         self.save()
 
@@ -263,12 +263,12 @@ class NativeRealm(Realm):
 
         gpu_options = tf.GPUOptions(
             per_process_gpu_memory_fraction=calc_gpu_fraction(flags['gpu_fraction']))
+        self.session = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
 
         for i in range(8):
-            with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options)) as sess:
                 config = get_config(flags) or flags
 
                 if not flags['use_gpu']:
                     config.cnn_format = 'NHWC'
                 with tf.variable_scope('network' + str(i)):
-                    self.lawmakerZero.append(LawmakerZero(config, sess))
+                    self.lawmakerZero.append(LawmakerZero(config, self.session))
