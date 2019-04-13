@@ -1,6 +1,6 @@
 import os
 import random
-import logging
+
 import numpy as np
 
 from .utils import save_npy, load_npy
@@ -77,12 +77,7 @@ class ReplayMemory:
         actions = self.actions[indexes]
         rewards = self.rewards[indexes]
         terminals = self.terminals[indexes]
-
-        if self.cnn_format == 'NHWC':
-            return np.transpose(self.prestates, (0, 2, 3, 1)), actions, \
-                   rewards, np.transpose(self.poststates, (0, 2, 3, 1)), terminals
-        else:
-            return self.prestates, actions, rewards, self.poststates, terminals
+        return self.prestates, actions, rewards, self.poststates, terminals
 
     def save(self):
         for idx, (name, array) in enumerate(

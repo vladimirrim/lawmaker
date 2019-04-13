@@ -2,7 +2,6 @@ from __future__ import print_function
 
 import os
 import random
-import time
 from functools import reduce
 
 import numpy as np
@@ -28,38 +27,40 @@ class LawmakerZero(BaseModel):
 
         with tf.variable_scope('step'):
             self.step_op = tf.Variable(0, trainable=False, name='step')
-            self.step_input = tf.placeholder('int32', None, name='step_input')
+            self.step_input = tf.placeholder('int32', name='step_input')
             self.step_assign_op = self.step_op.assign(self.step_input)
 
         self.build_dqn()
-        self.start_step = self.step_op.eval()
+        self.start_step = self.step_op.eval(session=self.sess)
 
         self.num_game, self.update_count, self.ep_reward = 0, 0, 0.
         self.total_reward, self.total_loss, self.total_q = 0., 0., 0.
         self.max_avg_ep_reward = 0
+        self.currentAction = 0
         self.ep_rewards, self.actions = [], []
 
     def initStep(self, screen, reward, action, terminal):
-        self.screen, self.reward, self.action, self.terminal = screen, reward, action, terminal
+        self.screen, self.reward, self.currentAction, self.terminal = screen, reward, action, terminal
         for _ in range(self.history_length):
             self.history.add(self.screen)
 
     def stepEnv(self):
-        self.action = self.predict(self.history.get())
-        return self.action
+        self.currentAction = self.predict(self.history.get())
+        return self.currentAction
 
     def updateModel(self, screen, reward, terminal):
-        self.observe(screen, reward, self.action, terminal)
+        self.observe(screen, reward, self.currentAction, terminal)
 
         self.num_game += 1
         self.ep_rewards.append(self.ep_reward)
         self.ep_reward = 0.
+        self.step += 1
 
-        self.actions.append(self.action)
+        self.actions.append(self.currentAction)
         self.total_reward += reward
 
         if self.step >= self.learn_start:
-            if self.step % self.test_step == self.test_step - 1:
+            if self.step % self.test_step == self.test_step - 1 and self.update_count != 0:
                 avg_reward = self.total_reward / self.test_step
                 avg_loss = self.total_loss / self.update_count
                 avg_q = self.total_q / self.update_count
@@ -77,7 +78,7 @@ class LawmakerZero(BaseModel):
                     % (avg_reward, avg_loss, avg_q, avg_ep_reward, max_ep_reward, min_ep_reward, self.num_game))
 
                 if self.max_avg_ep_reward * 0.9 <= avg_ep_reward:
-                    self.step_assign_op.eval({self.step_input: self.step + 1})
+                    self.step_assign_op.eval({self.step_input: self.step + 1}, session=self.sess)
                     self.save_model(self.step + 1)
 
                     self.max_avg_ep_reward = max(self.max_avg_ep_reward, avg_ep_reward)
@@ -93,7 +94,8 @@ class LawmakerZero(BaseModel):
                         'episode.num of game': self.num_game,
                         'episode.rewards': self.ep_rewards,
                         'episode.actions': self.actions,
-                        'training.learning_rate': self.learning_rate_op.eval({self.learning_rate_step: self.step}),
+                        'training.learning_rate': self.learning_rate_op.eval({self.learning_rate_step: self.step},
+                                                                             session=self.sess),
                     })
 
                 self.num_game = 0
@@ -113,12 +115,11 @@ class LawmakerZero(BaseModel):
         if random.random() < ep:
             action = random.randrange(self.action_size)
         else:
-            action = self.q_action.eval({self.s_t: [s_t]})[0]
+            action = self.q_action.eval({self.s_t: [s_t]}, session=self.sess)[0]
 
         return action
 
     def observe(self, screen, reward, action, terminal):
-        reward = max(self.min_reward, min(self.max_reward, reward))
 
         self.history.add(screen)
         self.memory.add(screen, reward, action, terminal)
@@ -136,18 +137,17 @@ class LawmakerZero(BaseModel):
         else:
             s_t, action, reward, s_t_plus_1, terminal = self.memory.sample()
 
-        t = time.time()
         if self.double_q:
             # Double Q-learning
-            pred_action = self.q_action.eval({self.s_t: s_t_plus_1})
+            pred_action = self.q_action.eval({self.s_t: s_t_plus_1}, session=self.sess)
 
             q_t_plus_1_with_pred_action = self.target_q_with_idx.eval({
                 self.target_s_t: s_t_plus_1,
                 self.target_q_idx: [[idx, pred_a] for idx, pred_a in enumerate(pred_action)]
-            })
+            }, session=self.sess)
             target_q_t = (1. - terminal) * self.discount * q_t_plus_1_with_pred_action + reward
         else:
-            q_t_plus_1 = self.target_q.eval({self.target_s_t: s_t_plus_1})
+            q_t_plus_1 = self.target_q.eval({self.target_s_t: s_t_plus_1}, session=self.sess)
 
             terminal = np.array(terminal) + 0.
             max_q_t_plus_1 = np.max(q_t_plus_1, axis=1)
@@ -174,17 +174,16 @@ class LawmakerZero(BaseModel):
         # training network
         with tf.variable_scope('prediction'):
             self.s_t = tf.placeholder('float32',
-                                      [self.screen_height, self.screen_width],
+                                      [None, self.history_length, self.screen_height, self.screen_width],
                                       name='s_t')
+            shape = self.s_t.get_shape().as_list()
+            self.s_t_flat = tf.reshape(self.s_t, [-1, reduce(lambda x, y: x * y, shape[1:])])
 
-            self.l1, self.w['l1_w'], self.w['l1_b'] = linear(self.s_t, 512,
-                                                             activation_fn=activation_fn,
+            self.l1, self.w['l1_w'], self.w['l1_b'] = linear(self.s_t_flat, 512,
                                                              name='l1')
             self.l2, self.w['l2_w'], self.w['l2_b'] = linear(self.l1, 512,
-                                                             activation_fn=activation_fn,
                                                              name='l2')
             self.l3, self.w['l3_w'], self.w['l3_b'] = linear(self.l2, 512,
-                                                             activation_fn=activation_fn,
                                                              name='l3')
 
             shape = self.l3.get_shape().as_list()
@@ -211,7 +210,7 @@ class LawmakerZero(BaseModel):
                                                                  name='l4')
                 self.q, self.w['q_w'], self.w['q_b'] = linear(self.l4, self.action_size, name='q')
 
-            self.q_action = tf.argmax(self.q, dimension=1)
+            self.q_action = tf.argmax(self.q, axis=1)
 
             q_summary = []
             avg_q = tf.reduce_mean(self.q, 0)
@@ -222,17 +221,17 @@ class LawmakerZero(BaseModel):
         # target network
         with tf.variable_scope('target'):
             self.target_s_t = tf.placeholder('float32',
-                                             [self.screen_height, self.screen_width],
+                                             [None, self.history_length, self.screen_height, self.screen_width],
                                              name='target_s_t')
 
-            self.target_l1, self.t_w['l1_w'], self.t_w['l1_b'] = linear(self.target_s_t, 512,
-                                                                        activation_fn=activation_fn, name='target_l1'
-                                                                        )
+            shape = self.target_s_t.get_shape().as_list()
+            self.target_s_t_flat = tf.reshape(self.target_s_t, [-1, reduce(lambda x, y: x * y, shape[1:])])
+
+            self.target_l1, self.t_w['l1_w'], self.t_w['l1_b'] = linear(self.target_s_t_flat, 512
+                                                                        , name='target_l1')
             self.target_l2, self.t_w['l2_w'], self.t_w['l2_b'] = linear(self.target_l1, 512,
-                                                                        activation_fn=activation_fn,
                                                                         name='target_l2')
             self.target_l3, self.t_w['l3_w'], self.t_w['l3_b'] = linear(self.target_l2, 512,
-                                                                        activation_fn=activation_fn,
                                                                         name='target_l3')
 
             shape = self.target_l3.get_shape().as_list()
@@ -273,8 +272,8 @@ class LawmakerZero(BaseModel):
 
         # optimizer
         with tf.variable_scope('optimizer'):
-            self.target_q_t = tf.placeholder('float32', [None], name='target_q_t')
-            self.action = tf.placeholder('int64', [None], name='action')
+            self.target_q_t = tf.placeholder('float32', name='target_q_t')
+            self.action = tf.placeholder('int64', name='action')
 
             action_one_hot = tf.one_hot(self.action, self.action_size, 1.0, 0.0, name='action_one_hot')
             q_acted = tf.reduce_sum(self.q * action_one_hot, reduction_indices=1, name='q_acted')
@@ -284,7 +283,7 @@ class LawmakerZero(BaseModel):
             self.global_step = tf.Variable(0, trainable=False)
 
             self.loss = tf.reduce_mean(clipped_error(self.delta), name='loss')
-            self.learning_rate_step = tf.placeholder('int64', None, name='learning_rate_step')
+            self.learning_rate_step = tf.placeholder('int64', name='learning_rate_step')
             self.learning_rate_op = tf.maximum(self.learning_rate_minimum,
                                                tf.train.exponential_decay(
                                                    self.learning_rate,
@@ -304,19 +303,19 @@ class LawmakerZero(BaseModel):
             self.summary_ops = {}
 
             for tag in scalar_summary_tags:
-                self.summary_placeholders[tag] = tf.placeholder('float32', None, name=tag.replace(' ', '_'))
+                self.summary_placeholders[tag] = tf.placeholder('float32', name=tag.replace(' ', '_'))
                 self.summary_ops[tag] = tf.summary.scalar("%s-%s/%s" % ('law', 'maker', tag),
                                                           self.summary_placeholders[tag])
 
             histogram_summary_tags = ['episode.rewards', 'episode.actions']
 
             for tag in histogram_summary_tags:
-                self.summary_placeholders[tag] = tf.placeholder('float32', None, name=tag.replace(' ', '_'))
+                self.summary_placeholders[tag] = tf.placeholder('float32', name=tag.replace(' ', '_'))
                 self.summary_ops[tag] = tf.summary.histogram(tag, self.summary_placeholders[tag])
 
             self.writer = tf.summary.FileWriter('./logs/%s' % self.model_dir, self.sess.graph)
 
-        tf.initialize_all_variables().run()
+        tf.global_variables_initializer().run(session=self.sess)
 
         self._saver = tf.train.Saver(list(self.w.values()) + [self.step_op], max_to_keep=30)
 
@@ -325,7 +324,8 @@ class LawmakerZero(BaseModel):
 
     def update_target_q_network(self):
         for name in self.w.keys():
-            self.t_w_assign_op[name].eval({self.t_w_input[name]: self.w[name].eval()})
+            self.t_w_assign_op[name].eval({self.t_w_input[name]: self.w[name].eval(session=self.sess)},
+                                          session=self.sess)
 
     def save_weight_to_pkl(self):
         if not os.path.exists(self.weight_dir):
