@@ -12,8 +12,8 @@ if USER == 'vladimir':
     local = not remote
 
     test = False  # local
-    best = False  # local
-    load = False  # local
+    best = True  # local
+    load = True  # local
 
     sample = not test
     singles = True
