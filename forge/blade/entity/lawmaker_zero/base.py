@@ -59,7 +59,7 @@ class BaseModel(object):
 
     @property
     def model_dir(self):
-        model_dir = self.config.env_name
+        model_dir = 'lawmaker'
         for k, v in self._attrs.items():
             if not k.startswith('_') and k not in ['display']:
                 model_dir += "/%s-%s" % (k, ",".join([str(i) for i in v])
@@ -68,6 +68,6 @@ class BaseModel(object):
 
     @property
     def saver(self):
-        if self._saver == None:
+        if self._saver is None:
             self._saver = tf.train.Saver(max_to_keep=10)
         return self._saver
