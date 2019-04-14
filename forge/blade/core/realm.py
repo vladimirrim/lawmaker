@@ -163,7 +163,6 @@ class NativeRealm(Realm):
                 with tf.variable_scope('network' + str(i)):
                     self.lawmakerZero[i].initStep(state[3 * i + 3:3 * i + 6] + state, reward, np.random.randint(0, 10),
                                                   False)
-                    self.lawmakerZero[i].save_model(8)
         else:
             for i in range(8):
                 with tf.variable_scope('network' + str(i)):
