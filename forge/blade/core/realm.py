@@ -160,12 +160,15 @@ class NativeRealm(Realm):
     def stepLawmakerZero(self, state, reward):
         if self.stepCount == 0:
             for i in range(8):
-                self.lawmakerZero[i].initStep(state[3 * i + 3:3 * i + 6] + state, reward, np.random.randint(0, 10),
-                                              False)
+                with tf.variable_scope('network' + str(i)):
+                    self.lawmakerZero[i].initStep(state[3 * i + 3:3 * i + 6] + state, reward, np.random.randint(0, 10),
+                                                  False)
+                    self.lawmakerZero[i].save_model(8)
         else:
             for i in range(8):
-                self.lawmakerZero[i].updateModel(np.array(state[3 * i + 3:3 * i + 6] + state).reshape((1, 30)),
-                                                 reward, False)
+                with tf.variable_scope('network' + str(i)):
+                    self.lawmakerZero[i].updateModel(np.array(state[3 * i + 3:3 * i + 6] + state).reshape((1, 30)),
+                                                     reward, False)
                 self.currentAction[i] = self.lawmakerZero[i].stepEnv()
         self.save()
 
@@ -266,9 +269,8 @@ class NativeRealm(Realm):
         self.session = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
 
         for i in range(8):
-                config = get_config(flags) or flags
+            flags['env_name'] = 'lawmaker' + str(i)
+            config = get_config(flags) or flags
 
-                if not flags['use_gpu']:
-                    config.cnn_format = 'NHWC'
-                with tf.variable_scope('network' + str(i)):
-                    self.lawmakerZero.append(LawmakerZero(config, self.session))
+            with tf.variable_scope('lawmaker' + str(i)):
+                self.lawmakerZero.append(LawmakerZero(config, self.session))

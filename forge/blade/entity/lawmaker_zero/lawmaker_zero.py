@@ -51,6 +51,8 @@ class LawmakerZero(BaseModel):
     def updateModel(self, screen, reward, terminal):
         self.observe(screen, reward, self.currentAction, terminal)
 
+        self.save_model(self.step)
+
         self.num_game += 1
         self.ep_rewards.append(self.ep_reward)
         self.ep_reward = 0.
@@ -317,7 +319,7 @@ class LawmakerZero(BaseModel):
 
         tf.global_variables_initializer().run(session=self.sess)
 
-        self._saver = tf.train.Saver(list(self.w.values()) + [self.step_op], max_to_keep=30)
+        self._saver = tf.train.Saver(tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope=self.env_name), max_to_keep=30)
 
         self.load_model()
         self.update_target_q_network()
