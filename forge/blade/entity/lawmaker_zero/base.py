@@ -59,11 +59,7 @@ class BaseModel(object):
 
     @property
     def model_dir(self):
-        model_dir = 'lawmaker'
-        for k, v in self._attrs.items():
-            if not k.startswith('_') and k not in ['display']:
-                model_dir += "/%s-%s" % (k, ",".join([str(i) for i in v])
-                if type(v) == list else v)
+        model_dir = 'lawmaker_zero4.0'
         return model_dir + '/'
 
     @property

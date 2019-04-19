@@ -181,8 +181,11 @@ class NativeRealm(Realm):
     def stepEnts(self):
         dead = []
 
-        if self.stepCount % 1000 == 0:
+        if self.stepCount % 2000 == 0:
             self.stepLawmakerZero(self.updateState(), self.updateReward())
+
+        if self.stepCount % 1000 == 0:
+            self.updateReward()
 
         for ent in self.desciples.values():
             ent.step(self.world)
