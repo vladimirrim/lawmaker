@@ -51,8 +51,6 @@ class LawmakerZero(BaseModel):
     def updateModel(self, screen, reward, terminal):
         self.observe(screen, reward, self.currentAction, terminal)
 
-        self.save_model(self.step)
-
         self.num_game += 1
         self.ep_rewards.append(self.ep_reward)
         self.ep_reward = 0.
