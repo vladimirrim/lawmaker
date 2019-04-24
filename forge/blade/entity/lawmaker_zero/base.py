@@ -59,11 +59,11 @@ class BaseModel(object):
 
     @property
     def model_dir(self):
-        model_dir = 'lawmaker_zero4.0'
+        model_dir = 'lawmaker_zero4.0/' + self.env_name
         return model_dir + '/'
 
     @property
     def saver(self):
         if self._saver is None:
-            self._saver = tf.train.Saver(max_to_keep=10)
+            self._saver = tf.train.Saver(max_to_keep=1)
         return self._saver
