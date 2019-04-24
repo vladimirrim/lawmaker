@@ -137,13 +137,14 @@ class NativeRealm(Realm):
         reward = 0
         for ent in self.desciples.values():
             reward += ent.__getattribute__('timeAlive')
-        self.curReward += reward / len(self.desciples.values())
+        if len(self.desciples.values()) != 0:
+            self.curReward += reward / len(self.desciples.values())
 
     def updateReward(self):
-        r = (self.curReward - self.prevReward) / 1000
+        #   r = (self.curReward - self.prevReward) / 1000
         self.prevReward = self.curReward
         self.curReward = 0
-        return r
+        return self.prevReward / 1000
 
     def stepLawmaker(self, state, reward):
         if self.stepCount != 0:
