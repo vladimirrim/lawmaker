@@ -1,3 +1,2 @@
 *.p filter=lfs diff=lfs merge=lfs -text
 *.pth filter=lfs diff=lfs merge=lfs -text
-resource/exps/** filter=lfs diff=lfs merge=lfs -text
