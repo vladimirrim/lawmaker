@@ -95,9 +95,13 @@ class NativeRealm(Realm):
         self.currentAction = [0] * 8
         self.prevReward = 0
         self.curReward = 0
+        self.prevMax = 0
+        self.curMax = 0
         self.states = np.zeros((8, 3))
         self.overallState = [0., 0., 0.]
         self.lengths = [0] * 8
+        self.era = 1
+        self.testPeriod = 5000
         #  self.lawmaker.load()
         self.lawmakerZero = []
         self.setupLawmakerZero()
@@ -112,6 +116,25 @@ class NativeRealm(Realm):
             self.overallState[1] += self.sword.getUniqueScrub(ent.entID)
             self.overallState[2] += ent.__getattribute__('timeAlive')
             self.lengths[ent.annID] += 1
+
+    def election(self):
+        self.lawmakerZero.clear()
+        self.era += 1
+        self.curMax = 0
+        self.prevMax = 0
+        self.stepCount = 0
+        self.setupLawmakerZero()
+
+    def voteForMax(self, reward):
+        if reward > self.curMax:
+            self.curMax = reward
+        if self.stepCount % self.testPeriod == 0 and self.stepCount != 0:
+            if self.curMax <= self.prevMax:
+                self.election()
+            else:
+                self.prevMax = self.curMax
+                self.curMax = 0
+
 
     def updateState(self):
         if sum(self.lengths) != 0:
@@ -137,8 +160,12 @@ class NativeRealm(Realm):
         reward = 0
         for ent in self.desciples.values():
             reward += ent.__getattribute__('timeAlive')
+
         if len(self.desciples.values()) != 0:
-            self.curReward += reward / len(self.desciples.values())
+            reward /= len(self.desciples.values())
+
+        self.voteForMax(reward)
+        self.curReward += reward
 
     def updateReward(self):
         #   r = (self.curReward - self.prevReward) / 1000
@@ -161,12 +188,12 @@ class NativeRealm(Realm):
     def stepLawmakerZero(self, state, reward):
         if self.stepCount == 0:
             for i in range(8):
-                with tf.variable_scope('network' + str(i)):
+                with tf.variable_scope('lawmaker' + str(i) + str(self.era)):
                     self.lawmakerZero[i].initStep(state[3 * i + 3:3 * i + 6] + state, reward, np.random.randint(0, 10),
                                                   False)
         else:
             for i in range(8):
-                with tf.variable_scope('network' + str(i)):
+                with tf.variable_scope('lawmaker' + str(i) + str(self.era)):
                     self.lawmakerZero[i].updateModel(np.array(state[3 * i + 3:3 * i + 6] + state).reshape((1, 30)),
                                                      reward, False)
                 self.currentAction[i] = self.lawmakerZero[i].stepEnv()
@@ -182,11 +209,8 @@ class NativeRealm(Realm):
     def stepEnts(self):
         dead = []
 
-        if self.stepCount % 2000 == 0:
-            self.stepLawmakerZero(self.updateState(), self.updateReward())
-
         if self.stepCount % 1000 == 0:
-            self.updateReward()
+            self.stepLawmakerZero(self.updateState(), self.updateReward())
 
         for ent in self.desciples.values():
             ent.step(self.world)
@@ -272,8 +296,9 @@ class NativeRealm(Realm):
         self.session = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
 
         for i in range(8):
+            flags['era'] = 'era' + str(self.era)
             flags['env_name'] = 'lawmaker' + str(i)
             config = get_config(flags) or flags
 
-            with tf.variable_scope('lawmaker' + str(i)):
+            with tf.variable_scope('lawmaker' + str(i) + str(self.era)):
                 self.lawmakerZero.append(LawmakerZero(config, self.session))
