@@ -101,7 +101,7 @@ class NativeRealm(Realm):
         self.overallState = [0., 0., 0.]
         self.lengths = [0] * 8
         self.era = 1
-        self.testPeriod = 5000
+        self.testPeriod = 50000
         #  self.lawmaker.load()
         self.lawmakerZero = []
         self.setupLawmakerZero()
@@ -126,8 +126,7 @@ class NativeRealm(Realm):
         self.setupLawmakerZero()
 
     def voteForMax(self, reward):
-        if reward > self.curMax:
-            self.curMax = reward
+        self.curMax += reward
         if self.stepCount % self.testPeriod == 0 and self.stepCount != 0:
             if self.curMax <= self.prevMax:
                 self.election()
