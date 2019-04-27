@@ -59,7 +59,7 @@ class BaseModel(object):
 
     @property
     def model_dir(self):
-        model_dir = 'lawmaker_zero4.0/' + self.env_name
+        model_dir = 'lawmaker_zero4.0/' + self.era + '/' + self.env_name
         return model_dir + '/'
 
     @property
