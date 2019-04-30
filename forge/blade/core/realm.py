@@ -119,6 +119,8 @@ class NativeRealm(Realm):
 
     def election(self):
         self.lawmakerZero.clear()
+        self.session.close()
+        tf.reset_default_graph()
         self.era += 1
         self.curMax = 0
         self.prevMax = 0
@@ -133,7 +135,6 @@ class NativeRealm(Realm):
             else:
                 self.prevMax = self.curMax
                 self.curMax = 0
-
 
     def updateState(self):
         if sum(self.lengths) != 0:
