@@ -2,10 +2,12 @@ import pickle
 import ray
 
 from forge.blade import core, lib
-
+import numpy as np
 
 # Wrapper for remote async multi environments (realms)
 # Supports both the native and vecenv per-env api
+from forge.trinity.themis import Themis
+
 
 class VecEnvServer:
     def __init__(self, config, args):
@@ -37,10 +39,12 @@ class NativeServer:
         return ray.get(recvs)
 
     # Use native api (runs full trajectories)
-    def run(self, swordUpdate=None):
-        recvs = [e.run.remote(swordUpdate) for e in self.envs]
-        recvs = ray.get(recvs)
-        return recvs
+    def run(self, currentAction, swordUpdate=None):
+        recvs = [e.run.remote(currentAction, swordUpdate) for e in self.envs]
+        recvs = np.array(ray.get(recvs))
+        return [(recvs[i][0], recvs[i][1]) for i in range(len(self.envs))], \
+               [np.mean(x) for x in zip(*recvs[:, 2])], \
+               np.mean([recvs[i][3] for i in range(len(self.envs))])
 
     def send(self, swordUpdate):
         [e.recvSwordUpdate.remote(swordUpdate) for e in self.envs]
@@ -83,6 +87,7 @@ class Native(Blacksmith):
     def __init__(self, config, args, trinity):
         super().__init__(config, args)
         self.pantheon = trinity.pantheon(config, args)
+        self.themis = Themis()
         self.trinity = trinity
 
         self.env = NativeServer(config, args, trinity)
@@ -94,7 +99,10 @@ class Native(Blacksmith):
     # Runs full trajectories on each environment
     # With no communication -- all on the env cores.
     def run(self):
-        recvs = self.env.run(self.pantheon.model)
+        recvs, state, reward = self.env.run(self.themis.currentAction, self.pantheon.model)
+        self.themis.voteForMax(reward)
+        self.themis.stepLawmakerZero(state, reward)
+        self.themis.save_model()
         self.pantheon.step(recvs)
         self.rayBuffers()
 
