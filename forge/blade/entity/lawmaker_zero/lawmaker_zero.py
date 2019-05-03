@@ -77,11 +77,7 @@ class LawmakerZero(BaseModel):
                     '# game: %d' \
                     % (avg_reward, avg_loss, avg_q, avg_ep_reward, max_ep_reward, min_ep_reward, self.num_game))
 
-                if self.max_avg_ep_reward * 0.9 <= avg_ep_reward:
-                    self.step_assign_op.eval({self.step_input: self.step + 1}, session=self.sess)
-                    self.save_model(self.step + 1)
-
-                    self.max_avg_ep_reward = max(self.max_avg_ep_reward, avg_ep_reward)
+                self.max_avg_ep_reward = max(self.max_avg_ep_reward, avg_ep_reward)
 
                 if self.step > 180:
                     self.inject_summary({
@@ -317,10 +313,15 @@ class LawmakerZero(BaseModel):
 
         tf.global_variables_initializer().run(session=self.sess)
 
-        self._saver = tf.train.Saver(tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope=self.env_name), max_to_keep=1)
+        self._saver = tf.train.Saver(tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope=self.env_name),
+                                     max_to_keep=1)
 
         self.load_model()
         self.update_target_q_network()
+
+    def save(self):
+        self.step_assign_op.eval({self.step_input: self.step + 1}, session=self.sess)
+        self.save_model(self.step + 1)
 
     def update_target_q_network(self):
         for name in self.w.keys():

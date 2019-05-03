@@ -70,7 +70,7 @@ def environment(env, ent, sz, config):
 def tile(ent, t, sz, config):
     nTiles = 8
     index = t.state.index
-    assert index >= 0 and index < nTiles
+    assert 0 <= index < nTiles
     conv = [index, t.nEnts]
 
     ents = []
