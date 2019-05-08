@@ -54,6 +54,7 @@ class Blob:
                        Material.FOREST.value: 0}
         self.counts = deepcopy(self.unique)
         self.lifetime = 0
+        self.expMap = np.zeros((80, 80), dtype=int)
 
         self.reward, self.ret = [], []
         self.value, self.entropy = [], []

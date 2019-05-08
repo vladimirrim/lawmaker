@@ -66,9 +66,11 @@ class Themis:
         if self.stepCount % self.testPeriod == 0 and self.stepCount != 0:
             if self.curMax <= self.prevMax:
                 self.election()
+                return True
             else:
                 self.prevMax = self.curMax
                 self.curMax = 0
+        return False
 
     def setupLawmakerZero(self):
         flags = dict()
