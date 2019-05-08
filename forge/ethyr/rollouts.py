@@ -79,6 +79,8 @@ class Feather:
 
     def move(self, tile, pos):
         tile = type(tile.state)
+        r, c = pos
+        self.blob.expMap[r][c] += 1
         if pos not in self.expMap:
             self.expMap.add(pos)
             self.blob.unique[tile] += 1

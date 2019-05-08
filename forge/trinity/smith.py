@@ -1,7 +1,11 @@
+import os
 import pickle
 import ray
 
 from forge.blade import core, lib
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+from matplotlib.colors import LogNorm
 import numpy as np
 
 # Wrapper for remote async multi environments (realms)
@@ -89,9 +93,13 @@ class Native(Blacksmith):
         self.pantheon = trinity.pantheon(config, args)
         self.themis = Themis()
         self.trinity = trinity
+        self.nPop = config.NPOP
+        self.nRealm = args.nRealm
+        self.stepCount = 0
 
         self.env = NativeServer(config, args, trinity)
         self.env.send(self.pantheon.model)
+        self.expMaps = np.zeros((self.nRealm, config.NPOP, 80, 80))
 
         self.renderStep = self.step
         self.idx = 0
@@ -100,11 +108,36 @@ class Native(Blacksmith):
     # With no communication -- all on the env cores.
     def run(self):
         recvs, state, reward = self.env.run(self.themis.currentAction, self.pantheon.model)
-        self.themis.voteForMax(reward)
+        isNewEra = self.themis.voteForMax(reward)
         self.themis.stepLawmakerZero(state, reward)
-        self.themis.save_model()
+        self.stepCount += 1
+        if self.stepCount % 100 == 0:
+            self.themis.save_model()
+        _, logs = list(zip(*recvs))
+        for i in range(len(logs)):
+            for blob in logs[i]:
+                self.expMaps[i][blob.annID] += blob.expMap
+        if isNewEra:
+            self.plotExpMaps()
         self.pantheon.step(recvs)
         self.rayBuffers()
+
+    def plotExpMaps(self):
+        for i in range(self.nRealm):
+            for nation in range(self.nPop):
+                dir = 'plots/era' + str(self.themis.era) + '/map' + str(i)
+                try:
+                    os.makedirs(dir)
+                except FileExistsError:
+                    pass
+
+                self.plotExpMap(self.expMaps[i][nation], dir + '/nation' + str(nation) + '.png')
+
+    def plotExpMap(self, expMap, title):
+        plt.imshow(expMap + 10, cmap=cm.hot, norm=LogNorm())
+        plt.colorbar()
+        plt.savefig(title)
+        plt.close()
 
     # Only for render -- steps are run per core
     def step(self):

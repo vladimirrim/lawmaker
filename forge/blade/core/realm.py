@@ -88,58 +88,62 @@ class NativeRealm(Realm):
         self.logs = []
         self.currentAction = [0] * 8
         self.prevReward = 0
-        self.curReward = 0
-        self.states = np.zeros((8, 3))
+        self.curReward = np.zeros(config.NPOP)
+        self.states = np.zeros((config.NPOP, 3))
         self.overallState = [0., 0., 0.]
         self.lengths = [0] * 8
+        self.stepCount = 0
         #  self.lawmaker.load()
 
     def collectState(self):
+        lengths = np.zeros(self.curReward.shape[0])
+        states = np.zeros((8, 3))
+        overallState = np.zeros(3)
         for ent in self.desciples.values():
-            self.states[ent.annID][0] += self.sword.getUniqueGrass(ent.entID)
-            self.states[ent.annID][1] += self.sword.getUniqueScrub(ent.entID)
-            self.states[ent.annID][2] += ent.__getattribute__('timeAlive')
+            states[ent.annID][0] += self.sword.getUniqueGrass(ent.entID)
+            states[ent.annID][1] += self.sword.getUniqueScrub(ent.entID)
+            states[ent.annID][2] += ent.__getattribute__('timeAlive')
 
-            self.overallState[0] += self.sword.getUniqueGrass(ent.entID)
-            self.overallState[1] += self.sword.getUniqueScrub(ent.entID)
-            self.overallState[2] += ent.__getattribute__('timeAlive')
-            self.lengths[ent.annID] += 1
+            overallState[0] += self.sword.getUniqueGrass(ent.entID)
+            overallState[1] += self.sword.getUniqueScrub(ent.entID)
+            overallState[2] += ent.__getattribute__('timeAlive')
+            lengths[ent.annID] += 1
+
+        if sum(lengths) != 0:
+            self.overallState += overallState / sum(lengths)
+
+        for i in range(len(lengths)):
+            if lengths[i] != 0:
+                self.states[i] += states[i] / lengths[i]
 
     def updateState(self):
-        if sum(self.lengths) != 0:
-            overallState = [x / sum(self.lengths) for x in self.overallState]
-        else:
-            overallState = self.overallState
-
-        state = []
-        for i in range(8):
-            for param in self.states[i]:
-                if self.lengths[i] != 0:
-                    state.append(param / self.lengths[i])
-                else:
-                    state.append(param)
+        overallState = self.overallState
+        state = self.states
 
         self.states = np.zeros((8, 3))
         self.overallState = [0., 0., 0.]
         self.lengths = [0] * 8
 
-        return overallState + state
+        return list(overallState) + list(state.reshape(24))
 
     def collectReward(self):
-        reward = 0
+        reward = np.zeros(self.curReward.shape[0])
+        lengths = np.zeros(self.curReward.shape[0])
         for ent in self.desciples.values():
-            reward += ent.__getattribute__('timeAlive')
+            reward[ent.annID] += ent.__getattribute__('timeAlive')
+            lengths[ent.annID] += 1
 
-        if len(self.desciples.values()) != 0:
-            reward /= len(self.desciples.values())
+        for i in range(len(reward)):
+            if lengths[i] != 0:
+                reward[i] /= lengths[i]
 
         self.curReward += reward
 
     def updateReward(self):
         #   r = (self.curReward - self.prevReward) / 1000
         self.prevReward = self.curReward
-        self.curReward = 0
-        return self.prevReward / 1000
+        self.curReward = np.zeros(8)
+        return np.sum(self.prevReward) / self.stepCount
 
     def stepLawmaker(self, state, reward):
         if self.stepCount != 0:
@@ -194,7 +198,9 @@ class NativeRealm(Realm):
         self.currentAction = currentAction
 
         updates = None
+        self.stepCount = 0
         while updates is None:
+            self.stepCount += 1
             self.step()
             updates, self.logs = self.sword.sendUpdate()
         return updates, self.logs, self.updateState(), self.updateReward()
