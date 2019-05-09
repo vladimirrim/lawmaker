@@ -66,6 +66,23 @@ class Blob:
         self.value = np.mean(self.value)
 
 
+class BlobLight:
+    def __init__(self, blobHeavy):
+        self.unique = blobHeavy.unique
+        self.counts = blobHeavy.counts
+        self.lifetime = blobHeavy.lifetime
+        self.annID = blobHeavy.annID
+
+        self.reward, self.ret = blobHeavy.reward, blobHeavy.ret
+        self.value, self.entropy = blobHeavy.value, blobHeavy.entropy
+        self.pg_loss, self.val_loss = blobHeavy.pg_loss, blobHeavy.val_loss
+
+    def finish(self):
+        self.lifetime = len(self.reward)
+        self.reward = np.sum(self.reward)
+        self.value = np.mean(self.value)
+
+
 class Quill:
     def __init__(self, modeldir):
         self.time = time.time()
@@ -100,7 +117,7 @@ class Quill:
         blobRet = []
         for e in blobs:
             if np.random.rand() < 0.1:
-                blobRet.append(e)
+                blobRet.append(BlobLight(e))
         self.save(blobRet)
 
     def latest(self):

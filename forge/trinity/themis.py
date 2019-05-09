@@ -16,7 +16,7 @@ class Themis:
         self.curReward = 0
         self.prevMax = 0
         self.curMax = 0
-        self.era = 1
+        self.era = 6
         self.testPeriod = 120
         self.lawmakerZero = []
         self.setupLawmakerZero()
