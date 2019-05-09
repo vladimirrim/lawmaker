@@ -34,7 +34,6 @@ class LawmakerZero(BaseModel):
         self.start_step = self.step_op.eval(session=self.sess)
 
         self.num_game, self.update_count, self.ep_reward = 0, 0, 0.
-        self.total_reward, self.total_loss, self.total_q = 0., 0., 0.
         self.max_avg_ep_reward = 0
         self.currentAction = 0
         self.ep_rewards, self.actions = [], []
@@ -104,16 +103,13 @@ class LawmakerZero(BaseModel):
             max_q_t_plus_1 = np.max(q_t_plus_1, axis=1)
             target_q_t = (1. - terminal) * self.discount * max_q_t_plus_1 + reward
 
-        _, q_t, loss, summary_str = self.sess.run([self.optim, self.q, self.loss, self.q_summary], {
+        _, q_t, loss = self.sess.run([self.optim, self.q, self.loss], {
             self.target_q_t: target_q_t,
             self.action: action,
             self.s_t: s_t,
             self.learning_rate_step: self.step,
         })
 
-        self.writer.add_summary(summary_str, self.step)
-        self.total_loss += loss
-        self.total_q += q_t.mean()
         self.update_count += 1
 
     def build_dqn(self):
@@ -159,15 +155,10 @@ class LawmakerZero(BaseModel):
             else:
                 self.l4, self.w['l4_w'], self.w['l4_b'] = linear(self.l3_flat, 512, activation_fn=activation_fn,
                                                                  name='l4')
-                self.q, self.w['q_w'], self.w['q_b'] = linear(self.l4, self.action_size, name='q')
+                self.q, self.w['q_w'], self.w['q_b'] = linear(self.l4, self.action_size,
+                                                              name='q')
 
             self.q_action = tf.argmax(self.q, axis=1)
-
-            q_summary = []
-            avg_q = tf.reduce_mean(self.q, 0)
-            for idx in range(self.action_size):
-                q_summary.append(tf.summary.histogram('q/%s' % idx, avg_q[idx]))
-            self.q_summary = tf.summary.merge(q_summary, 'q_summary')
 
         # target network
         with tf.variable_scope('target'):
