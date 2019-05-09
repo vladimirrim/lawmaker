@@ -99,7 +99,7 @@ class Native(Blacksmith):
 
         self.env = NativeServer(config, args, trinity)
         self.env.send(self.pantheon.model)
-        self.expMaps = np.zeros((self.nRealm, config.NPOP, 80, 80))
+        self.expMaps = np.zeros((self.nRealm, self.nPop, 80, 80))
 
         self.renderStep = self.step
         self.idx = 0
@@ -119,6 +119,7 @@ class Native(Blacksmith):
                 self.expMaps[i][blob.annID] += blob.expMap
         if isNewEra:
             self.plotExpMaps()
+            self.expMaps = np.zeros((self.nRealm, self.nPop, 80, 80))
         self.pantheon.step(recvs)
         self.rayBuffers()
 
