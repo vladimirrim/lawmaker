@@ -16,7 +16,7 @@ class Themis:
         self.curReward = 0
         self.prevMax = 0
         self.curMax = 0
-        self.era = 6
+        self.era = 1
         self.testPeriod = 120
         self.lawmakerZero = []
         self.featureSize = 5
@@ -82,8 +82,8 @@ class Themis:
 
         # Model
         flags['model'] = 'm1'
-        flags['dueling'] = False
-        flags['double_q'] = False
+        flags['dueling'] = True
+        flags['double_q'] = True
 
         # Etc
         flags['use_gpu'] = False
