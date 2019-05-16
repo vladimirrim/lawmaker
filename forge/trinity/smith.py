@@ -10,6 +10,7 @@ import numpy as np
 
 # Wrapper for remote async multi environments (realms)
 # Supports both the native and vecenv per-env api
+from forge.blade.lib.enums import Material
 from forge.trinity.themis import Themis
 
 
@@ -107,13 +108,17 @@ class Native(Blacksmith):
     # Runs full trajectories on each environment
     # With no communication -- all on the env cores.
     def run(self):
-        recvs, state, reward = self.env.run(self.themis.currentAction, self.pantheon.model)
+        recvs, _, _ = self.env.run(self.themis.currentAction, self.pantheon.model)
+        _, logs = list(zip(*recvs))
+        state = self.collectState(logs)
+        print(state)
+        reward = self.collectReward(logs)
+        print(reward)
         isNewEra = self.themis.voteForMax(reward)
         self.themis.stepLawmakerZero(state, reward)
         self.stepCount += 1
         if self.stepCount % 100 == 0:
             self.themis.save_model()
-        _, logs = list(zip(*recvs))
         for i in range(len(logs)):
             for blob in logs[i]:
                 self.expMaps[i][blob.annID] += blob.expMap
@@ -139,6 +144,49 @@ class Native(Blacksmith):
         plt.colorbar()
         plt.savefig(title)
         plt.close()
+
+    def collectReward(self, logs):
+        reward = np.zeros((self.nRealm, self.nPop))
+        lengths = np.zeros((self.nRealm, self.nPop))
+        totalReward = 0
+        for i in range(len(logs)):
+            for blob in logs[i]:
+                reward[i][blob.annID] += blob.lifetime
+                lengths[i][blob.annID] += 1
+
+        for i in range(len(logs)):
+            for nn in range(self.nPop):
+                if lengths[i][nn] == 0:
+                    return 0
+                totalReward += reward[i][nn] / lengths[i][nn]
+        return totalReward / self.nPop / self.nRealm
+
+    def collectState(self, logs):
+        state = np.zeros((self.nRealm, self.nPop, 5))
+        overallState = np.zeros(5)
+        lengths = np.zeros((self.nRealm, self.nPop))
+        length = 0
+        for i in range(len(logs)):
+            for blob in logs[i]:
+                state[i][blob.annID][0] += blob.lifetime
+                state[i][blob.annID][1] += blob.unique[Material.GRASS.value]
+                state[i][blob.annID][2] += blob.counts[Material.GRASS.value]
+                state[i][blob.annID][3] += blob.unique[Material.SCRUB.value]
+                state[i][blob.annID][4] += blob.counts[Material.SCRUB.value]
+                overallState += state[i][blob.annID]
+                length += 1
+                lengths[i][blob.annID] += 1
+        states = np.zeros(self.nPop * 5)
+        for i in range(len(logs)):
+            for nn in range(self.nPop):
+                if lengths[i][nn] != 0:
+                    for j in range(5):
+                        states[nn * 5 + j] += state[i][nn][j] / lengths[i][nn]
+
+        if length != 0:
+            overallState /= length
+
+        return list(overallState / 8) + list(states / 8)
 
     # Only for render -- steps are run per core
     def step(self):

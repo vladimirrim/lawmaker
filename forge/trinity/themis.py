@@ -19,18 +19,23 @@ class Themis:
         self.era = 6
         self.testPeriod = 120
         self.lawmakerZero = []
+        self.featureSize = 5
         self.setupLawmakerZero()
 
     def stepLawmakerZero(self, state, reward):
         if self.stepCount == 0:
             for i in range(8):
                 with tf.variable_scope('lawmaker' + str(i)):
-                    self.lawmakerZero[i].initStep(state[3 * i + 3:3 * i + 6] + state, reward, np.random.randint(0, 10),
+                    self.lawmakerZero[i].initStep(state[self.featureSize * i + self.featureSize
+                                                        :self.featureSize * i + self.featureSize * 2]
+                                                  + state, reward, np.random.randint(0, 10),
                                                   False)
         else:
             for i in range(8):
                 with tf.variable_scope('lawmaker' + str(i)):
-                    self.lawmakerZero[i].updateModel(np.array(state[3 * i + 3:3 * i + 6] + state).reshape((1, 30)),
+                    self.lawmakerZero[i].updateModel(np.array(state[self.featureSize * i + self.featureSize
+                                                                    :self.featureSize * i + self.featureSize * 2]
+                                                              + state).reshape((1, self.featureSize * 10)),
                                                      reward, False)
                 self.currentAction[i] = self.lawmakerZero[i].stepEnv()
         self.stepCount += 1

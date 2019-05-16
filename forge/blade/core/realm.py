@@ -175,8 +175,6 @@ class NativeRealm(Realm):
             self.stepEnt(ent, action, arguments)
 
         self.cullDead(dead)
-        self.collectReward()
-        self.collectState()
 
     def postmortem(self, ent, dead):
         entID = ent.entID
