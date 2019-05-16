@@ -28,8 +28,8 @@ class AgentConfig(object):
     min_delta = -1
     max_delta = 1
 
-    double_q = False
-    dueling = False
+    double_q = True
+    dueling = True
 
     _test_step = 5 * scale
     _save_step = _test_step * 10
@@ -38,7 +38,7 @@ class AgentConfig(object):
 class EnvironmentConfig(object):
     env_name = 'lawmaker'
 
-    screen_width = 30
+    screen_width = 50
     screen_height = 1
     max_reward = 1.
     min_reward = -1.
