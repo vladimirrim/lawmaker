@@ -11,7 +11,7 @@ from forge.blade.entity.lawmaker_zero.config import get_config
 class Themis:
     def __init__(self):
         self.stepCount = 0
-        self.currentAction = [0] * 8
+        self.currentAction = [1] * 8
         self.prevReward = 0
         self.curReward = 0
         self.prevMax = 0
@@ -19,7 +19,7 @@ class Themis:
         self.era = 1
         self.testPeriod = 120
         self.lawmakerZero = []
-        self.featureSize = 4
+        self.featureSize = 5
         self.setupLawmakerZero()
 
     def stepLawmakerZero(self, state, reward, rewards):
@@ -28,7 +28,7 @@ class Themis:
                 with tf.variable_scope('lawmaker' + str(i)):
                     self.lawmakerZero[i].initStep(state[self.featureSize * i + self.featureSize
                                                         :self.featureSize * i + self.featureSize * 2]
-                                                  + state, reward + rewards[i], 0,
+                                                  + state, reward + rewards[i], 1,
                                                   False)
         else:
             for i in range(8):
