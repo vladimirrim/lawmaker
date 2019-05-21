@@ -22,7 +22,7 @@ class LawmakerZero(BaseModel):
 
         self.step = 0
         self.history = History(self.config)
-        self.action_size = 11
+        self.action_size = 3
         self.memory = ReplayMemory(self.config, self.model_dir)
 
         with tf.variable_scope('step'):
@@ -126,11 +126,7 @@ class LawmakerZero(BaseModel):
             shape = self.s_t.get_shape().as_list()
             self.s_t_flat = tf.reshape(self.s_t, [-1, reduce(lambda x, y: x * y, shape[1:])])
 
-            self.l1, self.w['l1_w'], self.w['l1_b'] = linear(self.s_t_flat, 512,
-                                                             name='l1')
-            self.l2, self.w['l2_w'], self.w['l2_b'] = linear(self.l1, 512,
-                                                             name='l2')
-            self.l3, self.w['l3_w'], self.w['l3_b'] = linear(self.l2, 512,
+            self.l3, self.w['l3_w'], self.w['l3_b'] = linear(self.s_t_flat, 256,
                                                              name='l3')
 
             shape = self.l3.get_shape().as_list()
@@ -138,10 +134,10 @@ class LawmakerZero(BaseModel):
 
             if self.dueling:
                 self.value_hid, self.w['l4_val_w'], self.w['l4_val_b'] = \
-                    linear(self.l3_flat, 512, activation_fn=activation_fn, name='value_hid')
+                    linear(self.l3_flat, 256, activation_fn=activation_fn, name='value_hid')
 
                 self.adv_hid, self.w['l4_adv_w'], self.w['l4_adv_b'] = \
-                    linear(self.l3_flat, 512, activation_fn=activation_fn, name='adv_hid')
+                    linear(self.l3_flat, 256, activation_fn=activation_fn, name='adv_hid')
 
                 self.value, self.w['val_w_out'], self.w['val_w_b'] = \
                     linear(self.value_hid, 1, name='value_out')
@@ -153,7 +149,7 @@ class LawmakerZero(BaseModel):
                 self.q = self.value + (self.advantage -
                                        tf.reduce_mean(self.advantage, reduction_indices=1, keep_dims=True))
             else:
-                self.l4, self.w['l4_w'], self.w['l4_b'] = linear(self.l3_flat, 512, activation_fn=activation_fn,
+                self.l4, self.w['l4_w'], self.w['l4_b'] = linear(self.l3_flat, 256, activation_fn=activation_fn,
                                                                  name='l4')
                 self.q, self.w['q_w'], self.w['q_b'] = linear(self.l4, self.action_size,
                                                               name='q')
@@ -169,11 +165,7 @@ class LawmakerZero(BaseModel):
             shape = self.target_s_t.get_shape().as_list()
             self.target_s_t_flat = tf.reshape(self.target_s_t, [-1, reduce(lambda x, y: x * y, shape[1:])])
 
-            self.target_l1, self.t_w['l1_w'], self.t_w['l1_b'] = linear(self.target_s_t_flat, 512
-                                                                        , name='target_l1')
-            self.target_l2, self.t_w['l2_w'], self.t_w['l2_b'] = linear(self.target_l1, 512,
-                                                                        name='target_l2')
-            self.target_l3, self.t_w['l3_w'], self.t_w['l3_b'] = linear(self.target_l2, 512,
+            self.target_l3, self.t_w['l3_w'], self.t_w['l3_b'] = linear(self.target_s_t_flat, 256,
                                                                         name='target_l3')
 
             shape = self.target_l3.get_shape().as_list()
@@ -181,10 +173,10 @@ class LawmakerZero(BaseModel):
 
             if self.dueling:
                 self.t_value_hid, self.t_w['l4_val_w'], self.t_w['l4_val_b'] = \
-                    linear(self.target_l3_flat, 512, activation_fn=activation_fn, name='target_value_hid')
+                    linear(self.target_l3_flat, 256, activation_fn=activation_fn, name='target_value_hid')
 
                 self.t_adv_hid, self.t_w['l4_adv_w'], self.t_w['l4_adv_b'] = \
-                    linear(self.target_l3_flat, 512, activation_fn=activation_fn, name='target_adv_hid')
+                    linear(self.target_l3_flat, 256, activation_fn=activation_fn, name='target_adv_hid')
 
                 self.t_value, self.t_w['val_w_out'], self.t_w['val_w_b'] = \
                     linear(self.t_value_hid, 1, name='target_value_out')
@@ -197,7 +189,7 @@ class LawmakerZero(BaseModel):
                                                 tf.reduce_mean(self.t_advantage, reduction_indices=1, keep_dims=True))
             else:
                 self.target_l4, self.t_w['l4_w'], self.t_w['l4_b'] = \
-                    linear(self.target_l3_flat, 512, activation_fn=activation_fn, name='target_l4')
+                    linear(self.target_l3_flat, 256, activation_fn=activation_fn, name='target_l4')
                 self.target_q, self.t_w['q_w'], self.t_w['q_b'] = \
                     linear(self.target_l4, self.action_size, name='target_q')
 

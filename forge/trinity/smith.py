@@ -97,7 +97,10 @@ class Native(Blacksmith):
         self.nPop = config.NPOP
         self.nRealm = args.nRealm
         self.stepCount = 0
-
+        self.avgReward = 0
+        self.avgState = np.zeros(45)
+        self.period = 5
+        self.avgRewards = np.zeros(self.nPop)
         self.env = NativeServer(config, args, trinity)
         self.env.send(self.pantheon.model)
         self.expMaps = np.zeros((self.nRealm, self.nPop, 80, 80))
@@ -108,24 +111,38 @@ class Native(Blacksmith):
     # Runs full trajectories on each environment
     # With no communication -- all on the env cores.
     def run(self):
+        self.stepCount += 1
         recvs, _, _ = self.env.run(self.themis.currentAction, self.pantheon.model)
         _, logs = list(zip(*recvs))
         state = self.collectState(logs)
         reward, rewards = self.collectReward(logs)
-        print(rewards)
-        isNewEra = self.themis.voteForMax(reward)
-        self.themis.stepLawmakerZero(state, reward, rewards)
-        self.stepCount += 1
-        if self.stepCount % 100 == 0:
-            self.themis.save_model()
+        self.avgReward += reward
+        self.avgRewards += rewards
+        self.avgState += state
+
         for i in range(len(logs)):
             for blob in logs[i]:
                 self.expMaps[i][blob.annID] += blob.expMap
+
+        if self.stepCount % self.period == 0:
+            self.updateModel()
+
+        if self.stepCount % 100 == 0:
+            self.themis.save_model()
+
+        self.pantheon.step(recvs)
+        self.rayBuffers()
+
+    def updateModel(self):
+        isNewEra = self.themis.voteForMax(self.avgReward)
+        print(self.avgRewards)
+        self.themis.stepLawmakerZero(list(self.avgState), self.avgReward, self.avgRewards)
+        self.avgReward = 0
+        self.avgRewards = np.zeros(self.nPop)
+        self.avgState = np.zeros(45)
         if isNewEra:
             self.plotExpMaps()
             self.expMaps = np.zeros((self.nRealm, self.nPop, 80, 80))
-        self.pantheon.step(recvs)
-        self.rayBuffers()
 
     def plotExpMaps(self):
         for i in range(self.nRealm):
@@ -160,29 +177,29 @@ class Native(Blacksmith):
                     return 0, np.zeros(self.nPop)
                 rewards[nn] += reward[i][nn] / lengths[i][nn]
                 totalReward += reward[i][nn] / lengths[i][nn]
-        return totalReward / self.nPop / self.nRealm, rewards / self.nPop
+        return totalReward / self.nPop / self.nRealm, rewards / self.nPop / self.nRealm
 
     def collectState(self, logs):
-        state = np.zeros((self.nRealm, self.nPop, 4))
-        overallState = np.zeros(4)
+        state = np.zeros((self.nRealm, self.nPop, 5))
+        overallState = np.zeros(5)
         lengths = np.zeros((self.nRealm, self.nPop))
         length = 0
         for i in range(len(logs)):
             for blob in logs[i]:
-                #state[i][blob.annID][0] += blob.lifetime
-                state[i][blob.annID][0] += blob.unique[Material.GRASS.value]
-                state[i][blob.annID][1] += blob.counts[Material.GRASS.value]
-                state[i][blob.annID][2] += blob.unique[Material.SCRUB.value]
-                state[i][blob.annID][3] += blob.counts[Material.SCRUB.value]
+                state[i][blob.annID][0] += blob.lifetime
+                state[i][blob.annID][1] += blob.unique[Material.GRASS.value]
+                state[i][blob.annID][2] += blob.counts[Material.GRASS.value]
+                state[i][blob.annID][3] += blob.unique[Material.SCRUB.value]
+                state[i][blob.annID][4] += blob.counts[Material.SCRUB.value]
                 overallState += state[i][blob.annID]
                 length += 1
                 lengths[i][blob.annID] += 1
-        states = np.zeros(self.nPop * 4)
+        states = np.zeros(self.nPop * 5)
         for i in range(len(logs)):
             for nn in range(self.nPop):
                 if lengths[i][nn] != 0:
-                    for j in range(4):
-                        states[nn * 4 + j] += state[i][nn][j] / lengths[i][nn]
+                    for j in range(5):
+                        states[nn * 5 + j] += state[i][nn][j] / lengths[i][nn]
 
         if length != 0:
             overallState /= length

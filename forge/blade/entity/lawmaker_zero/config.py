@@ -38,7 +38,7 @@ class AgentConfig(object):
 class EnvironmentConfig(object):
     env_name = 'lawmaker'
 
-    screen_width = 40
+    screen_width = 50
     screen_height = 1
     max_reward = 1.
     min_reward = -1.

@@ -169,7 +169,7 @@ class NativeRealm(Realm):
                 continue
 
             stim = self.getStim(ent)
-            action, arguments, val = self.sword.decide(ent, stim)
+            action, arguments, val = self.sword.decide(ent, stim, self.currentAction)
             ent.act(self.world, action, arguments, val)
 
             self.stepEnt(ent, action, arguments)

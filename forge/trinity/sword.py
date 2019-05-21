@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 from forge import trinity
-from forge.ethyr.rollouts import Rollout
+from forge.ethyr.rollouts import Rollout, mergeRollouts
 from forge.ethyr.torch import optim
 from forge.ethyr.torch.param import setParameters, zeroGrads
 from forge.blade.lib.enums import Material
@@ -23,7 +23,7 @@ class Sword:
     def backward(self):
         ents = self.rollouts.keys()
         anns = [self.anns[idx] for idx in self.networksUsed]
-
+        atns, vals, rets = mergeRollouts(self.rollouts.values())
         reward, val, grads, pg, valLoss, entropy = optim.backward(
             self.rollouts, anns, valWeight=0.25,
             entWeight=self.config.ENTROPY)
@@ -88,9 +88,10 @@ class Sword:
         if self.nGrads >= 100 * 32:
             self.backward()
 
-    def decide(self, ent, stim):
+    def decide(self, ent, stim, actions):
         reward, entID, annID = 0, ent.entID, ent.annID
         action, arguments, atnArgs, val = self.anns[annID](ent, stim)
+        reward += actions[ent.annID] - 1
         self.collectStep(entID, atnArgs, val, reward)
         self.updates[entID].feather.scrawl(
             stim, ent, val, reward)
