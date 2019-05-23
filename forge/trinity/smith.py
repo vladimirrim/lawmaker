@@ -99,7 +99,7 @@ class Native(Blacksmith):
         self.stepCount = 0
         self.avgReward = 0
         self.avgState = np.zeros(45)
-        self.period = 5
+        self.period = 1
         self.avgRewards = np.zeros(self.nPop)
         self.env = NativeServer(config, args, trinity)
         self.env.send(self.pantheon.model)
@@ -134,7 +134,7 @@ class Native(Blacksmith):
         self.rayBuffers()
 
     def updateModel(self):
-        isNewEra = self.themis.voteForMax(self.avgReward)
+        isNewEra = self.themis.voteForBest(self.avgRewards)
         print(self.avgRewards)
         self.themis.stepLawmakerZero(list(self.avgState), self.avgReward, self.avgRewards)
         self.avgReward = 0
@@ -177,7 +177,7 @@ class Native(Blacksmith):
                     return 0, np.zeros(self.nPop)
                 rewards[nn] += reward[i][nn] / lengths[i][nn]
                 totalReward += reward[i][nn] / lengths[i][nn]
-        return totalReward / self.nPop / self.nRealm, rewards / self.nPop / self.nRealm
+        return totalReward / self.nPop / self.nRealm, rewards / self.nRealm
 
     def collectState(self, logs):
         state = np.zeros((self.nRealm, self.nPop, 5))

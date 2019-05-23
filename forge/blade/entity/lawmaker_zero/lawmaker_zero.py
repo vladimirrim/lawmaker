@@ -22,7 +22,7 @@ class LawmakerZero(BaseModel):
 
         self.step = 0
         self.history = History(self.config)
-        self.action_size = 3
+        self.action_size = 5
         self.memory = ReplayMemory(self.config, self.model_dir)
 
         with tf.variable_scope('step'):

@@ -88,10 +88,10 @@ class Sword:
         if self.nGrads >= 100 * 32:
             self.backward()
 
-    def decide(self, ent, stim, actions):
+    def decide(self, ent, stim, actions, step):
         reward, entID, annID = 0, ent.entID, ent.annID
         action, arguments, atnArgs, val = self.anns[annID](ent, stim)
-        reward += actions[ent.annID] - 1
+        reward += (actions[ent.annID] - 2) / (step + 1) ** 2
         self.collectStep(entID, atnArgs, val, reward)
         self.updates[entID].feather.scrawl(
             stim, ent, val, reward)

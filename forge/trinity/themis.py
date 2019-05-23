@@ -1,3 +1,4 @@
+import os
 import random
 
 import tensorflow as tf
@@ -11,13 +12,14 @@ from forge.blade.entity.lawmaker_zero.config import get_config
 class Themis:
     def __init__(self):
         self.stepCount = 0
-        self.currentAction = [1] * 8
+        self.currentAction = [2] * 8
+        self.rewards = np.zeros(8)
         self.prevReward = 0
         self.curReward = 0
         self.prevMax = 0
         self.curMax = 0
         self.era = 1
-        self.testPeriod = 120
+        self.testPeriod = 100
         self.lawmakerZero = []
         self.featureSize = 5
         self.setupLawmakerZero()
@@ -65,6 +67,45 @@ class Themis:
         self.prevMax = 0
         self.stepCount = 0
         self.setupLawmakerZero()
+
+    def heritage(self):
+        self.era += 1
+        king = np.argmax(self.rewards)
+        self.lawmakerZero[king].era = 'era' + str(self.era)
+        self.saveKing(king)
+        self.lawmakerZero.clear()
+        self.session.close()
+        tf.reset_default_graph()
+        gc.collect()
+        self.setupLawmakerZero()
+        self.rewards = np.zeros(8)
+
+    def saveKing(self, king):
+        self.lawmakerZero[king].save()
+        kingargs = tf.contrib.framework.list_variables(self.lawmakerZero[king].checkpoint_dir)
+        print(king)
+        for i in range(8):
+            if i == king:
+                continue
+            with tf.Graph().as_default(), tf.Session().as_default() as sess:
+                new_vars = []
+                for name, shape in kingargs:
+                    v = tf.contrib.framework.load_variable(self.lawmakerZero[king].checkpoint_dir, name)
+                    new_vars.append(tf.Variable(v, name=name.replace('lawmaker' + str(king), 'lawmaker' + str(i))))
+                    saveDir = self.lawmakerZero[king].checkpoint_dir.replace('lawmaker' + str(king),
+                                                                             'lawmaker' + str(i))
+                    if not os.path.exists(saveDir):
+                        os.makedirs(saveDir)
+                    saver = tf.train.Saver(new_vars)
+                    sess.run(tf.global_variables_initializer())
+                    saver.save(sess, saveDir, global_step=self.stepCount)
+
+    def voteForBest(self, rewards):
+        self.rewards += rewards
+        if self.stepCount % self.testPeriod == 0 and self.stepCount != 0:
+            self.heritage()
+            return True
+        return False
 
     def voteForMax(self, reward):
         self.curMax += reward
