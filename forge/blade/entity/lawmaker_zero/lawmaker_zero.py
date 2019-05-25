@@ -48,7 +48,7 @@ class LawmakerZero(BaseModel):
         return self.currentAction
 
     def updateModel(self, screen, reward, terminal):
-        self.observe(screen, reward, self.currentAction, terminal)
+        self.observe(screen, reward, np.argmax(self.currentAction), terminal)
 
         self.num_game += 1
         self.ep_rewards.append(self.ep_reward)
@@ -63,9 +63,9 @@ class LawmakerZero(BaseModel):
                              * (self.ep_end_t - max(0., self.step - self.learn_start)) / self.ep_end_t))
 
         if random.random() < ep:
-            action = random.randrange(self.action_size)
+            action = [random.randrange(self.action_size) for _ in range(self.action_size)]
         else:
-            action = self.q_action.eval({self.s_t: [s_t]}, session=self.sess)[0]
+            action = self.q_action_prob.eval({self.s_t: [s_t]}, session=self.sess)[0]
 
         return action
 
@@ -155,6 +155,7 @@ class LawmakerZero(BaseModel):
                                                               name='q')
 
             self.q_action = tf.argmax(self.q, axis=1)
+            self.q_action_prob = tf.identity(self.q)
 
         # target network
         with tf.variable_scope('target'):

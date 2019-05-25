@@ -1,10 +1,13 @@
 from collections import defaultdict
 
+import chainer
+
 from forge import trinity
 from forge.ethyr.rollouts import Rollout, mergeRollouts
 from forge.ethyr.torch import optim
 from forge.ethyr.torch.param import setParameters, zeroGrads
 from forge.blade.lib.enums import Material
+import numpy as np
 
 
 class Sword:
@@ -91,7 +94,7 @@ class Sword:
     def decide(self, ent, stim, actions, step):
         reward, entID, annID = 0, ent.entID, ent.annID
         action, arguments, atnArgs, val = self.anns[annID](ent, stim)
-        reward += (actions[ent.annID] - 2) / (step + 1) ** 2
+        reward += chainer.cuda.to_cpu(actions.sample().data)[ent.annID][0] / (step + 1)
         self.collectStep(entID, atnArgs, val, reward)
         self.updates[entID].feather.scrawl(
             stim, ent, val, reward)
