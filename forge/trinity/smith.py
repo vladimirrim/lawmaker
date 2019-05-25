@@ -10,6 +10,7 @@ import numpy as np
 
 # Wrapper for remote async multi environments (realms)
 # Supports both the native and vecenv per-env api
+from forge.blade.entity.atalanta.atalanta import Atalanta
 from forge.blade.lib.enums import Material
 from forge.trinity.themis import Themis
 
@@ -92,18 +93,21 @@ class Native(Blacksmith):
     def __init__(self, config, args, trinity):
         super().__init__(config, args)
         self.pantheon = trinity.pantheon(config, args)
-        self.themis = Themis()
+      #  self.themis = Themis()
         self.trinity = trinity
         self.nPop = config.NPOP
         self.nRealm = args.nRealm
+        self.featureSize = 4
         self.stepCount = 0
         self.avgReward = 0
-        self.avgState = np.zeros(45)
+        self.states = np.zeros((self.nPop, self.featureSize))
+        self.avgState = np.zeros(self.featureSize * 9)
         self.period = 1
         self.avgRewards = np.zeros(self.nPop)
         self.env = NativeServer(config, args, trinity)
         self.env.send(self.pantheon.model)
         self.expMaps = np.zeros((self.nRealm, self.nPop, 80, 80))
+        self.atalanta = Atalanta(self.featureSize)
 
         self.renderStep = self.step
         self.idx = 0
@@ -112,9 +116,11 @@ class Native(Blacksmith):
     # With no communication -- all on the env cores.
     def run(self):
         self.stepCount += 1
-        recvs, _, _ = self.env.run(self.themis.currentAction, self.pantheon.model)
+        self.atalanta.agent.batch_act_and_train(list(self.states.astype('float32')))
+        recvs, _, _ = self.env.run(self.atalanta.agent.act_prob(self.states.astype('float32')), self.pantheon.model)
         _, logs = list(zip(*recvs))
         state = self.collectState(logs)
+        self.states += self.collectStates(logs)
         reward, rewards = self.collectReward(logs)
         self.avgReward += reward
         self.avgRewards += rewards
@@ -128,21 +134,26 @@ class Native(Blacksmith):
             self.updateModel()
 
         if self.stepCount % 100 == 0:
-            self.themis.save_model()
+            self.atalanta.agent.save('checkpoints/atalanta')
 
         self.pantheon.step(recvs)
         self.rayBuffers()
 
     def updateModel(self):
-        isNewEra = self.themis.voteForBest(self.avgRewards)
+        #     isNewEra = self.themis.voteForBest(self.avgRewards)
         print(self.avgRewards)
-        self.themis.stepLawmakerZero(list(self.avgState), self.avgReward, self.avgRewards)
+       # self.themis.stepLawmakerZero(list(self.avgState), self.avgReward, self.avgRewards)
+        self.atalanta.agent.batch_observe_and_train(list(self.states.astype('float32')),
+                                                    list(self.avgRewards.astype('float32')), [False] * 8, [False] * 8)
         self.avgReward = 0
+        self.states = np.zeros((self.nPop, self.featureSize))
         self.avgRewards = np.zeros(self.nPop)
-        self.avgState = np.zeros(45)
-        if isNewEra:
-            self.plotExpMaps()
-            self.expMaps = np.zeros((self.nRealm, self.nPop, 80, 80))
+        self.avgState = np.zeros(self.featureSize * 9)
+
+
+    #  if isNewEra:
+    #     self.plotExpMaps()
+    #    self.expMaps = np.zeros((self.nRealm, self.nPop, 80, 80))
 
     def plotExpMaps(self):
         for i in range(self.nRealm):
@@ -180,31 +191,50 @@ class Native(Blacksmith):
         return totalReward / self.nPop / self.nRealm, rewards / self.nRealm
 
     def collectState(self, logs):
-        state = np.zeros((self.nRealm, self.nPop, 5))
-        overallState = np.zeros(5)
+        state = np.zeros((self.nRealm, self.nPop, self.featureSize))
+        overallState = np.zeros(self.featureSize)
         lengths = np.zeros((self.nRealm, self.nPop))
         length = 0
         for i in range(len(logs)):
             for blob in logs[i]:
-                state[i][blob.annID][0] += blob.lifetime
-                state[i][blob.annID][1] += blob.unique[Material.GRASS.value]
-                state[i][blob.annID][2] += blob.counts[Material.GRASS.value]
-                state[i][blob.annID][3] += blob.unique[Material.SCRUB.value]
-                state[i][blob.annID][4] += blob.counts[Material.SCRUB.value]
+                state[i][blob.annID][0] += blob.unique[Material.GRASS.value]
+                state[i][blob.annID][1] += blob.counts[Material.GRASS.value]
+                state[i][blob.annID][2] += blob.unique[Material.SCRUB.value]
+                state[i][blob.annID][3] += blob.counts[Material.SCRUB.value]
                 overallState += state[i][blob.annID]
                 length += 1
                 lengths[i][blob.annID] += 1
-        states = np.zeros(self.nPop * 5)
+        states = np.zeros(self.nPop * self.featureSize)
         for i in range(len(logs)):
             for nn in range(self.nPop):
                 if lengths[i][nn] != 0:
-                    for j in range(5):
-                        states[nn * 5 + j] += state[i][nn][j] / lengths[i][nn]
+                    for j in range(self.featureSize):
+                        states[nn * self.featureSize + j] += state[i][nn][j] / lengths[i][nn]
 
         if length != 0:
             overallState /= length
 
         return list(overallState / 8) + list(states / 8)
+
+    def collectStates(self, logs):
+        states = np.zeros((self.nPop, self.featureSize))
+        overallState = np.zeros(self.featureSize)
+        lengths = np.zeros(self.nPop)
+        length = 0
+        for i in range(len(logs)):
+            for blob in logs[i]:
+                states[blob.annID][0] += blob.unique[Material.GRASS.value]
+                states[blob.annID][1] += blob.counts[Material.GRASS.value]
+                states[blob.annID][2] += blob.unique[Material.SCRUB.value]
+                states[blob.annID][3] += blob.counts[Material.SCRUB.value]
+                overallState += states[blob.annID]
+                length += 1
+                lengths[blob.annID] += 1
+        for nn in range(self.nPop):
+            if lengths[nn] != 0:
+                states[nn] /= lengths[nn]
+
+        return states
 
     # Only for render -- steps are run per core
     def step(self):

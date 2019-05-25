@@ -163,8 +163,6 @@ class NativeRealm(Realm):
         for ent in self.desciples.values():
             ent.step(self.world)
 
-            ent.applyDamage(self.currentAction[ent.annID])
-
             if self.postmortem(ent, dead):
                 continue
 
