@@ -7,6 +7,9 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from matplotlib.colors import LogNorm
 import numpy as np
+import seaborn as sns;
+
+sns.set()
 
 # Wrapper for remote async multi environments (realms)
 # Supports both the native and vecenv per-env api
@@ -93,7 +96,7 @@ class Native(Blacksmith):
     def __init__(self, config, args, trinity):
         super().__init__(config, args)
         self.pantheon = trinity.pantheon(config, args)
-      #  self.themis = Themis()
+        #  self.themis = Themis()
         self.trinity = trinity
         self.nPop = config.NPOP
         self.nRealm = args.nRealm
@@ -102,12 +105,13 @@ class Native(Blacksmith):
         self.avgReward = 0
         self.states = np.zeros((self.nPop, self.featureSize))
         self.avgState = np.zeros(self.featureSize * 9)
-        self.period = 1
+        self.period = 10000
         self.avgRewards = np.zeros(self.nPop)
         self.env = NativeServer(config, args, trinity)
         self.env.send(self.pantheon.model)
         self.expMaps = np.zeros((self.nRealm, self.nPop, 80, 80))
         self.atalanta = Atalanta(self.featureSize)
+        self.atalanta.agent.load('checkpoints/atalanta')
 
         self.renderStep = self.step
         self.idx = 0
@@ -117,7 +121,8 @@ class Native(Blacksmith):
     def run(self):
         self.stepCount += 1
         self.atalanta.agent.batch_act_and_train(list(self.states.astype('float32')))
-        recvs, _, _ = self.env.run(self.atalanta.agent.act_prob(self.states.astype('float32')), self.pantheon.model)
+        dist = self.atalanta.agent.act_prob(self.states.astype('float32'))
+        recvs, _, _ = self.env.run(dist, self.pantheon.model)
         _, logs = list(zip(*recvs))
         state = self.collectState(logs)
         self.states += self.collectStates(logs)
@@ -130,11 +135,14 @@ class Native(Blacksmith):
             for blob in logs[i]:
                 self.expMaps[i][blob.annID] += blob.expMap
 
-        if self.stepCount % self.period == 0:
-            self.updateModel()
+        # if self.stepCount % self.period == 0:
+        #      self.updateModel()
 
-        if self.stepCount % 100 == 0:
-            self.atalanta.agent.save('checkpoints/atalanta')
+        #     if self.stepCount % 1 == 0:
+        #        self.plotDistribution(dist)
+
+        #   if self.stepCount % 100 == 0:
+        #      self.atalanta.agent.save('checkpoints/atalanta')
 
         self.pantheon.step(recvs)
         self.rayBuffers()
@@ -142,14 +150,13 @@ class Native(Blacksmith):
     def updateModel(self):
         #     isNewEra = self.themis.voteForBest(self.avgRewards)
         print(self.avgRewards)
-       # self.themis.stepLawmakerZero(list(self.avgState), self.avgReward, self.avgRewards)
+        # self.themis.stepLawmakerZero(list(self.avgState), self.avgReward, self.avgRewards)
         self.atalanta.agent.batch_observe_and_train(list(self.states.astype('float32')),
                                                     list(self.avgRewards.astype('float32')), [False] * 8, [False] * 8)
         self.avgReward = 0
         self.states = np.zeros((self.nPop, self.featureSize))
         self.avgRewards = np.zeros(self.nPop)
         self.avgState = np.zeros(self.featureSize * 9)
-
 
     #  if isNewEra:
     #     self.plotExpMaps()
@@ -158,7 +165,7 @@ class Native(Blacksmith):
     def plotExpMaps(self):
         for i in range(self.nRealm):
             for nation in range(self.nPop):
-                dir = 'plots/era' + str(self.themis.era) + '/map' + str(i)
+                dir = 'plots/era' + str(1) + '/map' + str(i)
                 try:
                     os.makedirs(dir)
                 except FileExistsError:
@@ -235,6 +242,17 @@ class Native(Blacksmith):
                 states[nn] /= lengths[nn]
 
         return states
+
+    def plotDistribution(self, dist):
+        for i in range(self.nPop):
+            points = [dist.sample().data[i] for _ in range(int(1e5))]
+            sns.distplot(points, hist=False, kde=True,
+                         kde_kws={'shade': True, 'linewidth': 3})
+            plt.title('Reward Distribution')
+            plt.xlabel('Reward')
+            plt.ylabel('Density')
+            plt.savefig('plots/distribution' + (str(i)) + '.png')
+            plt.close()
 
     # Only for render -- steps are run per core
     def step(self):
