@@ -94,7 +94,7 @@ class Sword:
     def decide(self, ent, stim, actions, step):
         reward, entID, annID = 0, ent.entID, ent.annID
         action, arguments, atnArgs, val = self.anns[annID](ent, stim)
-        reward += chainer.cuda.to_cpu(actions.sample().data)[ent.annID][0] / (step + 1)
+       # reward += chainer.cuda.to_cpu(actions.sample().data)[ent.annID][0] / (step + 1)
         self.collectStep(entID, atnArgs, val, reward)
         self.updates[entID].feather.scrawl(
             stim, ent, val, reward)
