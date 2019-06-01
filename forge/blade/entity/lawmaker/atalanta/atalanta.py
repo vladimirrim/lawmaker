@@ -13,10 +13,10 @@ from builtins import *  # NOQA
 
 from future import standard_library
 
-from forge.blade.entity.atalanta.agent import A2C
+from forge.blade.entity.lawmaker.atalanta.agent import A2C
+from forge.blade.entity.lawmaker.lawmaker import BatchLawmaker, Lawmaker
 
 standard_library.install_aliases()  # NOQA
-import argparse
 
 import chainer
 from chainer import functions as F
@@ -48,7 +48,29 @@ class A2CGaussian(chainer.ChainList, a2c.A2CModel):
         return self.pi(state), self.v(state)
 
 
-class Atalanta:
+class Atalanta(BatchLawmaker, Lawmaker):
+
+    def save(self, dirname):
+        self.agent.save(dirname)
+
+    def get_statistics(self):
+        pass
+
+    def batch_act(self, batch_obs):
+        return self.agent.batch_act(batch_obs)
+
+    def batch_act_and_train(self, batch_obs):
+        return self.agent.batch_act_and_train(batch_obs)
+
+    def batch_observe(self, batch_obs, batch_reward, batch_done, batch_reset):
+        return self.agent.batch_observe(batch_obs, batch_reward, batch_done, batch_reset)
+
+    def batch_observe_and_train(self, batch_obs, batch_reward, batch_done, batch_reset):
+        return self.agent.batch_observe_and_train(batch_obs, batch_reward, batch_done, batch_reset)
+
+    def load(self, dirname):
+        self.agent.load(dirname)
+
     def __init__(self, obs_space):
         self.seed = 0
         self.rmsprop_epsilon = 1e-5
@@ -92,3 +114,15 @@ class Atalanta:
                          update_steps=self.update_steps,
                          use_gae=self.use_gae,
                          tau=self.tau)
+
+    def act_and_train(self, obs, reward):
+        pass
+
+    def act(self, obs):
+        pass
+
+    def stop_episode_and_train(self, state, reward, done=False):
+        pass
+
+    def stop_episode(self):
+        pass

@@ -5,8 +5,8 @@ import tensorflow as tf
 import numpy as np
 import gc
 
-from forge.blade.entity.lawmaker_zero import LawmakerZero
-from forge.blade.entity.lawmaker_zero.config import get_config
+from forge.blade.entity.lawmaker.lawmaker_zero import LawmakerZero
+from forge.blade.entity.lawmaker.lawmaker_zero.config import get_config
 
 
 class Themis:
