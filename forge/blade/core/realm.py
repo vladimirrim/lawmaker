@@ -6,6 +6,7 @@ import numpy as np
 import ray
 
 from forge.blade import entity, core
+from forge.trinity.demeter_realm import DemeterRealm
 
 
 class ActionArgs:
@@ -86,76 +87,8 @@ class NativeRealm(Realm):
         self.sword = trinity.sword(config, args)
         self.sword.anns[0].world = self.world
         self.logs = []
-        self.currentAction = [0] * 8
-        self.prevReward = 0
-        self.curReward = np.zeros(config.NPOP)
-        self.states = np.zeros((config.NPOP, 3))
-        self.overallState = [0., 0., 0.]
-        self.lengths = [0] * 8
         self.stepCount = 0
-        #  self.lawmaker.load()
-
-    def collectState(self):
-        lengths = np.zeros(self.curReward.shape[0])
-        states = np.zeros((8, 3))
-        overallState = np.zeros(3)
-        for ent in self.desciples.values():
-            states[ent.annID][0] += self.sword.getUniqueGrass(ent.entID)
-            states[ent.annID][1] += self.sword.getUniqueScrub(ent.entID)
-            states[ent.annID][2] += ent.__getattribute__('timeAlive')
-
-            overallState[0] += self.sword.getUniqueGrass(ent.entID)
-            overallState[1] += self.sword.getUniqueScrub(ent.entID)
-            overallState[2] += ent.__getattribute__('timeAlive')
-            lengths[ent.annID] += 1
-
-        if sum(lengths) != 0:
-            self.overallState += overallState / sum(lengths)
-
-        for i in range(len(lengths)):
-            if lengths[i] != 0:
-                self.states[i] += states[i] / lengths[i]
-
-    def updateState(self):
-        overallState = self.overallState
-        state = self.states
-
-        self.states = np.zeros((8, 3))
-        self.overallState = [0., 0., 0.]
-        self.lengths = [0] * 8
-
-        return list(overallState) + list(state.reshape(24))
-
-    def collectReward(self):
-        reward = np.zeros(self.curReward.shape[0])
-        lengths = np.zeros(self.curReward.shape[0])
-        for ent in self.desciples.values():
-            reward[ent.annID] += ent.__getattribute__('timeAlive')
-            lengths[ent.annID] += 1
-
-        for i in range(len(reward)):
-            if lengths[i] != 0:
-                reward[i] /= lengths[i]
-
-        self.curReward += reward
-
-    def updateReward(self):
-        #   r = (self.curReward - self.prevReward) / 1000
-        self.prevReward = self.curReward
-        self.curReward = np.zeros(8)
-        return np.sum(self.prevReward) / self.stepCount
-
-    def stepLawmaker(self, state, reward):
-        if self.stepCount != 0:
-            for i in range(8):
-                state[0] = i + 1
-                self.lawmaker.updateLaw(state, reward)
-
-        for i in range(8):
-            state[0] = i + 1
-            self.currentAction[i] = self.lawmaker.step(state)
-        self.lawmaker.save()
-        self.save()
+        self.statsCollector = DemeterRealm(self.sword, config.NPOP)
 
     def stepEnts(self):
         dead = []
@@ -171,6 +104,9 @@ class NativeRealm(Realm):
             ent.act(self.world, action, arguments, val)
 
             self.stepEnt(ent, action, arguments)
+
+        self.statsCollector.collectReward(self.desciples)
+        self.statsCollector.collectState(self.desciples)
 
         self.cullDead(dead)
 
@@ -199,7 +135,8 @@ class NativeRealm(Realm):
             self.stepCount += 1
             self.step()
             updates, self.logs = self.sword.sendUpdate()
-        return updates, self.logs, self.updateState(), self.updateReward()
+        return updates, self.logs, self.statsCollector.updateStates() / self.stepCount,  \
+               self.statsCollector.updateReward() / self.stepCount
 
     def recvSwordUpdate(self, update):
         if update is None:

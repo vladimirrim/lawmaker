@@ -11,6 +11,7 @@ from __future__ import unicode_literals
 
 from builtins import *  # NOQA
 
+from chainerrl.policies import FCBNDeterministicPolicy, FCLSTMDeterministicPolicy
 from future import standard_library
 
 from forge.blade.entity.lawmaker.atalanta.agent import A2C
@@ -37,8 +38,21 @@ class A2CGaussian(chainer.ChainList, a2c.A2CModel):
             action_size,
             np.log(np.e - 1),
             n_hidden_layers=2,
-            n_hidden_channels=64,
-            nonlinearity=F.tanh)
+            n_hidden_channels=64)
+        self.v = v_function.FCVFunction(obs_size, n_hidden_layers=2,
+                                        n_hidden_channels=64,
+                                        nonlinearity=F.tanh)
+        super().__init__(self.pi, self.v)
+
+    def pi_and_v(self, state):
+        return self.pi(state), self.v(state)
+
+
+class A2CDeterministic(chainer.ChainList, a2c.A2CModel):
+
+    def __init__(self, obs_size, action_size):
+        self.pi = FCLSTMDeterministicPolicy(n_input_channels=obs_size, action_size=action_size, n_hidden_layers=2,
+                                            n_hidden_channels=64, min_action=0, max_action=1)
         self.v = v_function.FCVFunction(obs_size, n_hidden_layers=2,
                                         n_hidden_channels=64,
                                         nonlinearity=F.tanh)
@@ -95,7 +109,6 @@ class Atalanta(BatchLawmaker, Lawmaker):
         process_seeds = np.arange(self.num_envs) + self.seed * self.num_envs
         assert process_seeds.max() < 2 ** 3
 
-        obs_space = obs_space
         action_space = 1
 
         # Switch policy types accordingly to action space types
