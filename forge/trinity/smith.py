@@ -4,8 +4,10 @@ import ray
 from forge.blade import core, lib
 from forge.blade.entity.lawmaker.atalanta.atalanta import Atalanta
 
-
 # Wrapper for remote async multi environments (realms)
+from forge.trinity.demeter import Demeter
+
+
 class NativeServer:
     def __init__(self, config, args, trinity):
         self.envs = [core.NativeRealm.remote(trinity, config, args, i)
@@ -20,8 +22,7 @@ class NativeServer:
         recvs = [e.run.remote(currentAction, swordUpdate) for e in self.envs]
         recvs = np.array(ray.get(recvs))
         return [(recvs[i][0], recvs[i][1]) for i in range(len(self.envs))], \
-               [np.mean(x) for x in zip(*recvs[:, 2])], \
-               np.mean([recvs[i][3] for i in range(len(self.envs))])
+               np.mean(recvs[:, 2]), np.mean(recvs[:, 3])
 
     def send(self, swordUpdate):
         [e.recvSwordUpdate.remote(swordUpdate) for e in self.envs]
@@ -50,11 +51,13 @@ class Native(Blacksmith):
         self.pantheon = trinity.pantheon(config, args)
         self.trinity = trinity
         self.stepCount = 0
+        self.period = 1
 
         self.env = NativeServer(config, args, trinity)
         self.env.send(self.pantheon.model)
 
-        # self.lawmaker = Atalanta(self.featureSize)
+        self.statsCollector = Demeter(config.NPOP, args.nRealm)
+        self.lawmaker = Atalanta(self.statsCollector.featureSize)
         # self.lawmaker.load('checkpoints/atalanta')
 
         self.renderStep = self.step
@@ -64,30 +67,30 @@ class Native(Blacksmith):
     # With no communication -- all on the env cores.
     def run(self):
         self.stepCount += 1
-        recvs, _, _ = self.env.run([], self.pantheon.model)
+        actions = self.lawmaker.batch_act_and_train(self.statsCollector.states.astype('float32'))
+        actions = [1 / (1 + np.exp(action[0])) for action in actions]
+        print(actions)
+        recvs, states, rewards = self.env.run(actions, self.pantheon.model)
 
-        # if self.stepCount % self.period == 0:
-        #      self.updateModel()
+        _, logs = list(zip(*recvs))
+        self.statsCollector.states += states
+        self.statsCollector.avgRewards += rewards
 
-        #     if self.stepCount % 1 == 0:
-        #        self.plotDistribution(dist)
+        if self.stepCount % self.period == 0:
+            self.updateModel()
 
-        #   if self.stepCount % 100 == 0:
-        #      self.atalanta.agent.save('checkpoints/atalanta')
+        if self.stepCount % 100 == 0:
+            self.lawmaker.save('checkpoints/atalanta')
 
         self.pantheon.step(recvs)
         self.rayBuffers()
 
     def updateModel(self):
-        #     isNewEra = self.themis.voteForBest(self.avgRewards)
-        print(self.avgRewards)
-        # self.themis.stepLawmakerZero(list(self.avgState), self.avgReward, self.avgRewards)
-        self.lawmaker.batch_observe_and_train(list(self.states.astype('float32')),
-                                              list(self.avgRewards.astype('float32')), [False] * 8, [False] * 8)
-
-    #  if isNewEra:
-    #     self.plotExpMaps()
-    #    self.expMaps = np.zeros((self.nRealm, self.nPop, 80, 80))
+        print(self.statsCollector.avgRewards)
+        self.lawmaker.batch_observe_and_train(list(self.statsCollector.states.astype('float32')),
+                                              list(self.statsCollector.avgRewards.astype('float32')),
+                                              [False] * 8, [False] * 8)
+        self.statsCollector.resetStatistics()
 
     # Only for render -- steps are run per core
     def step(self):

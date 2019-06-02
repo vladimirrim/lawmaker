@@ -4,9 +4,18 @@ import numpy as np
 from matplotlib import cm
 from matplotlib.colors import LogNorm
 
-import seaborn as sns; sns.set()
+import seaborn as sns;
+
+sns.set()
 from forge.blade.lib.enums import Material
 import matplotlib.pyplot as plt
+
+
+def plotExpMap(expMap, title):
+    plt.imshow(expMap + 10, cmap=cm.hot, norm=LogNorm())
+    plt.colorbar()
+    plt.savefig(title)
+    plt.close()
 
 
 # Statistic Collector
@@ -46,7 +55,7 @@ class Demeter:
         if length != 0:
             overallState /= length
 
-        return list(overallState / 8) + list(states / 8)
+        self.avgState += list(overallState / 8) + list(states / 8)
 
     def collectStates(self, logs):
         states = np.zeros((self.nPop, self.featureSize))
@@ -66,7 +75,7 @@ class Demeter:
             if lengths[nn] != 0:
                 states[nn] /= lengths[nn]
 
-        return states
+        self.states += states
 
     def updateExpMaps(self, logs):
         for i in range(len(logs)):
@@ -82,20 +91,13 @@ class Demeter:
                 except FileExistsError:
                     pass
 
-                self.plotExpMap(self.expMaps[i][nation], dir + '/nation' + str(nation) + '.png')
+                plotExpMap(self.expMaps[i][nation], dir + '/nation' + str(nation) + '.png')
 
     def resetStatistics(self):
         self.avgReward = 0
         self.states = np.zeros((self.nPop, self.featureSize))
         self.avgRewards = np.zeros(self.nPop)
         self.avgState = np.zeros(self.featureSize * 9)
-
-
-    def plotExpMap(self, expMap, title):
-        plt.imshow(expMap + 10, cmap=cm.hot, norm=LogNorm())
-        plt.colorbar()
-        plt.savefig(title)
-        plt.close()
 
     def collectReward(self, logs):
         reward = np.zeros((self.nRealm, self.nPop))
@@ -113,7 +115,8 @@ class Demeter:
                     return 0, np.zeros(self.nPop)
                 rewards[nn] += reward[i][nn] / lengths[i][nn]
                 totalReward += reward[i][nn] / lengths[i][nn]
-        return totalReward / self.nPop / self.nRealm, rewards / self.nRealm
+        self.avgReward += totalReward / self.nPop / self.nRealm
+        self.avgRewards += rewards / self.nRealm
 
     def plotDistribution(self, dist):
         for i in range(self.nPop):
