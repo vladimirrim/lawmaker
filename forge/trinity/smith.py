@@ -56,8 +56,8 @@ class Native(Blacksmith):
         self.env = NativeServer(config, args, trinity)
         self.env.send(self.pantheon.model)
 
-        self.statsCollector = Demeter(config.NPOP, args.nRealm)
-        self.lawmaker = Atalanta(self.statsCollector.featureSize)
+        #self.statsCollector = Demeter(config.NPOP, args.nRealm)
+        #self.lawmaker = Atalanta(self.statsCollector.featureSize)
         # self.lawmaker.load('checkpoints/atalanta')
 
         self.renderStep = self.step
@@ -67,20 +67,7 @@ class Native(Blacksmith):
     # With no communication -- all on the env cores.
     def run(self):
         self.stepCount += 1
-        actions = self.lawmaker.batch_act_and_train(self.statsCollector.states.astype('float32'))
-        actions = [1 / (1 + np.exp(action[0])) for action in actions]
-        print(actions)
-        recvs, states, rewards = self.env.run(actions, self.pantheon.model)
-
-        _, logs = list(zip(*recvs))
-        self.statsCollector.states += states
-        self.statsCollector.avgRewards += rewards
-
-        if self.stepCount % self.period == 0:
-            self.updateModel()
-
-        if self.stepCount % 100 == 0:
-            self.lawmaker.save('checkpoints/atalanta')
+        recvs, states, rewards = self.env.run([], self.pantheon.model)
 
         self.pantheon.step(recvs)
         self.rayBuffers()
