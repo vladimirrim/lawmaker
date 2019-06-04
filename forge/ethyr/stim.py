@@ -76,7 +76,7 @@ def tile(ent, t, sz, config):
     ents = []
     r, c = ent.pos
     for e in t.ents.values():
-        statStim = stats(ent, e, config)
+        statStim = stats(e, ent, config)
         e.stim = statStim
         ents.append(statStim)
 
