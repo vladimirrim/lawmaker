@@ -21,8 +21,8 @@ class NativeServer:
     def run(self, currentAction, swordUpdate=None):
         recvs = [e.run.remote(currentAction, swordUpdate) for e in self.envs]
         recvs = np.array(ray.get(recvs))
-        return [(recvs[i][0], recvs[i][1]) for i in range(len(self.envs))], \
-               np.mean(recvs[:, 2]), np.mean(recvs[:, 3])
+        return [(recvs[i][0], recvs[i][1]) for i in range(len(self.envs))], 0, 0
+              # np.mean(recvs[:, 2]), np.mean(recvs[:, 3])
 
     def send(self, swordUpdate):
         [e.recvSwordUpdate.remote(swordUpdate) for e in self.envs]
