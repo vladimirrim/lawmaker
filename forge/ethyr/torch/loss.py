@@ -50,6 +50,16 @@ def PG(pi, atn, val, returns):
     return polLoss, entLoss
 
 
+def PG_lawmaker(punishments, values, returns):
+    prob = F.sigmoid(punishments)
+    log_prob = F.logsigmoid(punishments)
+
+    adv = advantage(returns, values)
+    polLoss = (-log_prob * adv).mean()
+    entLoss = entropyLoss(prob, log_prob)
+    return polLoss, entLoss
+
+
 # A bit stale--not currently used because
 # Vanilla PG is equivalent with 1 update per minibatch
 class PPO(nn.Module):

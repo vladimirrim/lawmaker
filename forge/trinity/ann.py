@@ -5,6 +5,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 from torch.distributions import Categorical
+from torch.optim import Adam
 
 from forge.blade.action.tree import ActionTree
 from forge.blade.action.v2 import ActionV2
@@ -13,6 +14,10 @@ from forge.blade.lib import enums
 from forge.ethyr import torch as torchlib
 from forge.blade import entity
 
+from copy import deepcopy
+from forge.ethyr.torch import loss
+from forge.ethyr.rollouts import discountRewards
+from torch.nn.utils import clip_grad_norm_
 
 def classify(logits):
     if len(logits.shape) == 1:
@@ -291,3 +296,117 @@ class ANN(nn.Module):
 
         vals = list(zip(posList, vals))
         return vals
+
+
+class PunishNet(nn.Module):
+    def __init__(self, config):
+        super().__init__()
+        self.fc = torch.nn.Linear(config.HIDDEN + 5, 1)
+        self.activation = torch.nn.Sigmoid()
+        self.envNet = Env(config)
+
+    def forward(self, conv, flat, ent, policy):
+        stim = self.envNet(conv, flat, ent)
+        feat = torch.cat((stim, policy), 1)
+        x = self.fc(feat)
+        x_sigmoid = self.activation(x)
+        x = x.view(1, -1)
+        return x, x_sigmoid
+
+
+class Lawmaker(nn.Module):
+    def __init__(self, args, config):
+        super().__init__()
+        self.valNet = ValNet(config)
+
+        self.config = config
+        self.PunishNet = PunishNet(config)
+
+        self.update_period = 2 ** 12 * args.nRealm
+
+        self.punishments = [{} for _ in range(args.nRealm)]
+        self.values = [{} for _ in range(args.nRealm)]
+        self.rewards = [{} for _ in range(args.nRealm)]
+        self.count = 0
+
+        self.opt = Adam(self.parameters(), lr=1e-3)
+        self.grad_clip = 5
+
+    def forward(self, ent, env, policy, idx):
+        s = torchlib.Stim(ent, env, self.config)
+        val = self.valNet(s.conv, s.flat, s.ents)
+
+        punishment, punishment_sigm = self.PunishNet(s.conv, s.flat, s.ents, policy)
+
+        self.collectStates(ent.entID, punishment, val, idx)
+
+        return punishment_sigm, val
+
+    def collectStates(self, entID, punishment, val, idx):
+        if entID not in self.punishments[idx].keys():
+            self.punishments[idx][entID] = []
+            self.values[idx][entID] = []
+            self.rewards[idx][entID] = []
+        self.punishments[idx][entID].append(punishment)
+        self.values[idx][entID].append(val)
+        self.count += 1
+
+    def updateStates(self):  # bad? should only dead be here?
+        punishments = deepcopy(self.punishments)  # do we need deepcopy?
+        values = deepcopy(self.values)
+        self.punishments = {}
+        self.values = {}
+        self.count = 0
+        return punishments, values
+
+    def collectRewards(self, reward, idx):
+        shared_reward = reward / len(self.rewards[idx])  # may be share only with those within certain radius from death?
+        for entID in self.rewards[idx].keys():
+            self.rewards[idx][entID].append(reward)  # should this be shared_reward or reward?
+
+    def updateRewards(self):  # same concerns
+        rewards = deepcopy(self.rewards)
+        self.rewards = {}
+        return rewards
+
+    def update(self):
+        punishments, values = self.updateStates()
+        rewards = self.updateRewards()
+        return punishments, values, rewards
+
+    def mergeUpdate(self):
+        punishments, values, rewards = self.update()
+        punishments_lst = []
+        values_lst = []
+        rewards_lst = []
+        returns_lst = []
+        for idx in range(len(punishments)):
+            for entID in punishments[idx].keys():
+                punishments_lst += punishments[idx][entID]
+                values_lst += values[idx][entID]
+                rewards_lst += rewards[idx][entID]
+                returns_lst += discountRewards(rewards[idx][entID])
+
+        return punishments_lst, values_lst, rewards_lst, returns_lst
+
+    def backward(self, valWeight=0.25, entWeight=None):
+        # print('Doing backward')
+        if entWeight is None:
+            entWeight = self.config.ENTROPY
+
+        self.opt.zero_grad()
+
+        punishments, values, rewards, returns = self.mergeUpdate()
+        # print('punishments:', punishments[:5], '; len:', len(punishments))
+        # print('values:', values[:5], '; len:', len(values))
+        # print('returns:', returns[:5], '; len:', len(returns))
+
+        pg, entropy = loss.PG_lawmaker(punishments, values, returns)
+        valLoss = loss.valueLoss(values, returns)
+        totLoss = pg + valWeight * valLoss + entWeight * entropy
+        # print("totLoss:", totLoss)
+
+        totLoss.backward()
+        if self.grad_clip is not None:
+            clip_grad_norm_(self.parameters(), self.grad_clip)
+        self.opt.step()

@@ -8,7 +8,7 @@ from forge.ethyr.torch.param import setParameters, zeroGrads
 
 
 class Sword:
-    def __init__(self, config, args):
+    def __init__(self, config, args, idx):
         self.config, self.args = config, args
         self.nANN, self.h = config.NPOP, config.HIDDEN
         self.anns = [trinity.ANN(config)
@@ -19,6 +19,7 @@ class Sword:
         self.updates, self.rollouts = defaultdict(Rollout), {}
         self.ents, self.rewards, self.grads = {}, [], None
         self.nGrads = 0
+        self.idx = idx
 
     def backward(self):
         ents = self.rollouts.keys()
@@ -96,9 +97,15 @@ class Sword:
         if self.nGrads >= 100 * 32:
             self.backward()
 
-    def decide(self, ent, stim, actions, step):
-        reward, entID, annID = 0, ent.entID, ent.annID
+    def decide(self, ent, stim, lawmaker):
+        reward, entID, annID = 1, ent.entID, ent.annID  ###
         action, arguments, atnArgs, val = self.anns[annID](ent, stim)
+
+        ### subtract reward with lawmaker here
+        policy = atnArgs[0][0].clone().detach().requires_grad_(False)
+        punishment, val_lawmaker = lawmaker(ent, stim, policy, self.idx)
+        reward -= float(punishment)
+
         self.collectStep(entID, atnArgs, val, reward)
         self.updates[entID].feather.scrawl(
             stim, ent, val, reward)
