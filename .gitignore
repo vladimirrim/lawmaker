@@ -32,8 +32,6 @@ MANIFEST
 *.manifest
 *.spec
 
-.DS_Store
-
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
@@ -105,3 +103,4 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+.DS_Store
