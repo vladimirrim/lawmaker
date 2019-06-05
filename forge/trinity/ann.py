@@ -1,17 +1,15 @@
-from pdb import set_trace as T
 import numpy as np
 import torch
-
 from torch import nn
-from torch.nn import functional as F
 from torch.distributions import Categorical
+from torch.nn import functional as F
 
+from forge.blade import entity
 from forge.blade.action.tree import ActionTree
 from forge.blade.action.v2 import ActionV2
-from forge.blade.lib.enums import Neon
 from forge.blade.lib import enums
+from forge.blade.lib.enums import Neon
 from forge.ethyr import torch as torchlib
-from forge.blade import entity
 
 
 def classify(logits):
@@ -265,7 +263,6 @@ class ANN(nn.Module):
         return vals
 
     def visVals(self, food='max', water='max'):
-        from forge.blade.core import realm
         posList, vals = [], []
         R, C = self.world.shape
         for r in range(self.config.BORDER, R - self.config.BORDER):
