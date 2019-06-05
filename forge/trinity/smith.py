@@ -1,16 +1,18 @@
-import numpy as np
+# import numpy as np
 import ray
 
 from forge.blade import core, lib
-from forge.blade.entity.lawmaker.atalanta.atalanta import Atalanta
+from forge.trinity.ann import Lawmaker
+# from forge.blade.entity.lawmaker.atalanta.atalanta import Atalanta
 
 # Wrapper for remote async multi environments (realms)
-from forge.trinity.demeter import Demeter
+# from forge.trinity.demeter import Demeter
 
 
 class NativeServer:
     def __init__(self, config, args, trinity):
-        self.envs = [core.NativeRealm.remote(trinity, config, args, i)
+        self.lawmaker = Lawmaker(args, config)  ###
+        self.envs = [core.NativeRealm.remote(trinity, config, args, i, self.lawmaker)  ###
                      for i in range(args.nRealm)]
 
     def step(self, actions=None):
@@ -18,10 +20,12 @@ class NativeServer:
         return ray.get(recvs)
 
     # Use native api (runs full trajectories)
-    def run(self, currentAction, swordUpdate=None):
-        recvs = [e.run.remote(currentAction, swordUpdate) for e in self.envs]
-        recvs = np.array(ray.get(recvs))
-        return [(recvs[i][0], recvs[i][1]) for i in range(len(self.envs))], 0, 0
+    def run(self, swordUpdate=None):
+        recvs = [e.run.remote(swordUpdate) for e in self.envs]
+        recvs = ray.get(recvs)
+        return recvs
+        # recvs = np.array(ray.get(recvs))
+        # return [(recvs[i][0], recvs[i][1]) for i in range(len(self.envs))],\
               # np.mean(recvs[:, 2]), np.mean(recvs[:, 3])
 
     def send(self, swordUpdate):
@@ -67,21 +71,30 @@ class Native(Blacksmith):
     # With no communication -- all on the env cores.
     def run(self):
         self.stepCount += 1
-        recvs, states, rewards = self.env.run([], self.pantheon.model)
+        recvs = self.env.run(self.pantheon.model)  # , states, rewards
+
+        ### sometimes update lawmaker here
+        if self.env.lawmaker.count > self.env.lawmaker.update_period:
+            self.env.lawmaker.backward()
 
         self.pantheon.step(recvs)
         self.rayBuffers()
 
-    def updateModel(self):
-        print(self.statsCollector.avgRewards)
-        self.lawmaker.batch_observe_and_train(list(self.statsCollector.states.astype('float32')),
-                                              list(self.statsCollector.avgRewards.astype('float32')),
-                                              [False] * 8, [False] * 8)
-        self.statsCollector.resetStatistics()
+    # def updateModel(self):
+    #     print(self.statsCollector.avgRewards)
+    #     self.lawmaker.batch_observe_and_train(list(self.statsCollector.states.astype('float32')),
+    #                                           list(self.statsCollector.avgRewards.astype('float32')),
+    #                                           [False] * 8, [False] * 8)
+    #     self.statsCollector.resetStatistics()
 
     # Only for render -- steps are run per core
     def step(self):
         self.env.step()
+        self.stepCount += 1
+
+        ### sometimes update lawmaker here
+        if self.env.lawmaker.count > self.env.lawmaker.update_period:
+            self.env.lawmaker.backward()
 
     # In early versions of ray, freeing memory was
     # an issue. It is possible this has been patched.
