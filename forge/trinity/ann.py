@@ -3,6 +3,7 @@ import numpy as np
 import torch
 
 from torch import nn
+from torch.autograd import Variable
 from torch.nn import functional as F
 from torch.distributions import Categorical
 from torch.optim import Adam
@@ -18,6 +19,7 @@ from copy import deepcopy
 from forge.ethyr.torch import loss
 from forge.ethyr.rollouts import discountRewards
 from torch.nn.utils import clip_grad_norm_
+
 
 def classify(logits):
     if len(logits.shape) == 1:
@@ -321,6 +323,7 @@ class Lawmaker(nn.Module):
 
         self.config = config
         self.PunishNet = PunishNet(config)
+        self.nRealm = args.nRealm
 
         self.update_period = 2 ** 12 * args.nRealm
 
@@ -331,6 +334,12 @@ class Lawmaker(nn.Module):
 
         self.opt = Adam(self.parameters(), lr=1e-3)
         self.grad_clip = 5
+
+    def gatherStatistics(self, lawmakers):
+        self.count = np.sum([lm.count for lm in lawmakers])
+        self.values = [lawmakers[i].values[i] for i in range(len(lawmakers))]
+        self.punishments = [lawmakers[i].punishments[i] for i in range(len(lawmakers))]
+        self.rewards = [lawmakers[i].rewards[i] for i in range(len(lawmakers))]
 
     def forward(self, ent, env, policy, idx):
         s = torchlib.Stim(ent, env, self.config)
@@ -354,19 +363,20 @@ class Lawmaker(nn.Module):
     def updateStates(self):  # bad? should only dead be here?
         punishments = deepcopy(self.punishments)  # do we need deepcopy?
         values = deepcopy(self.values)
-        self.punishments = {}
-        self.values = {}
+        self.punishments = [{} for _ in range(self.nRealm)]
+        self.values = [{} for _ in range(self.nRealm)]
         self.count = 0
         return punishments, values
 
-    def collectRewards(self, reward, idx):
-        shared_reward = reward / len(self.rewards[idx])  # may be share only with those within certain radius from death?
-        for entID in self.rewards[idx].keys():
+    def collectRewards(self, reward, idx, desciples):
+        shared_reward = reward / len(
+            self.rewards[idx])  # may be share only with those within certain radius from death?
+        for entID in desciples:
             self.rewards[idx][entID].append(reward)  # should this be shared_reward or reward?
 
     def updateRewards(self):  # same concerns
         rewards = deepcopy(self.rewards)
-        self.rewards = {}
+        self.rewards = [{} for _ in range(self.nRealm)]
         return rewards
 
     def update(self):
@@ -396,14 +406,17 @@ class Lawmaker(nn.Module):
 
         self.opt.zero_grad()
 
-        punishments, values, rewards, returns = self.mergeUpdate()
+        punishments, values, rewards, rets = self.mergeUpdate()
+        returns = torch.tensor(rets).view(-1, 1).float()
+        punishments = torch.tensor(punishments).view(-1, 1).float()
+        values = torch.cat(values)
         # print('punishments:', punishments[:5], '; len:', len(punishments))
         # print('values:', values[:5], '; len:', len(values))
         # print('returns:', returns[:5], '; len:', len(returns))
 
         pg, entropy = loss.PG_lawmaker(punishments, values, returns)
         valLoss = loss.valueLoss(values, returns)
-        totLoss = pg + valWeight * valLoss + entWeight * entropy
+        totLoss = Variable(pg + valWeight * valLoss + entWeight * entropy, requires_grad=True)
         # print("totLoss:", totLoss)
 
         totLoss.backward()

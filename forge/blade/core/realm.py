@@ -107,9 +107,8 @@ class NativeRealm(Realm):
 
             self.stepEnt(ent, action, arguments)
 
-        self.lawmaker.collectRewards(-len(dead), self.idx)  ###
-
         self.cullDead(dead)
+        self.lawmaker.collectRewards(-len(dead), self.idx, self.desciples.keys())  ###
 
     def postmortem(self, ent, dead):
         entID = ent.entID
@@ -126,8 +125,10 @@ class NativeRealm(Realm):
         self.stepEnts()
         self.stepWorld()
 
-    def run(self, swordUpdate=None):
+    def run(self, swordUpdate=None, lawmaker=None):
         self.recvSwordUpdate(swordUpdate)
+        if lawmaker is not None:
+            self.lawmaker = lawmaker
 
         updates = None
         self.stepCount = 0
@@ -135,7 +136,7 @@ class NativeRealm(Realm):
             self.stepCount += 1
             self.step()
             updates, self.logs = self.sword.sendUpdate()
-        return updates, self.logs#, self.statsCollector.updateStates() / self.stepCount,  \
+        return updates, self.logs, self.lawmaker #, self.statsCollector.updateStates() / self.stepCount,  \
                #self.statsCollector.updateReward() / self.stepCount
 
     def recvSwordUpdate(self, update):
