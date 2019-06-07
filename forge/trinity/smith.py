@@ -14,8 +14,7 @@ import numpy as np
 
 class NativeServer:
     def __init__(self, config, args, trinity):
-        self.lawmaker = Lawmaker(args, config)  ###
-        self.envs = [core.NativeRealm.remote(trinity, config, args, i, self.lawmaker)  ###
+        self.envs = [core.NativeRealm.remote(trinity, config, args, i)###
                      for i in range(args.nRealm)]
 
     def step(self, actions=None):
@@ -66,7 +65,7 @@ class Native(Blacksmith):
         # self.lawmaker = Atalanta(self.statsCollector.featureSize)
         # self.lawmaker.load('checkpoints/atalanta')
 
-        self.lawmaker = None
+        self.lawmaker = Lawmaker(args, config)
         self.renderStep = self.step
         self.idx = 0
 
@@ -75,13 +74,11 @@ class Native(Blacksmith):
     def run(self):
         self.stepCount += 1
         recvs, lawmakers = self.env.run(self.pantheon.model, self.lawmaker)  # , states, rewards
-        self.lawmaker = None
 
-        self.env.lawmaker.gatherStatistics(lawmakers)
-
-        if self.env.lawmaker.count > self.env.lawmaker.update_period:
-            self.env.lawmaker.backward()
-            self.lawmaker = self.env.lawmaker
+        self.lawmaker.gatherStatistics(lawmakers)
+        # print('outer count', self.lawmaker.count)
+        if self.lawmaker.шакшукаcount > self.lawmaker.update_period:
+            self.lawmaker.backward()
 
         self.pantheon.step(recvs)
         self.rayBuffers()
@@ -99,8 +96,9 @@ class Native(Blacksmith):
         self.stepCount += 1
 
         ### sometimes update lawmaker here
-        if self.env.lawmaker.count > self.env.lawmaker.update_period:
-            self.env.lawmaker.backward()
+        # print('outer count', self.env.lawmaker.count)
+        if self.lawmaker.count > self.lawmaker.update_period:
+            self.lawmaker.backward()
 
     # In early versions of ray, freeing memory was
     # an issue. It is possible this has been patched.

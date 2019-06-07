@@ -15,7 +15,6 @@ from forge.blade.lib import enums
 from forge.ethyr import torch as torchlib
 from forge.blade import entity
 
-from copy import deepcopy
 from forge.ethyr.torch import loss
 from forge.ethyr.rollouts import discountRewards
 from torch.nn.utils import clip_grad_norm_
@@ -89,6 +88,7 @@ class ValNet(nn.Module):
     def forward(self, conv, flat, ent):
         stim = self.envNet(conv, flat, ent)
         x = self.fc(stim)
+        # print('stim', stim)
         x = x.view(1, -1)
         return x
 
@@ -121,9 +121,16 @@ class Env(nn.Module):
         tiles, nents = conv[0], conv[1]
         nents = nents.view(-1)
 
+        # tiles.requires_grad_(True)  ###
+        # nents.requires_grad_(True)
+        # print('env: tiles, nents:', conv.is_leaf, flat.is_leaf)
         tiles = self.embed(tiles.view(-1).long()).view(-1)
         conv = torch.cat((tiles, nents))
 
+        # flat.requires_grad_(True)
+        # for i in range(len(ents)):
+        #     ents[i].requires_grad_(True)
+        # print('env: conf, flat:', conv.is_leaf, flat.is_leaf)
         conv = self.conv(conv)
         ents = self.ents(ents)
         flat = self.flat(flat)
@@ -310,6 +317,11 @@ class PunishNet(nn.Module):
     def forward(self, conv, flat, ent, policy):
         stim = self.envNet(conv, flat, ent)
         feat = torch.cat((stim, policy), 1)
+        # print('punish: policy, stim:', policy.is_leaf, stim.is_leaf)
+        # print('policy', policy)
+        # print('stim', stim)
+        # print('feat', feat)
+        # input('kek')
         x = self.fc(feat)
         x_sigmoid = self.activation(x)
         x = x.view(1, -1)
@@ -325,7 +337,7 @@ class Lawmaker(nn.Module):
         self.PunishNet = PunishNet(config)
         self.nRealm = args.nRealm
 
-        self.update_period = 2 ** 12 * args.nRealm
+        self.update_period = 2 ** 11 * args.nRealm
 
         self.punishments = [{} for _ in range(args.nRealm)]
         self.values = [{} for _ in range(args.nRealm)]
@@ -361,8 +373,8 @@ class Lawmaker(nn.Module):
         self.count += 1
 
     def updateStates(self):  # bad? should only dead be here?
-        punishments = deepcopy(self.punishments)  # do we need deepcopy?
-        values = deepcopy(self.values)
+        punishments = self.punishments
+        values = self.values
         self.punishments = [{} for _ in range(self.nRealm)]
         self.values = [{} for _ in range(self.nRealm)]
         self.count = 0
@@ -375,7 +387,7 @@ class Lawmaker(nn.Module):
             self.rewards[idx][entID].append(reward)  # should this be shared_reward or reward?
 
     def updateRewards(self):  # same concerns
-        rewards = deepcopy(self.rewards)
+        rewards = self.rewards
         self.rewards = [{} for _ in range(self.nRealm)]
         return rewards
 
@@ -407,17 +419,21 @@ class Lawmaker(nn.Module):
         self.opt.zero_grad()
 
         punishments, values, rewards, rets = self.mergeUpdate()
+        # print('punishments:', punishments[:5], '; len:', len(punishments))
+        # print('values:', values[:5], '; len:', len(values))
+        # print('returns:', rets[:5], '; len:', len(rets))
         returns = torch.tensor(rets).view(-1, 1).float()
-        punishments = torch.tensor(punishments).view(-1, 1).float()
-        values = torch.cat(values)
+        punishments = torch.cat(punishments)  # this might be wrong
+        values = torch.cat(values)  # this might be wrong
         # print('punishments:', punishments[:5], '; len:', len(punishments))
         # print('values:', values[:5], '; len:', len(values))
         # print('returns:', returns[:5], '; len:', len(returns))
 
         pg, entropy = loss.PG_lawmaker(punishments, values, returns)
         valLoss = loss.valueLoss(values, returns)
-        totLoss = Variable(pg + valWeight * valLoss + entWeight * entropy, requires_grad=True)
+        totLoss = pg + valWeight * valLoss + entWeight * entropy
         # print("totLoss:", totLoss)
+        # input('kek')
 
         totLoss.backward()
         if self.grad_clip is not None:
