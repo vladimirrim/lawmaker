@@ -82,7 +82,7 @@ class Realm:
 
 @ray.remote
 class NativeRealm(Realm):
-    def __init__(self, trinity, config, args, idx, lawmaker):  ###
+    def __init__(self, trinity, config, args, idx):#, lawmaker):  ###
         super().__init__(config, args, idx)
         self.god = trinity.god(config, args)
         self.sword = trinity.sword(config, args, idx)
@@ -90,7 +90,7 @@ class NativeRealm(Realm):
         self.logs = []
         self.stepCount = 0
         # self.statsCollector = DemeterRealm(self.sword, config.NPOP)
-        self.lawmaker = lawmaker  ###
+        # self.lawmaker = lawmaker  ###
 
     def stepEnts(self):
         dead = []

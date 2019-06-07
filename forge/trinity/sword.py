@@ -5,6 +5,7 @@ from forge.blade.lib.enums import Material
 from forge.ethyr.rollouts import Rollout, mergeRollouts
 from forge.ethyr.torch import optim
 from forge.ethyr.torch.param import setParameters, zeroGrads
+import torch
 
 
 class Sword:
@@ -102,7 +103,7 @@ class Sword:
         action, arguments, atnArgs, val = self.anns[annID](ent, stim)
 
         ### subtract reward with lawmaker here
-        policy = atnArgs[0][0].clone().detach().requires_grad_(False)
+        policy = torch.tensor(atnArgs[0][0].tolist(), requires_grad=True)
         punishment, val_lawmaker = lawmaker(ent, stim, policy, self.idx)
         reward -= float(punishment)
 
