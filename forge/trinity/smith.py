@@ -77,7 +77,7 @@ class Native(Blacksmith):
 
         self.lawmaker.gatherStatistics(lawmakers)
         # print('outer count', self.lawmaker.count)
-        if self.lawmaker.шакшукаcount > self.lawmaker.update_period:
+        if self.lawmaker.count > self.lawmaker.update_period:
             self.lawmaker.backward()
 
         self.pantheon.step(recvs)
