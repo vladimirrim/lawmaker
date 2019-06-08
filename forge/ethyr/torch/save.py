@@ -54,6 +54,10 @@ class Saver:
 
         return self.resetter.step(best)
 
+    def checkpointLawmaker(self, params, opt):
+        if self.epoch % 100 == 0:
+            self.save(params, opt, 'lawmaker' + str(self.epoch))
+
     def load(self, opt, param, best=False):
         fname = self.bestf if best else self.savef
         data = torch.load(self.root + fname + self.extn)

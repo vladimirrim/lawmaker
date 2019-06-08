@@ -58,12 +58,12 @@ class Feather:
         self.expMap = set()
         self.blob = Blob()
 
-    def scrawl(self, stim, ent, val, reward):
+    def scrawl(self, stim, ent, val, reward, lmVal, lmPunishment):
         self.blob.annID = ent.annID
         tile = self.tile(stim)
         self.move(tile, ent.pos)
         # self.action(arguments, atnArgs)
-        self.stats(val, reward)
+        self.stats(val, reward, lmVal, lmPunishment)
 
     def tile(self, stim):
         R, C = stim.shape
@@ -86,9 +86,11 @@ class Feather:
             self.blob.unique[tile] += 1
         self.blob.counts[tile] += 1
 
-    def stats(self, value, reward):
+    def stats(self, value, reward, lmVal, lmPunishment):
         self.blob.reward.append(reward)
         self.blob.value.append(float(value))
+        self.blob.lmValue.append(float(lmVal))
+        self.blob.lmPunishment.append(float(lmPunishment))
 
     def finish(self):
         self.blob.finish()

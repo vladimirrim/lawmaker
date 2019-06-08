@@ -91,11 +91,14 @@ class NativeRealm(Realm):
 
     def stepEnts(self):
         dead = []
+        deadEnts = []
 
         for ent in self.desciples.values():
             ent.step(self.world)
 
-            if self.postmortem(ent, dead):
+            if not ent.alive or ent.kill:
+                dead.append(ent.entID)
+                deadEnts.append(ent)
                 continue
 
             stim = self.getStim(ent)
@@ -106,6 +109,10 @@ class NativeRealm(Realm):
 
         self.cullDead(dead)
         self.sword.lawmaker.collectRewards(-len(dead), self.desciples.keys())  ###
+
+        for ent in deadEnts:
+            if not self.config.TEST:
+                self.sword.collectRollout(ent.entID, ent)
 
     def postmortem(self, ent, dead):
         entID = ent.entID

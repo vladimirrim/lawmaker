@@ -119,6 +119,8 @@ def individual(blobs, logDir, name, accum, split):
         logs = {**logs, **InkWell.lifetime(blobList)}
         logs = {**logs, **InkWell.reward(blobList)}
         logs = {**logs, **InkWell.value(blobList)}
+        logs = {**logs, **InkWell.lmValue(blobList)}
+        logs = {**logs, **InkWell.lmPunishment(blobList)}
         popLogs[annID] = logs
 
     popLogs = flip(popLogs)
@@ -160,7 +162,7 @@ if __name__ == '__main__':
                         break
                 print('Blob length: ', idx)
                 split = 'test' if config.TEST else 'train'
-                accum = makeAccum(config)
+                accum = makeAccum(config, 'pops')
                 individual(dat, logDir, name, accum, split)
                 print('Log success: ', name)
         except Exception as err:

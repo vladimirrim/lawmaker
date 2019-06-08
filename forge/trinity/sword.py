@@ -122,5 +122,5 @@ class Sword:
 
         self.collectStep(entID, atnArgs, val, reward)
         self.updates[entID].feather.scrawl(
-            stim, ent, val, reward)
+            stim, ent, val, reward, val_lawmaker, punishment)
         return action, arguments, float(val)
