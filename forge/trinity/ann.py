@@ -3,10 +3,9 @@ import numpy as np
 import torch
 
 from torch import nn
-from torch.autograd import Variable
 from torch.nn import functional as F
 from torch.distributions import Categorical
-from torch.optim import Adam
+from forge.ethyr.torch import param
 
 from forge.blade.action.tree import ActionTree
 from forge.blade.action.v2 import ActionV2
@@ -17,7 +16,6 @@ from forge.blade import entity
 
 from forge.ethyr.torch import loss
 from forge.ethyr.rollouts import discountRewards
-from torch.nn.utils import clip_grad_norm_
 
 
 def classify(logits):
@@ -88,7 +86,6 @@ class ValNet(nn.Module):
     def forward(self, conv, flat, ent):
         stim = self.envNet(conv, flat, ent)
         x = self.fc(stim)
-        # print('stim', stim)
         x = x.view(1, -1)
         return x
 
@@ -121,16 +118,9 @@ class Env(nn.Module):
         tiles, nents = conv[0], conv[1]
         nents = nents.view(-1)
 
-        # tiles.requires_grad_(True)  ###
-        # nents.requires_grad_(True)
-        # print('env: tiles, nents:', conv.is_leaf, flat.is_leaf)
         tiles = self.embed(tiles.view(-1).long()).view(-1)
         conv = torch.cat((tiles, nents))
 
-        # flat.requires_grad_(True)
-        # for i in range(len(ents)):
-        #     ents[i].requires_grad_(True)
-        # print('env: conf, flat:', conv.is_leaf, flat.is_leaf)
         conv = self.conv(conv)
         ents = self.ents(ents)
         flat = self.flat(flat)
@@ -279,7 +269,6 @@ class ANN(nn.Module):
         return vals
 
     def visVals(self, food='max', water='max'):
-        from forge.blade.core import realm
         posList, vals = [], []
         R, C = self.world.shape
         for r in range(self.config.BORDER, R - self.config.BORDER):
@@ -317,11 +306,6 @@ class PunishNet(nn.Module):
     def forward(self, conv, flat, ent, policy):
         stim = self.envNet(conv, flat, ent)
         feat = torch.cat((stim, policy), 1)
-        # print('punish: policy, stim:', policy.is_leaf, stim.is_leaf)
-        # print('policy', policy)
-        # print('stim', stim)
-        # print('feat', feat)
-        # input('kek')
         x = self.fc(feat)
         x_sigmoid = self.activation(x)
         x = x.view(1, -1)
@@ -337,58 +321,47 @@ class Lawmaker(nn.Module):
         self.PunishNet = PunishNet(config)
         self.nRealm = args.nRealm
 
-        self.update_period = 2 ** 11 * args.nRealm
+        self.punishments = {}
+        self.values = {}
+        self.rewards = {}
 
-        self.punishments = [{} for _ in range(args.nRealm)]
-        self.values = [{} for _ in range(args.nRealm)]
-        self.rewards = [{} for _ in range(args.nRealm)]
-        self.count = 0
+        self.grads = None
 
-        self.opt = Adam(self.parameters(), lr=1e-3)
         self.grad_clip = 5
 
-    def gatherStatistics(self, lawmakers):
-        self.count = np.sum([lm.count for lm in lawmakers])
-        self.values = [lawmakers[i].values[i] for i in range(len(lawmakers))]
-        self.punishments = [lawmakers[i].punishments[i] for i in range(len(lawmakers))]
-        self.rewards = [lawmakers[i].rewards[i] for i in range(len(lawmakers))]
-
-    def forward(self, ent, env, policy, idx):
+    def forward(self, ent, env, policy):
         s = torchlib.Stim(ent, env, self.config)
         val = self.valNet(s.conv, s.flat, s.ents)
 
         punishment, punishment_sigm = self.PunishNet(s.conv, s.flat, s.ents, policy)
 
-        self.collectStates(ent.entID, punishment, val, idx)
+        self.collectStates(ent.entID, punishment, val)
 
         return punishment_sigm, val
 
-    def collectStates(self, entID, punishment, val, idx):
-        if entID not in self.punishments[idx].keys():
-            self.punishments[idx][entID] = []
-            self.values[idx][entID] = []
-            self.rewards[idx][entID] = []
-        self.punishments[idx][entID].append(punishment)
-        self.values[idx][entID].append(val)
-        self.count += 1
+    def collectStates(self, entID, punishment, val):
+        if entID not in self.punishments.keys():
+            self.punishments[entID] = []
+            self.values[entID] = []
+            self.rewards[entID] = []
+        self.punishments[entID].append(punishment)
+        self.values[entID].append(val)
 
-    def updateStates(self):  # bad? should only dead be here?
+    def updateStates(self):  # should only dead be here?
         punishments = self.punishments
         values = self.values
-        self.punishments = [{} for _ in range(self.nRealm)]
-        self.values = [{} for _ in range(self.nRealm)]
-        self.count = 0
+        self.punishments = {}
+        self.values = {}
         return punishments, values
 
-    def collectRewards(self, reward, idx, desciples):
-        shared_reward = reward / len(
-            self.rewards[idx])  # may be share only with those within certain radius from death?
+    def collectRewards(self, reward, desciples):
+        # shared_reward = reward / len(desciples)  # may be share only with those within certain radius from death?
         for entID in desciples:
-            self.rewards[idx][entID].append(reward)  # should this be shared_reward or reward?
+            self.rewards[entID].append(reward)  # should this be shared_reward or reward?
 
     def updateRewards(self):  # same concerns
         rewards = self.rewards
-        self.rewards = [{} for _ in range(self.nRealm)]
+        self.rewards = {}
         return rewards
 
     def update(self):
@@ -402,40 +375,33 @@ class Lawmaker(nn.Module):
         values_lst = []
         rewards_lst = []
         returns_lst = []
-        for idx in range(len(punishments)):
-            for entID in punishments[idx].keys():
-                punishments_lst += punishments[idx][entID]
-                values_lst += values[idx][entID]
-                rewards_lst += rewards[idx][entID]
-                returns_lst += discountRewards(rewards[idx][entID])
+        for entID in punishments.keys():
+            punishments_lst += punishments[entID]
+            values_lst += values[entID]
+            rewards_lst += rewards[entID]
+            returns_lst += discountRewards(rewards[entID])
 
         return punishments_lst, values_lst, rewards_lst, returns_lst
 
     def backward(self, valWeight=0.25, entWeight=None):
-        # print('Doing backward')
         if entWeight is None:
             entWeight = self.config.ENTROPY
 
-        self.opt.zero_grad()
-
         punishments, values, rewards, rets = self.mergeUpdate()
-        # print('punishments:', punishments[:5], '; len:', len(punishments))
-        # print('values:', values[:5], '; len:', len(values))
-        # print('returns:', rets[:5], '; len:', len(rets))
         returns = torch.tensor(rets).view(-1, 1).float()
-        punishments = torch.cat(punishments)  # this might be wrong
-        values = torch.cat(values)  # this might be wrong
-        # print('punishments:', punishments[:5], '; len:', len(punishments))
-        # print('values:', values[:5], '; len:', len(values))
-        # print('returns:', returns[:5], '; len:', len(returns))
+        punishments = torch.cat(punishments)
+        values = torch.cat(values)
 
         pg, entropy = loss.PG_lawmaker(punishments, values, returns)
         valLoss = loss.valueLoss(values, returns)
         totLoss = pg + valWeight * valLoss + entWeight * entropy
-        # print("totLoss:", totLoss)
-        # input('kek')
 
         totLoss.backward()
-        if self.grad_clip is not None:
-            clip_grad_norm_(self.parameters(), self.grad_clip)
-        self.opt.step()
+        self.grads = param.getGrads(self)
+
+
+def gatherStatistics(lawmakers):
+    values = [lawmakers[i].values for i in range(len(lawmakers))]
+    punishments = [lawmakers[i].punishments for i in range(len(lawmakers))]
+    rewards = [lawmakers[i].rewards for i in range(len(lawmakers))]
+    return values, punishments, rewards

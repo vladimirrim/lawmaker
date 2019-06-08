@@ -25,9 +25,6 @@ class ManualSGD(optim.SGD):
 
 def backward(rolls, anns, valWeight=0.5, entWeight=0):
     atns, vals, rets = rollouts.mergeRollouts(rolls.values())
-    # print('atns:', atns[0][:5], len(atns), len(atns[0]))
-    # print('vals:', vals[:5], len(vals), len(vals[0]))
-    # print('rets:', rets[:5], len(rets))
     returns = torch.tensor(rets).view(-1, 1).float()
     vals = torch.cat(vals)
     pg, entropy, attackentropy = 0, 0, 0
