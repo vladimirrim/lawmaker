@@ -6,6 +6,7 @@ from forge.ethyr.rollouts import Rollout, mergeRollouts
 from forge.ethyr.torch import optim
 from forge.ethyr.torch.param import setParameters, zeroGrads
 import torch
+from forge.trinity.ann import Lawmaker
 
 
 class Sword:
@@ -22,6 +23,8 @@ class Sword:
         self.nGrads = 0
         self.idx = idx
 
+        self.lawmaker = Lawmaker(args, config)
+
     def backward(self):
         ents = self.rollouts.keys()
         anns = [self.anns[idx] for idx in self.networksUsed]
@@ -37,10 +40,14 @@ class Sword:
         self.nGrads = 0
         self.networksUsed = set()
 
+        self.lawmaker.backward(entWeight=0.05)
+
     def sendGradUpdate(self):
         grads = self.grads
+        grads_lm = self.lawmaker.grads
         self.grads = None
-        return grads
+        self.lawmaker.grads = None
+        return grads, grads_lm
 
     def sendLogUpdate(self):
         blobs = self.blobs
@@ -69,13 +76,19 @@ class Sword:
 
     def sendUpdate(self):
         if self.grads is None:
-            return None, None
-        return self.sendGradUpdate(), self.sendLogUpdate()
+            return None, None, None
+        recvs, recvs_lm = self.sendGradUpdate()
+        return recvs, recvs_lm, self.sendLogUpdate()
 
     def recvUpdate(self, update):
+        update, update_lm = update
         for idx, paramVec in enumerate(update):
             setParameters(self.anns[idx], paramVec)
             zeroGrads(self.anns[idx])
+
+        ### update lawmaker
+        setParameters(self.lawmaker, update_lm)
+        zeroGrads(self.lawmaker)
 
     def collectStep(self, entID, atnArgs, val, reward):
         if self.config.TEST:
@@ -95,16 +108,16 @@ class Sword:
 
         # Two options: fixed number of gradients or rollouts
         # if len(self.rollouts) >= self.nRollouts:
-        if self.nGrads >= 100 * 32:
+        if self.nGrads >= 10 * 32:
             self.backward()
 
-    def decide(self, ent, stim, lawmaker):
+    def decide(self, ent, stim):
         reward, entID, annID = 1, ent.entID, ent.annID  ###
         action, arguments, atnArgs, val = self.anns[annID](ent, stim)
 
         ### subtract reward with lawmaker here
         policy = torch.tensor(atnArgs[0][0].tolist(), requires_grad=True)
-        punishment, val_lawmaker = lawmaker(ent, stim, policy, self.idx)
+        punishment, val_lawmaker = self.lawmaker(ent, stim, policy)
         reward -= float(punishment)
 
         self.collectStep(entID, atnArgs, val, reward)

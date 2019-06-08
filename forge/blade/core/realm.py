@@ -6,7 +6,6 @@ import numpy as np
 import ray
 
 from forge.blade import entity, core
-# from forge.trinity.demeter_realm import DemeterRealm
 
 
 class ActionArgs:
@@ -82,15 +81,13 @@ class Realm:
 
 @ray.remote
 class NativeRealm(Realm):
-    def __init__(self, trinity, config, args, idx):#, lawmaker):  ###
+    def __init__(self, trinity, config, args, idx):
         super().__init__(config, args, idx)
         self.god = trinity.god(config, args)
         self.sword = trinity.sword(config, args, idx)
         self.sword.anns[0].world = self.world
         self.logs = []
         self.stepCount = 0
-        # self.statsCollector = DemeterRealm(self.sword, config.NPOP)
-        # self.lawmaker = lawmaker  ###
 
     def stepEnts(self):
         dead = []
@@ -102,13 +99,13 @@ class NativeRealm(Realm):
                 continue
 
             stim = self.getStim(ent)
-            action, arguments, val = self.sword.decide(ent, stim, self.lawmaker) ###
+            action, arguments, val = self.sword.decide(ent, stim) ###
             ent.act(self.world, action, arguments, val)
 
             self.stepEnt(ent, action, arguments)
 
         self.cullDead(dead)
-        self.lawmaker.collectRewards(-len(dead), self.idx, self.desciples.keys())  ###
+        self.sword.lawmaker.collectRewards(-len(dead), self.desciples.keys())  ###
 
     def postmortem(self, ent, dead):
         entID = ent.entID
@@ -125,19 +122,16 @@ class NativeRealm(Realm):
         self.stepEnts()
         self.stepWorld()
 
-    def run(self, swordUpdate=None, lawmaker=None):
+    def run(self, swordUpdate=None):
         self.recvSwordUpdate(swordUpdate)
-        if lawmaker is not None:
-            self.lawmaker = lawmaker
 
         updates = None
         self.stepCount = 0
         while updates is None:
             self.stepCount += 1
             self.step()
-            updates, self.logs = self.sword.sendUpdate()
-        return updates, self.logs, self.lawmaker #, self.statsCollector.updateStates() / self.stepCount,  \
-               #self.statsCollector.updateReward() / self.stepCount
+            updates, updates_lm, logs = self.sword.sendUpdate()
+        return updates, updates_lm, logs
 
     def recvSwordUpdate(self, update):
         if update is None:
