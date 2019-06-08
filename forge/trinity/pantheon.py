@@ -78,6 +78,7 @@ class Model:
         if self.config.TEST:
             return
         self.saver.checkpoint(self.params, self.opt, reward)
+        self.saver.checkpointLawmaker(self.lmParams, self.lmOpt)
 
     def load(self, best=False):
         print('Loading model...')
