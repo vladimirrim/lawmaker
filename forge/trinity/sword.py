@@ -108,7 +108,7 @@ class Sword:
 
         # Two options: fixed number of gradients or rollouts
         # if len(self.rollouts) >= self.nRollouts:
-        if self.nGrads >= 10 * 32:
+        if self.nGrads >= 100 * 32:
             self.backward()
 
     def decide(self, ent, stim):
