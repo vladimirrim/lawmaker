@@ -6,7 +6,8 @@ from forge.ethyr.rollouts import Rollout, mergeRollouts
 from forge.ethyr.torch import optim
 from forge.ethyr.torch.param import setParameters, zeroGrads
 import torch
-from forge.trinity.ann import Lawmaker
+from forge.trinity.ann import Lawmaker, LawmakerAbstract
+import argparse
 
 
 class Sword:
@@ -23,7 +24,10 @@ class Sword:
         self.nGrads = 0
         self.idx = idx
 
-        self.lawmaker = Lawmaker(args, config)
+        if str2bool(args.lm):
+            self.lawmaker = Lawmaker(args, config)
+        else:
+            self.lawmaker = LawmakerAbstract(args, config)
 
     def backward(self):
         ents = self.rollouts.keys()
@@ -124,3 +128,14 @@ class Sword:
         self.updates[entID].feather.scrawl(
             stim, ent, val, reward, val_lawmaker, punishment)
         return action, arguments, float(val)
+
+
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')

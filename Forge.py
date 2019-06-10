@@ -15,6 +15,8 @@ def parseArgs():
                         help='Ray mode (local/default/remote)')
     parser.add_argument('--render', action='store_true', default=False,
                         help='Render env')
+    parser.add_argument('--lm', default=True,
+                        help='Enable lawmaker')
     return parser.parse_args()
 
 
