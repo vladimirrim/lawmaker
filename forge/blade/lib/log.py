@@ -45,6 +45,12 @@ class InkWell:
     def value(blobs):
         return {'value': [blob.value for blob in blobs]}
 
+    def lmValue(blobs):
+        return {'lmValue': [blob.lmValue for blob in blobs]}
+
+    def lmPunishment(blobs):
+        return {'lmPunishment': [blob.lmPunishment for blob in blobs]}
+
 
 # Agent logger
 class Blob:
@@ -60,10 +66,14 @@ class Blob:
         self.value, self.entropy = [], []
         self.pg_loss, self.val_loss = [], []
 
+        self.lmValue, self.lmPunishment = [], []
+
     def finish(self):
         self.lifetime = len(self.reward)
         self.reward = np.sum(self.reward)
         self.value = np.mean(self.value)
+        self.lmValue = np.mean(self.lmValue)
+        self.lmPunishment = np.mean(self.lmPunishment)
 
 
 class BlobLight:
@@ -76,11 +86,15 @@ class BlobLight:
         self.reward, self.ret = blobHeavy.reward, blobHeavy.ret
         self.value, self.entropy = blobHeavy.value, blobHeavy.entropy
         self.pg_loss, self.val_loss = blobHeavy.pg_loss, blobHeavy.val_loss
+        self.lmValue = blobHeavy.lmValue
+        self.lmPunishment = blobHeavy.lmPunishment
 
     def finish(self):
         self.lifetime = len(self.reward)
         self.reward = np.sum(self.reward)
         self.value = np.mean(self.value)
+        self.lmValue = np.mean(self.lmValue)
+        self.lmPunishment = np.mean(self.lmPunishment)
 
 
 class Quill:

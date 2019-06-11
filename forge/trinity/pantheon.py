@@ -34,6 +34,12 @@ class Model:
         if not self.config.TEST:
             self.opt = ManualAdam([self.params], lr=0.001, weight_decay=0.00001)
 
+        lm = (trinity.ann.Lawmaker(self.args, self.config) if trinity.sword.str2bool(self.args.lm) else
+              trinity.ann.LawmakerAbstract(self.args, self.config))
+        self.lm = getParameters(lm)
+        self.lmParams = Parameter(torch.Tensor(np.array(self.lm)))
+        self.lmOpt = ManualAdam([self.lmParams], lr=0.001, weight_decay=0.00001)
+
     # Initialize a new network
     def initModel(self):
         return getParameters(trinity.ANN(self.config))
@@ -46,7 +52,7 @@ class Model:
         self.models = [self.initModel() for _ in range(n)]
 
     # Grads and clip
-    def stepOpt(self, gradDicts):
+    def stepOpt(self, gradDicts):  # gradDicts = list of dicts of lists (of lists)
         grads = defaultdict(list)
         keysets = [grads.keys() for grads in gradDicts]
         for gradDict in gradDicts:
@@ -62,10 +68,21 @@ class Model:
             gradAry[worker] = torch.Tensor(grad)
         self.opt.step(gradAry)
 
+    def lmStepOpt(self, grads):  # grads = list of lists (of lists)
+        if len(self.lmParams) == 0:
+            return
+        grads = np.array(grads)
+        grads = np.mean(grads, 0)
+        grads = np.clip(grads, -5, 5)
+        gradAry = torch.zeros_like(self.lmParams).unsqueeze(0)
+        gradAry[0] = torch.Tensor(grads)
+        self.lmOpt.step(gradAry[0])
+
     def checkpoint(self, reward):
         if self.config.TEST:
             return
         self.saver.checkpoint(self.params, self.opt, reward)
+        self.saver.checkpointLawmaker(self.lmParams, self.lmOpt)
 
     def load(self, best=False):
         print('Loading model...')
@@ -79,7 +96,7 @@ class Model:
 
     @property
     def model(self):
-        return self.params.detach().numpy()
+        return self.params.detach().numpy(), self.lmParams.detach().numpy()
 
 
 class Pantheon:
@@ -98,7 +115,7 @@ class Pantheon:
         return self.net.model
 
     def step(self, recvs):
-        recvs, logs = list(zip(*recvs))
+        recvs, recvs_lm, logs = list(zip(*recvs))
 
         # Write logs
         self.quill.scrawl(logs)
@@ -112,6 +129,6 @@ class Pantheon:
         else:
             self.quill.print()
 
+        self.net.lmStepOpt(recvs_lm)
+
         return self.model
-
-

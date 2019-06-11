@@ -6,7 +6,6 @@ import numpy as np
 import ray
 
 from forge.blade import entity, core
-from forge.trinity.demeter_realm import DemeterRealm
 
 
 class ActionArgs:
@@ -28,6 +27,7 @@ class Realm:
 
         self.env = self.world.env
         self.values = None
+        self.idx = idx
 
     def clientData(self):
         if self.values is None and hasattr(self, 'sword'):
@@ -84,31 +84,35 @@ class NativeRealm(Realm):
     def __init__(self, trinity, config, args, idx):
         super().__init__(config, args, idx)
         self.god = trinity.god(config, args)
-        self.sword = trinity.sword(config, args)
+        self.sword = trinity.sword(config, args, idx)
         self.sword.anns[0].world = self.world
         self.logs = []
         self.stepCount = 0
-        self.statsCollector = DemeterRealm(self.sword, config.NPOP)
 
     def stepEnts(self):
         dead = []
+        deadEnts = []
 
         for ent in self.desciples.values():
             ent.step(self.world)
 
-            if self.postmortem(ent, dead):
+            if not ent.alive or ent.kill:
+                dead.append(ent.entID)
+                deadEnts.append(ent)
                 continue
 
             stim = self.getStim(ent)
-            action, arguments, val = self.sword.decide(ent, stim, self.currentAction, self.stepCount)
+            action, arguments, val = self.sword.decide(ent, stim) ###
             ent.act(self.world, action, arguments, val)
 
             self.stepEnt(ent, action, arguments)
 
-        self.statsCollector.collectReward(self.desciples)
-        self.statsCollector.collectState(self.desciples)
-
         self.cullDead(dead)
+        self.sword.lawmaker.collectRewards(-len(dead), self.desciples.keys())  ###
+
+        for ent in deadEnts:
+            if not self.config.TEST:
+                self.sword.collectRollout(ent.entID, ent)
 
     def postmortem(self, ent, dead):
         entID = ent.entID
@@ -125,18 +129,16 @@ class NativeRealm(Realm):
         self.stepEnts()
         self.stepWorld()
 
-    def run(self, currentAction, swordUpdate=None):
+    def run(self, swordUpdate=None):
         self.recvSwordUpdate(swordUpdate)
-        self.currentAction = currentAction
 
         updates = None
         self.stepCount = 0
         while updates is None:
             self.stepCount += 1
             self.step()
-            updates, self.logs = self.sword.sendUpdate()
-        return updates, self.logs, self.statsCollector.updateStates() / self.stepCount,  \
-               self.statsCollector.updateReward() / self.stepCount
+            updates, updates_lm, logs = self.sword.sendUpdate()
+        return updates, updates_lm, logs
 
     def recvSwordUpdate(self, update):
         if update is None:

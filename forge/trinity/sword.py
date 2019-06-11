@@ -5,10 +5,13 @@ from forge.blade.lib.enums import Material
 from forge.ethyr.rollouts import Rollout, mergeRollouts
 from forge.ethyr.torch import optim
 from forge.ethyr.torch.param import setParameters, zeroGrads
+import torch
+from forge.trinity.ann import Lawmaker, LawmakerAbstract
+import argparse
 
 
 class Sword:
-    def __init__(self, config, args):
+    def __init__(self, config, args, idx):
         self.config, self.args = config, args
         self.nANN, self.h = config.NPOP, config.HIDDEN
         self.anns = [trinity.ANN(config)
@@ -19,6 +22,12 @@ class Sword:
         self.updates, self.rollouts = defaultdict(Rollout), {}
         self.ents, self.rewards, self.grads = {}, [], None
         self.nGrads = 0
+        self.idx = idx
+
+        if str2bool(args.lm):
+            self.lawmaker = Lawmaker(args, config)
+        else:
+            self.lawmaker = LawmakerAbstract(args, config)
 
     def backward(self):
         ents = self.rollouts.keys()
@@ -35,10 +44,14 @@ class Sword:
         self.nGrads = 0
         self.networksUsed = set()
 
+        self.lawmaker.backward(entWeight=0.05)
+
     def sendGradUpdate(self):
         grads = self.grads
+        grads_lm = self.lawmaker.grads
         self.grads = None
-        return grads
+        self.lawmaker.grads = None
+        return grads, grads_lm
 
     def sendLogUpdate(self):
         blobs = self.blobs
@@ -67,13 +80,19 @@ class Sword:
 
     def sendUpdate(self):
         if self.grads is None:
-            return None, None
-        return self.sendGradUpdate(), self.sendLogUpdate()
+            return None, None, None
+        recvs, recvs_lm = self.sendGradUpdate()
+        return recvs, recvs_lm, self.sendLogUpdate()
 
     def recvUpdate(self, update):
+        update, update_lm = update
         for idx, paramVec in enumerate(update):
             setParameters(self.anns[idx], paramVec)
             zeroGrads(self.anns[idx])
+
+        ### update lawmaker
+        setParameters(self.lawmaker, update_lm)
+        zeroGrads(self.lawmaker)
 
     def collectStep(self, entID, atnArgs, val, reward):
         if self.config.TEST:
@@ -96,10 +115,27 @@ class Sword:
         if self.nGrads >= 100 * 32:
             self.backward()
 
-    def decide(self, ent, stim, actions, step):
-        reward, entID, annID = 0, ent.entID, ent.annID
+    def decide(self, ent, stim):
+        reward, entID, annID = 1, ent.entID, ent.annID  ###
         action, arguments, atnArgs, val = self.anns[annID](ent, stim)
+
+        ### subtract reward with lawmaker here
+        policy = torch.tensor(atnArgs[0][0].tolist(), requires_grad=True)
+        punishment, val_lawmaker = self.lawmaker(ent, stim, policy)
+        reward -= float(punishment)
+
         self.collectStep(entID, atnArgs, val, reward)
         self.updates[entID].feather.scrawl(
-            stim, ent, val, reward)
+            stim, ent, val, reward, val_lawmaker, punishment)
         return action, arguments, float(val)
+
+
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
