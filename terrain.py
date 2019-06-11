@@ -5,7 +5,7 @@ gen = OpenSimplex()
 
 from forge.blade.lib import enums
 from matplotlib import pyplot as plt
-from scipy.misc import imread, imsave
+from imageio import imread, imsave
 from shutil import copyfile
 from copy import deepcopy
 import numpy as np
