@@ -1,12 +1,9 @@
-from pdb import set_trace as T
 from opensimplex import OpenSimplex
 
 gen = OpenSimplex()
 
 from forge.blade.lib import enums
-from matplotlib import pyplot as plt
 from imageio import imread, imsave
-from shutil import copyfile
 from copy import deepcopy
 import numpy as np
 import os
@@ -36,10 +33,8 @@ def saveTiled(dat, path):
 def inBounds(r, c, shape, border=0):
     R, C = shape
     return (
-            r > border and
-            c > border and
-            r < R - border - 1 and
-            c < C - border - 1
+            border < r < R - border - 1 and
+            border < c < C - border - 1
     )
 
 
