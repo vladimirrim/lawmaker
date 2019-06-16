@@ -1,13 +1,13 @@
 from collections import defaultdict
 
+import torch
+
 from forge import trinity
 from forge.blade.lib.enums import Material
 from forge.ethyr.rollouts import Rollout, mergeRollouts
 from forge.ethyr.torch import optim
 from forge.ethyr.torch.param import setParameters, zeroGrads
-import torch
 from forge.trinity.ann import Lawmaker, LawmakerAbstract
-import argparse
 
 
 class Sword:
@@ -24,7 +24,7 @@ class Sword:
         self.nGrads = 0
         self.idx = idx
 
-        if str2bool(args.lm):
+        if args.lm:
             self.lawmaker = Lawmaker(args, config)
         else:
             self.lawmaker = LawmakerAbstract(args, config)
@@ -128,14 +128,3 @@ class Sword:
         self.updates[entID].feather.scrawl(
             stim, ent, val, reward, val_lawmaker, punishment)
         return action, arguments, float(val)
-
-
-def str2bool(v):
-    if isinstance(v, bool):
-        return v
-    if v.lower() in ('yes', 'true', 't', 'y', '1'):
-        return True
-    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
-        return False
-    else:
-        raise argparse.ArgumentTypeError('Boolean value expected.')

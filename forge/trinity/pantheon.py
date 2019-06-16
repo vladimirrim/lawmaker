@@ -34,7 +34,7 @@ class Model:
         if not self.config.TEST:
             self.opt = ManualAdam([self.params], lr=0.001, weight_decay=0.00001)
 
-        lm = (trinity.ann.Lawmaker(self.args, self.config) if trinity.sword.str2bool(self.args.lm) else
+        lm = (trinity.ann.Lawmaker(self.args, self.config) if self.args.lm else
               trinity.ann.LawmakerAbstract(self.args, self.config))
         self.lm = getParameters(lm)
         self.lmParams = Parameter(torch.Tensor(np.array(self.lm)))
