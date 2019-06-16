@@ -161,8 +161,9 @@ if __name__ == '__main__':
                     except EOFError as e:
                         break
                 print('Blob length: ', idx)
-                split = 'test' if config.TEST else 'train'
-                accum = makeAccum(config, 'pops')
+                mode = 'single'
+                split = 'test' if config.TEST else mode
+                accum = makeAccum(config, mode)
                 individual(dat, logDir, name, accum, split)
                 print('Log success: ', name)
         except Exception as err:
