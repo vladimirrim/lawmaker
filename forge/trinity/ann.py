@@ -312,13 +312,13 @@ class PunishNet(nn.Module):
         return x, x_sigmoid
 
 
-class Lawmaker(nn.Module):
+class LawmakerAbstract(nn.Module):
     def __init__(self, args, config):
         super().__init__()
-        self.valNet = ValNet(config)
+        self.valNet = None
+        self.PunishNet = None
 
         self.config = config
-        self.PunishNet = PunishNet(config)
         self.nRealm = args.nRealm
 
         self.punishments = {}
@@ -326,26 +326,16 @@ class Lawmaker(nn.Module):
         self.rewards = {}
 
         self.grads = None
-
         self.grad_clip = 5
 
     def forward(self, ent, env, policy):
-        s = torchlib.Stim(ent, env, self.config)
-        val = self.valNet(s.conv, s.flat, s.ents)
-
-        punishment, punishment_sigm = self.PunishNet(s.conv, s.flat, s.ents, policy)
-
-        self.collectStates(ent.entID, punishment, val)
-
-        return punishment_sigm, val
+        return torch.zeros([1]), torch.zeros([1])
 
     def collectStates(self, entID, punishment, val):
-        if entID not in self.punishments.keys():
-            self.punishments[entID] = []
-            self.values[entID] = []
-            self.rewards[entID] = []
-        self.punishments[entID].append(punishment)
-        self.values[entID].append(val)
+        pass
+
+    def collectRewards(self, reward, desciples):
+        pass
 
     def updateStates(self):  # should only dead be here?
         punishments = self.punishments
@@ -353,11 +343,6 @@ class Lawmaker(nn.Module):
         self.punishments = {}
         self.values = {}
         return punishments, values
-
-    def collectRewards(self, reward, desciples):
-        # shared_reward = reward / len(desciples)  # may be share only with those within certain radius from death?
-        for entID in desciples:
-            self.rewards[entID].append(reward)  # should this be shared_reward or reward?
 
     def updateRewards(self):  # same concerns
         rewards = self.rewards
@@ -382,6 +367,39 @@ class Lawmaker(nn.Module):
             returns_lst += discountRewards(rewards[entID])
 
         return punishments_lst, values_lst, rewards_lst, returns_lst
+
+    def backward(self, valWeight=0.25, entWeight=None):
+        self.grads = param.getGrads(self)
+
+
+class Lawmaker(LawmakerAbstract):
+    def __init__(self, args, config):
+        super().__init__(args, config)
+        self.valNet = ValNet(config)
+        self.PunishNet = PunishNet(config)
+
+    def forward(self, ent, env, policy):
+        s = torchlib.Stim(ent, env, self.config)
+        val = self.valNet(s.conv, s.flat, s.ents)
+
+        punishment, punishment_sigm = self.PunishNet(s.conv, s.flat, s.ents, policy)
+
+        self.collectStates(ent.entID, punishment, val)
+
+        return punishment_sigm, val
+
+    def collectStates(self, entID, punishment, val):
+        if entID not in self.punishments.keys():
+            self.punishments[entID] = []
+            self.values[entID] = []
+            self.rewards[entID] = []
+        self.punishments[entID].append(punishment)
+        self.values[entID].append(val)
+
+    def collectRewards(self, reward, desciples):
+        # shared_reward = reward / len(desciples)  # may be share only with those within certain radius from death?
+        for entID in desciples:
+            self.rewards[entID].append(reward)  # should this be shared_reward or reward?
 
     def backward(self, valWeight=0.25, entWeight=None):
         if entWeight is None:

@@ -34,7 +34,9 @@ class Model:
         if not self.config.TEST:
             self.opt = ManualAdam([self.params], lr=0.001, weight_decay=0.00001)
 
-        self.lm = getParameters(trinity.ann.Lawmaker(self.args, self.config))
+        lm = (trinity.ann.Lawmaker(self.args, self.config) if trinity.sword.str2bool(self.args.lm) else
+              trinity.ann.LawmakerAbstract(self.args, self.config))
+        self.lm = getParameters(lm)
         self.lmParams = Parameter(torch.Tensor(np.array(self.lm)))
         self.lmOpt = ManualAdam([self.lmParams], lr=0.001, weight_decay=0.00001)
 
@@ -67,6 +69,8 @@ class Model:
         self.opt.step(gradAry)
 
     def lmStepOpt(self, grads):  # grads = list of lists (of lists)
+        if len(self.lmParams) == 0:
+            return
         grads = np.array(grads)
         grads = np.mean(grads, 0)
         grads = np.clip(grads, -5, 5)
@@ -126,6 +130,5 @@ class Pantheon:
             self.quill.print()
 
         self.net.lmStepOpt(recvs_lm)
-        ### checkpoint lm
 
         return self.model
