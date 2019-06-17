@@ -124,7 +124,18 @@ def individual(blobs, logDir, name, accum, split):
         popLogs[annID] = logs
 
     popLogs = flip(popLogs)
+    popLogs = prepare_avg(popLogs, 'lifetime')
     popPlots(popLogs, savedir, split)
+
+
+def prepare_avg(dct, key):
+    dct[key + '_avg'] = {}
+    lst = list(dct[key].values())
+    length = min([len(lst[i]) for i in range(len(lst))])
+    for i in range(len(lst)):
+        lst[i] = lst[i][:length]
+    dct[key + '_avg'][0] = np.mean(lst, axis=0)
+    return dct
 
 
 def makeAccum(config, form='single'):
@@ -145,6 +156,7 @@ if __name__ == '__main__':
         arg = sys.argv[1]
 
     logDir = 'resource/exps/'
+    # logName = '/baseline/logs.p'
     logName = '/model/logs.p'
     fName = 'frag.png'
     name = 'newfig'
@@ -161,10 +173,11 @@ if __name__ == '__main__':
                     except EOFError as e:
                         break
                 print('Blob length: ', idx)
-                mode = 'single'
-                split = 'test' if config.TEST else mode
-                accum = makeAccum(config, mode)
+                split = 'test' if config.TEST else 'train'
+                accum = makeAccum(config, 'pops')
                 individual(dat, logDir, name, accum, split)
                 print('Log success: ', name)
         except Exception as err:
             print(str(err))
+
+

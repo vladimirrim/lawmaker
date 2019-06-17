@@ -60,7 +60,7 @@ class Native(Blacksmith):
         self.stepCount += 1
         recvs = self.env.run(self.pantheon.model)
         self.pantheon.step(recvs)
-        self.rayBuffers()
+        # self.rayBuffers()
 
     # Only for render -- steps are run per core
     def step(self):
