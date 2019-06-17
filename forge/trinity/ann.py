@@ -1,3 +1,4 @@
+# ann.py
 from pdb import set_trace as T
 import numpy as np
 import torch
@@ -112,7 +113,8 @@ class Env(nn.Module):
 
         self.conv = torch.nn.Linear(1800, h)
         self.flat = torch.nn.Linear(entDim, h)
-        self.ents = Ent(entDim, h)
+        # self.ents = Ent(entDim, h)
+        self.ents = torch.nn.Linear(15*15*7, h)
 
     def forward(self, conv, flat, ents):
         tiles, nents = conv[0], conv[1]
@@ -122,7 +124,8 @@ class Env(nn.Module):
         conv = torch.cat((tiles, nents))
 
         conv = self.conv(conv)
-        ents = self.ents(ents)
+        # ents = self.ents(ents)
+        ents = self.ents(ents.view(-1))
         flat = self.flat(flat)
 
         x = torch.cat((conv, flat, ents)).view(1, -1)
@@ -423,3 +426,4 @@ def gatherStatistics(lawmakers):
     punishments = [lawmakers[i].punishments for i in range(len(lawmakers))]
     rewards = [lawmakers[i].rewards for i in range(len(lawmakers))]
     return values, punishments, rewards
+

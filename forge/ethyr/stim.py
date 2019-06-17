@@ -1,3 +1,4 @@
+# stim.py
 from pdb import set_trace as T
 import numpy as np
 
@@ -54,16 +55,44 @@ def stats(ent, other, config):
     return ret
 
 
+# def environment(env, ent, sz, config):
+#     R, C = env.shape
+#     conv, ents = np.zeros((2, R, C)), []
+#     for r in range(R):
+#         for c in range(C):
+#             t, e = tile(ent, env[r, c], sz, config)
+#             conv[:, r, c] = t
+#             ents += e
+#     assert len(ents) > 0
+#     ents = np.array(ents)
+#     return conv, ents
+#
+#
+# def tile(ent, t, sz, config):
+#     nTiles = 8
+#     index = t.state.index
+#     assert 0 <= index < nTiles
+#     conv = [index, t.nEnts]
+#
+#     ents = []
+#     r, c = ent.pos
+#     for e in t.ents.values():
+#         statStim = stats(e, ent, config)
+#         e.stim = statStim
+#         ents.append(statStim)
+#
+#     return conv, ents
+
+
+# modified features
 def environment(env, ent, sz, config):
     R, C = env.shape
-    conv, ents = np.zeros((2, R, C)), []
+    conv, ents = np.zeros((2, R, C)), np.zeros((R, C, 7))
     for r in range(R):
         for c in range(C):
             t, e = tile(ent, env[r, c], sz, config)
             conv[:, r, c] = t
-            ents += e
-    assert len(ents) > 0
-    ents = np.array(ents)
+            ents[r, c] = e
     return conv, ents
 
 
@@ -73,11 +102,11 @@ def tile(ent, t, sz, config):
     assert 0 <= index < nTiles
     conv = [index, t.nEnts]
 
-    ents = []
     r, c = ent.pos
+    statStim = np.zeros((11,))
     for e in t.ents.values():
         statStim = stats(e, ent, config)
         e.stim = statStim
-        ents.append(statStim)
+    return conv, statStim[[0, 1, 2, 3, 8, 9, 10]]
 
-    return conv, ents
+
