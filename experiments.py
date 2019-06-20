@@ -59,5 +59,5 @@ if USER == 'vladimir':
 
 
     # Sample config
-    makeExps()
-    makeExp('exploreIntensifiesAuto', Law, 128, test=False)
+    # makeExps()
+    makeExp('exploreIntensifiesAuto', Law, 128, test=test)

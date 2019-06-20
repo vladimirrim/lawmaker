@@ -15,7 +15,7 @@ from forge.ethyr.torch.param import getParameters
 class Model:
     def __init__(self, config, args):
         self.saver = save.Saver(config.NPOP, config.MODELDIR,
-                                'models', 'bests', resetTol=256)
+                                'models', 'bests', 'lawmaker', resetTol=256)
         self.config, self.args = config, args
 
         self.init()
@@ -87,7 +87,7 @@ class Model:
     def load(self, best=False):
         print('Loading model...')
         epoch = self.saver.load(
-            self.opt, self.params, best)
+            self.opt, self.params, self.lmOpt, self.lmParams, best)
 
     @property
     def nParams(self):

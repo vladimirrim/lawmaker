@@ -389,6 +389,8 @@ class Lawmaker(LawmakerAbstract):
         return punishment_sigm, val
 
     def collectStates(self, entID, punishment, val):
+        if self.config.TEST:
+            return
         if entID not in self.punishments.keys():
             self.punishments[entID] = []
             self.values[entID] = []
@@ -397,6 +399,8 @@ class Lawmaker(LawmakerAbstract):
         self.values[entID].append(val)
 
     def collectRewards(self, reward, desciples):
+        if self.config.TEST:
+            return
         # shared_reward = reward / len(desciples)  # may be share only with those within certain radius from death?
         for entID in desciples:
             self.rewards[entID].append(reward)  # should this be shared_reward or reward?

@@ -21,8 +21,8 @@ class Resetter:
 
 
 class Saver:
-    def __init__(self, nANN, root, savef, bestf, resetTol):
-        self.bestf, self.savef = bestf, savef,
+    def __init__(self, nANN, root, savef, bestf, lmSavef, resetTol):
+        self.bestf, self.savef, self.lmSavef = bestf, savef, lmSavef,
         self.root, self.extn = root, '.pth'
         self.nANN = nANN
 
@@ -58,13 +58,20 @@ class Saver:
         if self.epoch % 100 == 0:
             self.save(params, opt, 'lawmaker' + str(self.epoch))
 
-    def load(self, opt, param, best=False):
+    def load(self, opt, param, lmOpt, lmParam, best=False):
         fname = self.bestf if best else self.savef
         data = torch.load(self.root + fname + self.extn)
         param.data = data['param']
         if opt is not None:
             opt.load_state_dict(data['opt'])
         epoch = data['epoch']
+
+        fname = self.lmSavef
+        data = torch.load(self.root + fname + self.extn)
+        lmParam.data = data['param']
+        if lmOpt is not None:
+            lmOpt.load_state_dict(data['opt'])
+
         return epoch
 
     def print(self):

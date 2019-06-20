@@ -125,6 +125,7 @@ class Sword:
         reward -= float(punishment)
 
         self.collectStep(entID, atnArgs, val, reward)
-        self.updates[entID].feather.scrawl(
-            stim, ent, val, reward, val_lawmaker, punishment)
+        if not self.config.TEST:
+            self.updates[entID].feather.scrawl(
+                stim, ent, val, reward, val_lawmaker, punishment)
         return action, arguments, float(val)
