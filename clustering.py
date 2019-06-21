@@ -9,6 +9,16 @@ import matplotlib.pyplot as plt
 from forge.blade.lib.enums import Neon
 
 
+def softmax(z):
+    assert len(z.shape) == 2
+    s = np.max(z, axis=1)
+    s = s[:, np.newaxis]
+    e_x = np.exp(z - s)
+    div = np.sum(e_x, axis=1)
+    div = div[:, np.newaxis] # dito
+    return e_x / div
+
+
 def readLmLogs():
     with open(logDir + name + logName, 'rb') as f:
         logs = pickle.load(f)
@@ -49,6 +59,8 @@ def cluster(r):
 def createPic(state, label, fig, pic_num, dr):
     indicies = state.conv[0, :, :].detach().numpy()
     ents = state.ents.detach().numpy()
+    policy = softmax(state.policy.detach().numpy())[0]
+
     for i in range(indicies.shape[0]):
         for j in range(indicies.shape[1]):
             idx = indicies[i, j]
