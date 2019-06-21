@@ -65,17 +65,24 @@ def createPic(state, label, fig, pic_num, dr):
         for j in range(indicies.shape[1]):
             idx = indicies[i, j]
             plt.plot([i + 0.5], [j + 0.5], linestyle="None", marker="s",
-                     markersize=37, mfc=colors[idx], mec='black')
+                     markersize=37, mfc=colors[idx], mec='black', zorder=0)
 
     for ent in ents:
         delta = (ent[6], ent[7])
         if (delta[0] != 0) and (delta[1] != 0):
             friend = int(np.ceil(ent[9]))
             plt.plot([7.5 - delta[0]], [7.5 - delta[1]], linestyle="None", marker="o",
-                     markersize=15, mfc=colorsEnt[friend], mec='black')
+                     markersize=15, mfc=colorsEnt[friend], mec='black', zorder=1)
 
     plt.plot([7.5], [7.5], linestyle="None", marker="o",
-                     markersize=10, mfc=Neon.BLACK.norm, mec='black')
+                     markersize=10, mfc=Neon.BLACK.norm, mec='black', zorder=1)
+
+    for i, delta in enumerate(((0, 1), (1, 0), (0, -1), (-1, 0))):
+        plt.arrow(7.5, 7.5, delta[0], -delta[1], width=policy[i+1]*0.1, length_includes_head=True,
+                  color='black', zorder=2)
+        plt.text(7.5-0.25 + delta[0]/2 + abs(delta[1]/4), 7.5 + abs(delta[0]/10) - delta[1]/2, round(policy[i+1], 2),
+                 zorder=2, fontsize=10)
+
     plt.xticks(())
     plt.yticks(())
     plt.xlim((0, 15))
