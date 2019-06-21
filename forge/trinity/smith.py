@@ -8,7 +8,7 @@ class NativeServer:
         self.envs = [core.NativeRealm.remote(trinity, config, args, i)
                      for i in range(args.nRealm)]
 
-    def step(self, actions=None):
+    def step(self):
         recvs = [e.step.remote() for e in self.envs]
         return ray.get(recvs)
 
