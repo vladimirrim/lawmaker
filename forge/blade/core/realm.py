@@ -137,7 +137,10 @@ class NativeRealm(Realm):
         while updates is None:
             self.stepCount += 1
             self.step()
-            updates, updates_lm, logs = self.sword.sendUpdate()
+            if self.config.TEST:
+                updates, updates_lm, logs = self.sword.sendLmLogUpdate(), [], []
+            else:
+                updates, updates_lm, logs = self.sword.sendUpdate()
         return updates, updates_lm, logs
 
     def recvSwordUpdate(self, update):

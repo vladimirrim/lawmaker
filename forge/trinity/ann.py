@@ -299,17 +299,21 @@ class ANN(nn.Module):
 class PunishNet(nn.Module):
     def __init__(self, config):
         super().__init__()
-        self.fc = torch.nn.Linear(config.HIDDEN + 5, 1)
+        self.repr = torch.nn.Linear(config.HIDDEN + 5, config.HIDDEN)
+        self.relu = torch.nn.ReLU()
+        self.fc = torch.nn.Linear(config.HIDDEN, 1)
         self.activation = torch.nn.Sigmoid()
         self.envNet = Env(config)
 
     def forward(self, conv, flat, ent, policy):
         stim = self.envNet(conv, flat, ent)
         feat = torch.cat((stim, policy), 1)
-        x = self.fc(feat)
+        repr = self.repr(feat)
+        x = self.relu(repr)
+        x = self.fc(x)
         x_sigmoid = self.activation(x)
         x = x.view(1, -1)
-        return x, x_sigmoid
+        return x, x_sigmoid, repr
 
 
 class LawmakerAbstract(nn.Module):
@@ -325,24 +329,45 @@ class LawmakerAbstract(nn.Module):
         self.values = {}
         self.rewards = {}
 
+        self.states = {}
+        self.representations = {}
+        self.count = 0
+
         self.grads = None
         self.grad_clip = 5
 
     def forward(self, ent, env, policy):
         return torch.zeros([1]), torch.zeros([1])
 
-    def collectStates(self, entID, punishment, val):
-        pass
+    def collectStates(self, entID, punishment, val, s, stim):
+        self.count += 1
 
     def collectRewards(self, reward, desciples):
         pass
 
     def updateStates(self):  # should only dead be here?
+        self.count = 0
         punishments = self.punishments
         values = self.values
         self.punishments = {}
         self.values = {}
-        return punishments, values
+        if self.config.TEST:
+            states = self.states
+            representations = self.representations
+            self.states = {}
+            self.representations = {}
+            return punishments, values, states, representations
+        return punishments, values, None, None
+
+    def mergeUpdateStates(self):
+        punishments, values, states, representations = self.updateStates()
+        punishments = merge_dct(punishments)
+        values = merge_dct(values)
+        if states is not None:
+            states = merge_dct(states)
+        if representations is not None:
+            representations = merge_dct(representations)
+        return punishments, values, states, representations
 
     def updateRewards(self):  # same concerns
         rewards = self.rewards
@@ -350,19 +375,17 @@ class LawmakerAbstract(nn.Module):
         return rewards
 
     def update(self):
-        punishments, values = self.updateStates()
+        punishments, values, _, _ = self.updateStates()
         rewards = self.updateRewards()
         return punishments, values, rewards
 
     def mergeUpdate(self):
         punishments, values, rewards = self.update()
-        punishments_lst = []
-        values_lst = []
+        punishments_lst = merge_dct(punishments)
+        values_lst = merge_dct(values)
         rewards_lst = []
         returns_lst = []
-        for entID in punishments.keys():
-            punishments_lst += punishments[entID]
-            values_lst += values[entID]
+        for entID in rewards.keys():
             rewards_lst += rewards[entID]
             returns_lst += discountRewards(rewards[entID])
 
@@ -370,6 +393,13 @@ class LawmakerAbstract(nn.Module):
 
     def backward(self, valWeight=0.25, entWeight=None):
         self.grads = param.getGrads(self)
+
+
+def merge_dct(dct):
+    lst = []
+    for v in dct.values():
+        lst += v
+    return lst
 
 
 class Lawmaker(LawmakerAbstract):
@@ -380,23 +410,33 @@ class Lawmaker(LawmakerAbstract):
 
     def forward(self, ent, env, policy):
         s = torchlib.Stim(ent, env, self.config)
+        s.policy = policy
         val = self.valNet(s.conv, s.flat, s.ents)
 
-        punishment, punishment_sigm = self.PunishNet(s.conv, s.flat, s.ents, policy)
+        punishment, punishment_sigm, stim = self.PunishNet(s.conv, s.flat, s.ents, s.policy)
 
-        self.collectStates(ent.entID, punishment, val)
+        self.collectStates(ent.entID, punishment, val, s, stim)
 
         return punishment_sigm, val
 
-    def collectStates(self, entID, punishment, val):
-        if self.config.TEST:
-            return
+    def collectStates(self, entID, punishment, val, s, stim):
+        self.count += 1
         if entID not in self.punishments.keys():
             self.punishments[entID] = []
             self.values[entID] = []
             self.rewards[entID] = []
-        self.punishments[entID].append(punishment)
-        self.values[entID].append(val)
+
+        if not self.config.TEST:
+            self.punishments[entID].append(punishment)
+            self.values[entID].append(val)
+        else:
+            self.punishments[entID].append(punishment.detach().numpy()[0][0])
+            self.values[entID].append(val.detach().numpy()[0][0])
+            if entID not in self.states.keys():
+                self.states[entID] = []
+                self.representations[entID] = []
+            self.states[entID].append(s)
+            self.representations[entID].append(stim.detach().numpy()[0])
 
     def collectRewards(self, reward, desciples):
         if self.config.TEST:

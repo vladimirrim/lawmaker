@@ -137,8 +137,8 @@ class Quill:
     def latest(self):
         return self.lifetime
 
-    def save(self, blobs):
-        with open(self.dir + 'logs.p', 'ab') as f:
+    def save(self, blobs, name='logs.p'):
+        with open(self.dir + name, 'ab') as f:
             pickle.dump(blobs, f)
 
     def scratch(self):

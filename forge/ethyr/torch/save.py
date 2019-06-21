@@ -58,7 +58,7 @@ class Saver:
         if self.epoch % 100 == 0:
             self.save(params, opt, 'lawmaker' + str(self.epoch))
 
-    def load(self, opt, param, lmOpt, lmParam, best=False):
+    def load(self, opt, param, lmOpt, lmParam, best=False, lm=False):
         fname = self.bestf if best else self.savef
         data = torch.load(self.root + fname + self.extn)
         param.data = data['param']
@@ -66,11 +66,15 @@ class Saver:
             opt.load_state_dict(data['opt'])
         epoch = data['epoch']
 
-        fname = self.lmSavef
-        data = torch.load(self.root + fname + self.extn)
-        lmParam.data = data['param']
-        if lmOpt is not None:
-            lmOpt.load_state_dict(data['opt'])
+        if lm:
+            fname = self.lmSavef
+            try:
+                data = torch.load(self.root + fname + self.extn)
+            except:
+                print('lawmaker didn\'t load')
+            lmParam.data = data['param']
+            if lmOpt is not None:
+                lmOpt.load_state_dict(data['opt'])
 
         return epoch
 

@@ -87,7 +87,7 @@ class Model:
     def load(self, best=False):
         print('Loading model...')
         epoch = self.saver.load(
-            self.opt, self.params, self.lmOpt, self.lmParams, best)
+            self.opt, self.params, self.lmOpt, self.lmParams, best, self.args.lm)
 
     @property
     def nParams(self):
@@ -124,11 +124,12 @@ class Pantheon:
         if not self.config.TEST:
             lifetime = self.quill.latest()
             self.net.stepOpt(recvs)
+            self.net.lmStepOpt(recvs_lm)
             self.net.checkpoint(lifetime)
             self.net.saver.print()
         else:
+            self.quill.save(recvs, 'logsLm.p')
             self.quill.print()
 
-        self.net.lmStepOpt(recvs_lm)
 
         return self.model

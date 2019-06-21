@@ -58,6 +58,12 @@ class Sword:
         self.blobs = []
         return blobs
 
+    def sendLmLogUpdate(self):
+        if self.lawmaker.count < 32 * 100:
+            return None
+        else:
+            return self.lawmaker.mergeUpdateStates()
+
     def getExploredTiles(self, entID):
         blob = self.updates[entID].feather.blob
         return blob.unique[Material.GRASS.value] + blob.unique[Material.SCRUB.value]
@@ -125,7 +131,7 @@ class Sword:
         reward -= float(punishment)
 
         self.collectStep(entID, atnArgs, val, reward)
-        if not self.config.TEST:
+        if not self.config.TEST:  # should this be here?
             self.updates[entID].feather.scrawl(
                 stim, ent, val, reward, val_lawmaker, punishment)
         return action, arguments, float(val)

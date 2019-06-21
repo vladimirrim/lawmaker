@@ -11,7 +11,7 @@ if USER == 'vladimir':
     remote = False
     local = not remote
 
-    test = False  # local
+    test = True  # local
     best = False  # local
     load = False  # local
 
