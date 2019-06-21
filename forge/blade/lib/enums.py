@@ -167,6 +167,8 @@ class Neon:
     TERM = Color('TERM', '#41ff00')
     MASK = Color('MASK', '#d67fff')
 
+    DARKGREEN = Color('DARKGREEN', '#006400')
+
     def color12():
         return (
             Neon.RED, Neon.ORANGE, Neon.YELLOW,
