@@ -128,7 +128,7 @@ class Env(nn.Module):
         x = torch.cat((conv, flat, ents)).view(1, -1)
         x = self.fc1(x)
         # Removed relu (easier training, lower policy cap)
-        # x = torch.nn.functional.relu(self.fc1(x))
+        # x = torch.nn.functional.relu(self.fc1(x))  # try to add this instead of previous line
         return x
 
 
@@ -309,8 +309,8 @@ class PunishNet(nn.Module):
         stim = self.envNet(conv, flat, ent)
         feat = torch.cat((stim, policy), 1)
         repr = self.repr(feat)
-        x = self.relu(repr)
-        x = self.fc(x)
+        # x = self.fc(self.relu(repr))  # probably better to keep things linear here
+        x = self.fc(repr)
         x_sigmoid = self.activation(x)
         x = x.view(1, -1)
         return x, x_sigmoid, repr
