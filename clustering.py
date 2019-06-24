@@ -1,12 +1,19 @@
+import time
+
 import numpy as np
 import pickle
 from os import mkdir
 from os.path import exists
 
+from pandas import DataFrame
 from sklearn.cluster import KMeans, DBSCAN
-import matplotlib.pyplot as plt
+from sklearn.manifold import TSNE
 
 from forge.blade.lib.enums import Neon
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.set()
 
 
 def softmax(z):
@@ -15,7 +22,7 @@ def softmax(z):
     s = s[:, np.newaxis]
     e_x = np.exp(z - s)
     div = np.sum(e_x, axis=1)
-    div = div[:, np.newaxis] # dito
+    div = div[:, np.newaxis]  # dito
     return e_x / div
 
 
@@ -31,8 +38,7 @@ def readLmLogs():
     return p, v, s, r
 
 
-def filterByPunishments(p, v, s, r, minP=0.9, maxP=1):
-
+def filterByPunishments(p, v, s, r, minP=0.9, maxP=1.):
     p = np.array(p)
     v = np.array(v)
     s = np.array(s)
@@ -47,10 +53,9 @@ def filterByPunishments(p, v, s, r, minP=0.9, maxP=1):
 
 
 def cluster(r):
-
     # choose clustering model and parameters
     model, nm = KMeans(n_clusters=10, random_state=42, n_jobs=4), 'kmeans/'
-    # model, nm = DBSCAN(eps=0.1, min_samples=5, n_jobs=4), 'dbscan/'
+    #model, nm = DBSCAN(eps=0.1, min_samples=5, n_jobs=4), 'dbscan/'
 
     model = model.fit(r)
     return model.labels_, nm
@@ -75,12 +80,13 @@ def createPic(state, label, fig, pic_num, dr):
                      markersize=15, mfc=colorsEnt[friend], mec='black', zorder=1)
 
     plt.plot([7.5], [7.5], linestyle="None", marker="o",
-                     markersize=10, mfc=Neon.BLACK.norm, mec='black', zorder=1)
+             markersize=10, mfc=Neon.BLACK.norm, mec='black', zorder=1)
 
     for i, delta in enumerate(((0, 1), (1, 0), (0, -1), (-1, 0))):
-        plt.arrow(7.5, 7.5, delta[0], -delta[1], width=policy[i+1]*0.1, length_includes_head=True,
+        plt.arrow(7.5, 7.5, delta[0], -delta[1], width=policy[i + 1] * 0.1, length_includes_head=True,
                   color='black', zorder=2)
-        plt.text(7.5-0.25 + delta[0]/2 + abs(delta[1]/4), 7.5 + abs(delta[0]/10) - delta[1]/2, round(policy[i+1], 2),
+        plt.text(7.5 - 0.25 + delta[0] / 2 + abs(delta[1] / 4), 7.5 + abs(delta[0] / 10) - delta[1] / 2,
+                 round(policy[i + 1], 2),
                  zorder=2, fontsize=10)
 
     plt.xticks(())
@@ -91,6 +97,27 @@ def createPic(state, label, fig, pic_num, dr):
     if not exists(dr + 'cluster_' + str(label)):
         mkdir(dr + 'cluster_' + str(label))
     plt.savefig(dr + 'cluster_' + str(label) + '/' + str(pic_num) + '.png', dpi=100)
+    plt.clf()
+
+
+def plotTSNE(dataset, labels):
+    time_start = time.time()
+    tsne = TSNE(n_components=2, verbose=1, perplexity=40, n_iter=300, learning_rate=10)
+    tsne_results = tsne.fit_transform(dataset)
+    print('t-SNE done! Time elapsed: {} seconds'.format(time.time() - time_start))
+    dataFrame = DataFrame({'tsne-2d-one': tsne_results[:, 0], 'tsne-2d-two': tsne_results[:, 1],
+                           'y': labels})
+    plt.figure(figsize=(16, 10))
+    sns.scatterplot(
+        x="tsne-2d-one", y="tsne-2d-two",
+        hue='y',
+        palette=sns.color_palette("hls", 10),
+        data=dataFrame,
+        legend="full",
+        alpha=0.3
+    )
+
+    plt.savefig(logDir + name + saveFolder + 'tsne.png', dpi=100)
     plt.clf()
 
 
@@ -107,7 +134,6 @@ def createPics(states, labels):
 
 
 if __name__ == '__main__':
-
     logDir = 'resource/exps/'
     name = 'exploreIntensifiesAuto'
     logName = '/model/logsLm.p'
@@ -115,11 +141,13 @@ if __name__ == '__main__':
 
     # reading logs
     p, v, s, r = readLmLogs()  # punishments, values, states, representations
-    p, v, s, r = filterByPunishments(p, v, s, r, minP=0.9, maxP=1)
+    p, v, s, r = filterByPunishments(p, v, s, r, minP=0.12, maxP=1)
 
-    # clustering
     labels, clusterName = cluster(r)
-    print('{}: {} clusters'.format(clusterName, len(np.unique(labels))))
+
+    plotTSNE(r, labels)
+
+    #print('{}: {} clusters'.format(clusterName, len(np.unique(labels))))
 
     # creating pictures
     colors = {0: Neon.ORANGE.norm,  # lava
@@ -133,6 +161,6 @@ if __name__ == '__main__':
     colorsEnt = {0: Neon.RED.norm,  # other color
                  1: Neon.GREEN.norm,  # same color
                  }
-    createPics(s, labels)
+    #createPics(s, labels)
 
     # creating TSNE plot
